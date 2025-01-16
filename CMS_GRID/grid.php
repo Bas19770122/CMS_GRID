@@ -18,6 +18,7 @@ class grid {
     public $id;
     public $data;
     public $fields;
+    public $buttons;
     public $field_list; // full list field name
     public $field_visi; // visible list field name
     public $field_cap; // list header
@@ -50,26 +51,33 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_list) { // get data from select SQL
+    public function SQL_Data($sql, $field_visi, $field_list) { // get data from select SQL
         global $server;
         global $user;
         global $password;
         global $schema;
         $mysqli = new mysqli($server, $user, $password, $schema);
 
+        $_SESSION['fields_' . $this->id] = $field_list;
+        $_SESSION['fvisi_' . $this->id] = $field_visi;
+        $_SESSION['data_' . $this->id] = [];
         $data = [];
         if ($result = $mysqli->query($sql)) {
 
             while ($row = $result->fetch_assoc()) {
                 $lst_fld = [];
                 $lst_fld[] = ["type" => 0]; // select 
-                foreach ($field_list as $j => $f) {
+                foreach ($field_visi as $j => $f) {
                     $lst_fld[] = $row[$f];
                 }
 
                 $data[] = $lst_fld;
+
+                $_SESSION['data_' . $this->id][] = $row;
             }
         }
+
+
 
         return $data;
     }
@@ -92,6 +100,7 @@ class grid {
         $minno = 999999;
         $maxno = 0;
         $flds = [];
+        $buttons = [];
         // $id_flds = [];
         //$all_flds = [];
         $sql = 'select <fields> from <tab> <where>';
@@ -140,6 +149,9 @@ class grid {
             if ($v['type'] == 'where') {
                 $whe = $v['text'];
             }
+            if ($v['type'] == 'button') {
+                $buttons[] = ['class' => $v['class'], 'text' => $v['text']];
+            }
         }
 
         //$k = $minno;
@@ -179,7 +191,7 @@ class grid {
             //}
             //}
         }
-        
+
         foreach ($flds as $j => $f) {
             $isf = 0;
             for ($i = $minno; $i <= $maxno; $i++) {
@@ -200,10 +212,10 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type];
+        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons];
     }
 
-    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type) { // get html code
+    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons) { // get html code
         $arr = json_decode($js, true);
         $style = '';
         $html = '<div id=' . $this->id . ' class=grid_class>';
@@ -230,7 +242,7 @@ class grid {
             foreach ($r as $j => $f) {
                 if ($j > 0) {
                     foreach ($field_visi as $k => $fv) {
-                        if ($j-1 == $k) {
+                        if ($j - 1 == $k) {
                             $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . $f . '</div>';
                             //$k = $k + 1;
                             break;
@@ -239,6 +251,10 @@ class grid {
                 }
             }
         }
+        foreach ($buttons as $i => $v) {
+            $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
+        }
+
         $html = $style . $html . '</div>';
         return $html;
     }
@@ -247,10 +263,16 @@ class grid {
 
     public function show() {
 
-        list($this->sql, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type) = $this->Fields_SQL($this->fields);
-        $this->data = $this->SQL_Data($this->sql, $this->field_visi);
+        list(
+                $this->sql,
+                $this->field_list,
+                $this->field_visi,
+                $this->field_cap,
+                $this->field_type,
+                $this->buttons) = $this->Fields_SQL($this->fields);
+        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list);
         $this->js = $this->Data_JS($this->data);
-        $this->html = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type);
+        $this->html = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons);
 
         return $this->html;
     }
