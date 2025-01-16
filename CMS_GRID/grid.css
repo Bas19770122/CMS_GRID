@@ -1,6 +1,6 @@
 .grid_class{
-   /* display: grid;
-   grid-auto-rows: auto 20px; *//*header and rows height*/
+    /* display: grid;
+    grid-auto-rows: auto 20px; *//*header and rows height*/
     border: 1px solid grey;
 }
 
@@ -9,9 +9,9 @@
 }
 
 .header_class{
-  background-color: Gainsboro;
-  padding: 10px;
-  text-align: center;
+    background-color: Gainsboro;
+    padding: 10px;
+    text-align: center;
 }
 
 .hidden{
@@ -19,18 +19,22 @@
 }
 
 #cell_editor{
-   width: 100%;
-   height: auto;
-   position: absolute;
-   padding: 3px;
-   left: 0px;
-   top: 0px;
-   z-index:20;
-   background-color: white;
-   border: 1px solid grey;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    padding: 3px;
+    left: 0px;
+    top: 0px;
+    z-index:20;
+    background-color: white;
+    border: 1px solid grey;
 }
 
 .edited{
     background-color: gold;
+}
+
+button.save{
+    width:100px;
 }
 
