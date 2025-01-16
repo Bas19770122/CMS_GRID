@@ -1,9 +1,17 @@
 <?php
 
+session_start();
+
 $server = "localhost";
 $user = "root";
 $password = "root";
 $schema = "new_schema";
+
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == 'save') {
+        $gr = new grid;
+    }
+}
 
 class grid {
 
@@ -72,7 +80,7 @@ class grid {
 
     public function Fields_SQL($fields) { // get select SQL
         $sql = '';
-        $field_list = [];
+        //$field_list = [];
         $field_visi = [];
         $field_cap = [];
         $field_type = [];
@@ -84,6 +92,8 @@ class grid {
         $minno = 999999;
         $maxno = 0;
         $flds = [];
+        // $id_flds = [];
+        //$all_flds = [];
         $sql = 'select <fields> from <tab> <where>';
         foreach ($fields as $i => $v) {
             if ($v['type'] == 'table') {
@@ -97,9 +107,10 @@ class grid {
                     $on = ' on ' . $on;
                 }
                 $tab = $tab . ' ' . $joi . ' ' . $v['name'] . ' as ' . $v['syn'] . $on;
+                //$id_flds[] = [['tab'=>]
                 foreach ($v['fields'] as $j => $f) {
+                    $f['tsyn'] = $syn;
                     if (isset($f['№'])) {
-                        $f['tsyn'] = $syn;
                         $flds[$f['№']] = $f;
                         if ($f['№'] < $minno) {
                             $minno = $f['№'];
@@ -107,7 +118,10 @@ class grid {
                         if ($f['№'] > $maxno) {
                             $maxno = $f['№'];
                         }
+                    } else {
+                        $flds[$v['name'] . '_' . $f['name']] = $f;
                     }
+                    //$all_flds[$v['name']]['fields'][] = [$f['name'],$f['syn']];
                     /*
                       if ($fld != '') {
                       $fld = $fld . ', ';
@@ -127,31 +141,66 @@ class grid {
                 $whe = $v['text'];
             }
         }
+
+        //$k = $minno;
         for ($i = $minno; $i <= $maxno; $i++) {
-            if (isset($flds[$i])) {
-                $f = $flds[$i];
+            //foreach ($flds as $j => $fv) {
+
+            $f = $flds[$i];
+            $syn = $f['tsyn'];
+            if ($fld != '') {
+                $fld = $fld . ', ';
+            }
+            $fld = $fld . $syn . '.' . $f['name'] . ' as ' . $f['syn'];
+
+            //if (isset($flds[$i])) {
+            //if ($k == $i) {
+            // if ($i == $j) {
+            // $k = $k + 1;
+            /*
+              $f = $flds[$i];
+              $syn = $f['tsyn'];
+              if ($fld != '') {
+              $fld = $fld . ', ';
+              }
+              $fld = $fld . $syn . '.' . $f['name'] . ' as ' . $f['syn'];
+             */
+            // $field_list[] = $f['syn'];
+            if (!isset($f['visible']) || ($f['visible'] == 'yes')) {
+                $field_visi[] = $f['syn'];
+                $field_type[] = $f['type'];
+                if (isset($f['caption'])) {
+                    $field_cap[] = $f['caption'];
+                } else {
+                    $field_cap[] = '';
+                }
+            }
+            //}
+            //}
+            //}
+        }
+        
+        foreach ($flds as $j => $f) {
+            $isf = 0;
+            for ($i = $minno; $i <= $maxno; $i++) {
+                if ($i == $j) {
+                    $isf = 1;
+                }
+            }
+            if ($isf == 0) {
+                $f = $flds[$j];
                 $syn = $f['tsyn'];
                 if ($fld != '') {
                     $fld = $fld . ', ';
                 }
                 $fld = $fld . $syn . '.' . $f['name'] . ' as ' . $f['syn'];
-                $field_list[] = $f['syn'];
-                if (!isset($f['visible']) || ($f['visible'] == 'yes')) {
-                    $field_visi[] = $f['syn'];
-                    $field_type[] = $f['type'];
-                    if (isset($f['caption'])) {
-                        $field_cap[] = $f['caption'];
-                    } else {
-                        $field_cap[] = '';
-                    }
-                }
             }
         }
 
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $field_list, $field_visi, $field_cap, $field_type];
+        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type];
     }
 
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type) { // get html code
@@ -167,23 +216,23 @@ class grid {
         foreach ($field_visi as $j => $f) {
             if (in_array($field_type[$j], ['date', 'number'])) {
                 $element = 'input';
-            } 
+            }
             if (in_array($field_type[$j], ['string'])) {
                 $element = 'textarea';
-            }            
-            $fld[] = ['element'=>$element, 'name' => $f, 'attr'=>['type'=>$field_type[$j]]];
+            }
+            $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
         }
         $html = $html . '<div id="json_f_' . $this->id . '" class="hidden">' . json_encode($fld) . '</div>';
         $style = '<style> #' . $this->id . '{display: grid; grid-auto-rows: auto 20px; grid-template-columns: ' . $style . ';} </style>';
-        
+
         foreach ($arr as $i => $r) {
             $k = 0;
             foreach ($r as $j => $f) {
                 if ($j > 0) {
                     foreach ($field_visi as $k => $fv) {
-                        if ($fv == $field_list[$j - 1]) {
+                        if ($j-1 == $k) {
                             $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . $f . '</div>';
-                            $k = $k + 1;
+                            //$k = $k + 1;
                             break;
                         }
                     }
@@ -199,7 +248,7 @@ class grid {
     public function show() {
 
         list($this->sql, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type) = $this->Fields_SQL($this->fields);
-        $this->data = $this->SQL_Data($this->sql, $this->field_list);
+        $this->data = $this->SQL_Data($this->sql, $this->field_visi);
         $this->js = $this->Data_JS($this->data);
         $this->html = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type);
 

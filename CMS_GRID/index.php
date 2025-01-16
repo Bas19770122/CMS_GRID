@@ -28,7 +28,14 @@ $gr->fields = [
         "type" => "table",
         "name" => "table1",
         "syn" => "t1",
+        "id_field" => "id",
         "fields" => [
+            [
+                "name" => "id",
+                "syn" => "id1",
+                "type" => "int",
+                "visible" => "no"
+            ],            
             [
                 "name" => "date",
                 "syn" => "dt",
@@ -49,12 +56,13 @@ $gr->fields = [
         "type" => "table",
         "name" => "table2",
         "syn" => "t2",
+        "id_field" => "id",
         "join" => "left join",
         "on" => "t1.listid = t2.id",
         "fields" => [
             [
                 "name" => "id",
-                "syn" => "id",
+                "syn" => "id2",
                 "type" => "int",
                 "visible" => "no"
             ],
@@ -77,6 +85,11 @@ $gr->fields = [
     [
         "type" => "where",
         "text" => "where t2.id between 1 and 3"
+    ],
+    [
+        "type"=>"button",
+        "text"=>"Сохранить",
+        "class"=>"save"
     ]
 ];
 

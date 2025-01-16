@@ -1,5 +1,47 @@
 $(document).ready(function () {
 
+
+    $('body').delegate('.grid_class .save', 'click', function (e) {
+
+        elem = $(this).parent();
+        id = elem.attr('id');
+
+
+        function set_edited(id) {
+            $('#' + id + ' .cell_class').removeClass('edited');
+            var rw = JSON.parse($('#json_' + id).text());
+            for (var key in rw)
+            {
+                if (rw[key][0]['type'] == 2)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
+            }
+        }
+
+        elem.prop('disabled', true);
+        jsons = {
+            id: id,
+            action: 'save',
+            data: $('#json_' + id).text()
+        };
+        $.ajax({
+            url: 'grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            elem.prop('disabled', false);
+            jsn = JSON.parse(data);
+            rcd = jsn['records'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(data);
+            set_edited(id);
+        });
+
+
+    });
+
+
     $('body').delegate('#cell_editor', 'focusout', function (e) {
 
         function set_edited(id) {
