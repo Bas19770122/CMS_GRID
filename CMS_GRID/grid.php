@@ -1,6 +1,5 @@
 <?php
 
-
 $server = "localhost";
 $user = "root";
 $password = "root";
@@ -9,12 +8,15 @@ $schema = "new_schema";
 if (isset($_POST['action'])) {
     if ($_POST['action'] == 'save') {
         $gr = new grid;
+        $gr->id = $_POST['id'];        
+        $gr->ModRec($_POST['data']);
     }
 }
 
 class grid {
 
     public $id;
+    public $ids;
     public $data;
     public $fields;
     public $buttons;
@@ -27,19 +29,34 @@ class grid {
 
     // actions 
 
-    public function AddRec($r, $c, $js) {
+    public function AddRec($js) {
         return $js;
     }
 
-    public function DelRec($r, $c, $js) {
+    public function DelRec($js) {
         return $js;
     }
 
-    public function ModRec($r, $c, $js) {
+    public function ModRec($js) {
+        global $server;
+        global $user;
+        global $password;
+        global $schema;
+        
+        $sql = $this->JS_SQL($js, 2);
+        
+        $mysqli = new mysqli($server, $user, $password, $schema);
+
+        $mysqli->query($sql);
+        
         return $js;
     }
 
     // transform 
+    
+    public function JS_SQL($js, $tp) { // insert, update, delete SQL
+        return $sql;
+    }    
 
     public function Data_JS($data) {  // json from selected data
         $js = json_encode($data);
@@ -50,17 +67,19 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_visi, $field_list) { // get data from select SQL
+    public function SQL_Data($sql, $field_visi, $field_list, $ids) { // get data from select SQL
         global $server;
         global $user;
         global $password;
         global $schema;
         $mysqli = new mysqli($server, $user, $password, $schema);
 
-        $_SESSION['fields_' . $this->id] = $field_list;
-        $_SESSION['fvisi_' . $this->id] = $field_visi;
-        $_SESSION['data_' . $this->id] = [];
-        $data = [];
+        $_SESSION['ids_' . $this->id] = $ids; // array table - id_fields
+        $_SESSION['fields_' . $this->id] = $field_list; // all fields
+        $_SESSION['fvisi_' . $this->id] = $field_visi; // visible fields synonimus
+        $_SESSION['data_' . $this->id] = []; // visible data  
+        
+        $data = [];        
         if ($result = $mysqli->query($sql)) {
 
             while ($row = $result->fetch_assoc()) {
@@ -68,6 +87,14 @@ class grid {
                 $lst_fld[] = ["type" => 0]; // select 
                 foreach ($field_visi as $j => $f) {
                     $lst_fld[] = $row[$f];
+                    /*
+                    foreach ($field_list as $jf => $vf) {
+                        if($vf['syn']==$f){
+                            $lst_fld[] = $row[$vf['name']];
+                            break;
+                        }
+                    } 
+                    */
                 }
 
                 $data[] = $lst_fld;
@@ -79,10 +106,6 @@ class grid {
 
 
         return $data;
-    }
-
-    public function JS_SQL($js) { // insert, update, delete SQL
-        return $sql;
     }
 
     public function Fields_SQL($fields) { // get select SQL
@@ -100,6 +123,7 @@ class grid {
         $maxno = 0;
         $flds = [];
         $buttons = [];
+        $ids = [];
         // $id_flds = [];
         //$all_flds = [];
         $sql = 'select <fields> from <tab> <where>';
@@ -114,10 +138,12 @@ class grid {
                 if ($on != '') {
                     $on = ' on ' . $on;
                 }
+                $ids[ $v['name'] ] = $v['id_field'];
                 $tab = $tab . ' ' . $joi . ' ' . $v['name'] . ' as ' . $v['syn'] . $on;
                 //$id_flds[] = [['tab'=>]
                 foreach ($v['fields'] as $j => $f) {
                     $f['tsyn'] = $syn;
+                    $f['tab'] = $v['name'];
                     if (isset($f['№'])) {
                         $flds[$f['№']] = $f;
                         if ($f['№'] < $minno) {
@@ -263,14 +289,19 @@ class grid {
     public function show() {
 
         list(
-                $this->sql,
-                $this->field_list,
-                $this->field_visi,
-                $this->field_cap,
-                $this->field_type,
-                $this->buttons) = $this->Fields_SQL($this->fields);
-        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list);
+            $this->sql,
+            $this->field_list,
+            $this->field_visi,
+            $this->field_cap,
+            $this->field_type,
+            $this->buttons,
+            $this->ids
+        ) = $this->Fields_SQL($this->fields);
+        
+        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids);
+        
         $this->js = $this->Data_JS($this->data);
+        
         $this->html = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons);
 
         return $this->html;
