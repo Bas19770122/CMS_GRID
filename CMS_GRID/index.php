@@ -30,7 +30,7 @@ $gr->fields = [
         "type" => "table",
         "name" => "table1",
         "syn" => "t1",
-        "id_field" => "id",
+        "id_field_syn" => "id1",
         "fields" => [
             [
                 "name" => "id",
@@ -58,7 +58,7 @@ $gr->fields = [
         "type" => "table",
         "name" => "table2",
         "syn" => "t2",
-        "id_field" => "id",
+        "id_field_syn" => "id2",
         "join" => "left join",
         "on" => "t1.listid = t2.id",
         "fields" => [
