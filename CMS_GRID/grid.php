@@ -300,7 +300,7 @@ class grid {
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons) { // get html code
         $arr = json_decode($js, true);
         $style = '';
-        $html = '<div id=' . $this->id . ' class=grid_class>';
+        $html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class>';
         foreach ($field_cap as $j => $f) {
             $html = $html . '<div class=header_class>' . $f . '</div>';
             $style = $style . ' auto';
@@ -333,11 +333,13 @@ class grid {
                 }
             }
         }
-        foreach ($buttons as $i => $v) {
-            $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
-        }
 
         $html = $style . $html . '</div>';
+        foreach ($buttons as $i => $v) {
+            $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
+        }        
+        $html = $html . '</div>';
+        
         return $html;
     }
 

@@ -1,10 +1,10 @@
 $(document).ready(function () {
 
 
-    $('body').delegate('.grid_class .save', 'click', function (e) {
+    $('body').delegate('.grid_cont .save', 'click', function (e) {
 
-        elem = $(this).parent();
-        id = elem.attr('id');
+        elem = $(this);
+        id = elem.parent().find('.grid_class').eq(0).attr('id');
 
 
         function set_edited(id) {
