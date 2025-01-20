@@ -86,7 +86,7 @@ $gr->info = [
     ],
     [
         "type" => "where",
-        "text" => "where t2.id >= 3"
+        "text" => "where t2.id >= 1"
     ],
     [
         "type"=>"button",
