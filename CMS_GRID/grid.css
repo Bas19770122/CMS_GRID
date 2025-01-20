@@ -34,6 +34,10 @@
     background-color: gold;
 }
 
+.inserted{
+    background-color: azure;
+}
+
 button.save{
     width:100px;
 }

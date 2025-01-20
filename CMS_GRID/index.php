@@ -25,7 +25,7 @@ $gr = new grid;
 
 $gr->id = 'id_1';
 
-$gr->fields = [
+$gr->info = [
     [
         "type" => "table",
         "name" => "table1",
@@ -86,12 +86,18 @@ $gr->fields = [
     ],
     [
         "type" => "where",
-        "text" => "where t2.id between 1 and 3"
+        "text" => "where t2.id >= 3"
     ],
     [
         "type"=>"button",
         "text"=>"Сохранить",
         "class"=>"save"
+    ],
+    [
+        "type"=>"button",
+        "text"=>"Вставить",
+        "class"=>"insert",
+        "after"=>"event.php"
     ]
 ];
 

@@ -14,6 +14,14 @@ if (isset($_POST['action'])) {
         echo $data;
         exit();
     }
+    if ($_POST['action'] == 'insert') {
+        session_start();
+        $gr = new grid;
+        $gr->id = $_POST['id'];
+        $data = $gr->AddRec($_POST['data']);
+        echo $data;
+        exit();
+    }
 }
 
 class grid {
@@ -21,19 +29,42 @@ class grid {
     public $id;
     public $ids;
     public $data;
-    public $fields;
+    public $info;
     public $buttons;
     public $field_list; // full list field name
     public $field_visi; // visible list field name
     public $field_cap; // list header
     public $field_type; // field types
     public $js;
+    public $inhtml;    
     public $html;
 
     // actions 
 
     public function AddRec($js) {
-        return $js;
+        $newrec = [];
+        $data = json_decode($js, true);
+        $adddata = '';
+        foreach ($data as $i => $r) { // data from json 
+            $val = 'Новая строка';
+            foreach ($r as $j => $c) {
+                if ($j == 0) {
+                    $newrec[] = ['type' => 1];
+                } else {
+                    $newrec[] = '';
+                    $adddata = $adddata.'<div class=cell_class col='.($j-1).' row='.count($data).'>'.$val.'</div>';
+                    $val = '';
+                }
+            }
+            break;
+        }
+        $data[] = $newrec;
+
+        $js = [];
+        $js['js'] = $data;
+        $js['adddata'] = $adddata;
+
+        return $this->Data_JS($js);
     }
 
     public function DelRec($js) {
@@ -46,27 +77,41 @@ class grid {
         global $password;
         global $schema;
 
-        $sql = $this->JS_SQL($js, 2);
+        $sql = $this->JS_SQL($js);
 
         $mysqli = new mysqli($server, $user, $password, $schema);
 
         $mysqli->multi_query($sql);
         
-        // if all ok 
-            $data = json_decode($js, true);
-            foreach ($data as $i => $r) { // data from json 
-                if ($r[0]['type'] == 2) {         
-                    $data[$i][0]['type'] = 0;
-                }
-            }
+        $info = $_SESSION['info_' . $this->id];
+        
+        $this->refresh($info);
 
-        return $this->Data_JS($data);
+        // if all ok 
+        /*
+        $data = json_decode($js, true);
+        foreach ($data as $i => $r) { // data from json 
+            if ($r[0]['type'] == 1) {
+                $data[$i][0]['type'] = 0;
+            }            
+            if ($r[0]['type'] == 2) {
+                $data[$i][0]['type'] = 0;
+            }
+        }
+        */
+        
+        $res = [];
+        
+        $res['js'] = $this->js;
+        $res['html'] = $this->inhtml;
+
+        return $this->Data_JS($res);
     }
 
     // transform 
 
-    public function JS_SQL($js, $tp) { // insert, update, delete SQL
-        if ($tp == 2) { //modify 
+    public function JS_SQL($js) { // insert, update, delete SQL
+        //if ($tp == 2) { //modify 
             $ids = $_SESSION['ids_' . $this->id]; // array table - id_fields
             $field_list = $_SESSION['fields_' . $this->id]; // all fields
             $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
@@ -74,6 +119,30 @@ class grid {
             $sql = '';
             $data = json_decode($js, true);
             foreach ($data as $i => $r) { // data from json 
+
+                if ($r[0]['type'] == 1) { // data was inserted
+                    foreach ($ids as $t => $f) { // table circle      
+                        $fld = '';
+                        $fldv = '';
+                        foreach ($field_list as $j => $fm) { // all field circle 
+                            foreach ($field_visi as $jv => $fmv) { // visible field circle 
+                                if ($fmv == $fm['syn'] && $t == $fm['tab']) {
+                                    if ($fld != '') {
+                                        $fld .= ', ';
+                                    }
+                                    $fld .= $fm['name'];
+                                    if ($fldv != '') {
+                                        $fldv .= ', ';
+                                    }
+                                    $fldv .= '"' . $r[$jv + 1] . '"';
+                                    break;
+                                }
+                            }
+                        }
+                        $sql .= 'insert into ' . $t . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );';
+                    }
+                }
+                
                 if ($r[0]['type'] == 2) { // data was modified 
                     foreach ($ids as $t => $f) { // table circle      
                         $fld = '';
@@ -84,7 +153,7 @@ class grid {
                                     if ($fld != '') {
                                         $fld .= ', ';
                                     }
-                                    $fld .= $fm['name'] . ' = "' . $r[$jv+1] . '"';
+                                    $fld .= $fm['name'] . ' = "' . $r[$jv + 1] . '"';
                                     break;
                                 }
                             }
@@ -93,7 +162,7 @@ class grid {
                             }
                         }
                         $fv = '';
-                        foreach ($all_data as $ii => $dd) {
+                        foreach ($all_data as $ii => $dd) { // get id value
                             if ($ii == $i) {
                                 foreach ($dd as $jj => $ff) {
                                     if ($f == $jj) {
@@ -108,7 +177,7 @@ class grid {
                     }
                 }
             }
-        }
+        //}
         return $sql;
     }
 
@@ -163,7 +232,7 @@ class grid {
         return $data;
     }
 
-    public function Fields_SQL($fields) { // get select SQL
+    public function Fields_SQL($info) { // get select SQL
         $sql = '';
         //$field_list = [];
         $field_visi = [];
@@ -181,8 +250,9 @@ class grid {
         $ids = [];
         // $id_flds = [];
         //$all_flds = [];
+        $_SESSION['info_' . $this->id] = $info;
         $sql = 'select <fields> from <tab> <where>';
-        foreach ($fields as $i => $v) {
+        foreach ($info as $i => $v) {
             if ($v['type'] == 'table') {
                 if (isset($v['syn']))
                     $syn = $v['syn'];
@@ -300,7 +370,8 @@ class grid {
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons) { // get html code
         $arr = json_decode($js, true);
         $style = '';
-        $html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class>';
+        $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
+        $html = '';
         foreach ($field_cap as $j => $f) {
             $html = $html . '<div class=header_class>' . $f . '</div>';
             $style = $style . ' auto';
@@ -334,19 +405,18 @@ class grid {
             }
         }
 
-        $html = $style . $html . '</div>';
+        $inhtml = $style . $html;                
+        $html = str_replace('<<html>>', $inhtml, $temp_html);
         foreach ($buttons as $i => $v) {
             $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
-        }        
+        }
         $html = $html . '</div>';
-        
-        return $html;
+
+        return [$inhtml, $html];
     }
 
-    // show grid 
-
-    public function show() {
-
+    public function refresh($info) {
+        
         list(
                 $this->sql,
                 $this->field_list,
@@ -355,14 +425,22 @@ class grid {
                 $this->field_type,
                 $this->buttons,
                 $this->ids
-                ) = $this->Fields_SQL($this->fields);
+                ) = $this->Fields_SQL($info);
 
         $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids);
 
         $this->js = $this->Data_JS($this->data);
 
-        $this->html = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons);
+        list($this->inhtml, $this->html) = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons);
+        
+    }
+    
+    // show grid 
 
+    public function show() {
+
+        $this->refresh($this->info);
+                
         return $this->html;
     }
 }

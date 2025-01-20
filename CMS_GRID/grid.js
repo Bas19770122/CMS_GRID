@@ -1,22 +1,74 @@
 $(document).ready(function () {
 
+    $('body').delegate('.grid_cont .insert', 'click', function (e) {
+
+        elem = $(this);
+        id = elem.parent().find('.grid_class').eq(0).attr('id');
+
+
+        function set_inserted(id) {
+            $('#' + id + ' .cell_class').removeClass('inserted');            
+            $('#' + id + ' .cell_class').removeClass('edited');
+            var rw = JSON.parse($('#json_' + id).text());
+            for (var key in rw)
+            {
+                if (rw[key][0]['type'] == 1)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
+                if (rw[key][0]['type'] == 2)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');       
+            }
+        }
+        
+ 
+        elem.prop('disabled', true);
+        jsons = {
+            id: id,
+            action: 'insert',
+            data: $('#json_' + id).text(),
+            before: elem.attr('before'),
+            after: elem.attr('after')
+            
+        };
+        $.ajax({
+            url: 'grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            elem.prop('disabled', false);
+            jsn = JSON.parse(data);
+            rcd = jsn['js'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(rcds);
+            nrcd = jsn['adddata'];
+            //nrcds = JSON.stringify(nrcd);
+            $('#' + id).append(nrcd);
+            set_inserted(id);
+        });
+
+
+    });
 
     $('body').delegate('.grid_cont .save', 'click', function (e) {
 
         elem = $(this);
         id = elem.parent().find('.grid_class').eq(0).attr('id');
 
-
+/*
         function set_edited(id) {
+            $('#' + id + ' .cell_class').removeClass('inserted');            
             $('#' + id + ' .cell_class').removeClass('edited');
             var rw = JSON.parse($('#json_' + id).text());
             for (var key in rw)
             {
+                if (rw[key][0]['type'] == 1)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
                 if (rw[key][0]['type'] == 2)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');                
             }
         }
-
+        */
         elem.prop('disabled', true);
         jsons = {
             id: id,
@@ -30,12 +82,18 @@ $(document).ready(function () {
             data: jsons
         }).done(function (data) {
             elem.prop('disabled', false);
+           /* $('#json_' + id).empty();
+            $('#json_' + id).append(data);         
+            */
             jsn = JSON.parse(data);
-            rcd = jsn['records'];
+            rcd = jsn['js'];
             rcds = JSON.stringify(rcd);
             $('#json_' + id).empty();
-            $('#json_' + id).append(data);
-            set_edited(id);
+            $('#json_' + id).append(rcds);
+            html = jsn['html'];
+            $('#' + id).empty();
+            $('#' + id).append(html);           
+            //set_edited(id);
         });
 
 
@@ -78,7 +136,9 @@ $(document).ready(function () {
                                     }
                                     item[key2]['id'] = cont;
                                     item[key2]['name'] = txt; //encodeURIComponent(txt);
-                                    data[key][0]['type'] = 2; // edited 
+                                    if (data[key][0]['type'] != 1) {
+                                      data[key][0]['type'] = 2; // edited 
+                                    }
                                     elem2.empty();
                                     elem2.append(txt);
                                     // save json to form
@@ -88,7 +148,9 @@ $(document).ready(function () {
                                     set_edited(id);
                                 } else { // not list field 
                                     item[key2] = cont; //encodeURIComponent(cont);  
-                                    data[key][0]['type'] = 2; // edited 
+                                    if (data[key][0]['type'] != 1) {
+                                      data[key][0]['type'] = 2; // edited 
+                                    }
                                     elem2.empty();
                                     elem2.append(cont);
                                     // save json to form
