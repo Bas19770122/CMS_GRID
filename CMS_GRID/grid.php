@@ -22,6 +22,14 @@ if (isset($_POST['action'])) {
         echo $data;
         exit();
     }
+   /* if ($_POST['action'] == 'delete') {
+        session_start();
+        $gr = new grid;
+        $gr->id = $_POST['id'];
+        $data = $gr->DelRec($_POST['data']);
+        echo $data;
+        exit();
+    }*/
 }
 
 class grid {
@@ -58,24 +66,6 @@ class grid {
             $adddata = $adddata . '<div class=cell_class col=' . ($j) . ' row=' . count($data) . '>' . $val . '</div>';
         }
 
-        /*
-          $data = json_decode($js, true);
-          $adddata = '';
-          foreach ($data as $i => $r) { // data from json
-          $val = 'Новая строка';
-          foreach ($r as $j => $c) {
-          if ($j == 0) {
-          $newrec[] = ['type' => 1];
-          } else {
-          $newrec[] = '';
-          $adddata = $adddata.'<div class=cell_class col='.($j-1).' row='.count($data).'>'.$val.'</div>';
-          $val = '';
-          }
-          }
-          break;
-          }
-         */
-
         $data[] = $newrec;
 
         $js = [];
@@ -84,10 +74,11 @@ class grid {
 
         return $this->Data_JS($js);
     }
-
+/*
     public function DelRec($js) {
-        return $js;
-    }
+
+        return $this->ModRec($js);
+    }*/
 
     public function ModRec($js) {
         global $server;
@@ -101,27 +92,9 @@ class grid {
 
         $mysqli->multi_query($sql);
 
-        //    $mysqli->commit();
-        //  $mysqli->close();
-        // sleep(1);
-        //
-
         $info = $_SESSION['info_' . $this->id];
 
         $this->refresh($info);
-
-        // if all ok 
-        /*
-          $data = json_decode($js, true);
-          foreach ($data as $i => $r) { // data from json
-          if ($r[0]['type'] == 1) {
-          $data[$i][0]['type'] = 0;
-          }
-          if ($r[0]['type'] == 2) {
-          $data[$i][0]['type'] = 0;
-          }
-          }
-         */
 
         $res = [];
 
@@ -164,7 +137,7 @@ class grid {
                                     }
                                     if (isset($fm['default']) and ($r[$jv + 1] == '')) {
                                         $fldv .= $fm['default'];
-                                    } else {                                        
+                                    } else {
                                         $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
                                         if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                             $v = 'null';
@@ -233,6 +206,31 @@ class grid {
                         }
                     }
                     $sql .= 'update ' . $t . ' set ' . $fld . ' where ' . $fn . ' = ' . $fv . ';';
+                }
+            }
+            ///
+            if ($r[0]['type'] == 3) { // data was deleted 
+                foreach (array_reverse($ids) as $t => $f) { // table circle      
+                    $fn = '';
+                    foreach ($field_list as $j => $fm) { // all field circle 
+                        if ($f == $fm['syn']) {
+                            $fn = $fm['name'];
+                            break;
+                        }
+                    }
+                    $fv = '';
+                    foreach ($all_data as $ii => $dd) { // get id value
+                        if ($ii == $i) {
+                            foreach ($dd as $jj => $ff) {
+                                if ($f == $jj) {
+                                    $fv = $ff;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    $sql .= 'delete from ' . $t . ' where ' . $fn . ' = ' . $fv . ';';
                 }
             }
         }

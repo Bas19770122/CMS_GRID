@@ -100,6 +100,11 @@ $gr->info = [
         "type"=>"button",
         "text"=>"Сохранить",
         "class"=>"save"
+    ],
+    [
+        "type"=>"button",
+        "text"=>"Удалить",
+        "class"=>"delete"
     ]
 ];
 

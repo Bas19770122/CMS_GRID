@@ -1,5 +1,46 @@
 $(document).ready(function () {
 
+
+
+    $('body').delegate('.grid_cont .cell_class', 'click', function (e) {
+
+        elem = $(this);
+        elem.parent().find('.cell_class').removeClass('Selected');
+        elem.addClass('Selected');
+
+
+    });
+
+    $('body').delegate('.grid_cont .delete', 'click', function (e) {
+
+
+        function set_deleted(id) {
+            var rw = JSON.parse($('#json_' + id).text());
+            for (var key in rw)
+            {
+                if (rw[key][0]['type'] == 3)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('Deleted');
+            }
+        }
+
+        elem = $(this);
+        id = elem.parent().find('.grid_class').eq(0).attr('id');
+
+        rowno = elem.parent().find('.Selected').attr('row');
+
+        jsn = JSON.parse($('#json_' + id).text());
+
+        jsn[rowno][0]['type'] = 3;
+
+        rcds = JSON.stringify(jsn);
+        $('#json_' + id).empty();
+        $('#json_' + id).append(rcds);
+
+        set_deleted(id);
+
+
+    });
+
     $('body').delegate('.grid_cont .insert', 'click', function (e) {
 
         elem = $(this);
@@ -7,19 +48,19 @@ $(document).ready(function () {
 
 
         function set_inserted(id) {
-            $('#' + id + ' .cell_class').removeClass('inserted');            
+            $('#' + id + ' .cell_class').removeClass('inserted');
             $('#' + id + ' .cell_class').removeClass('edited');
             var rw = JSON.parse($('#json_' + id).text());
             for (var key in rw)
             {
                 if (rw[key][0]['type'] == 1)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');
                 if (rw[key][0]['type'] == 2)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');       
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
             }
         }
-        
- 
+
+
         elem.prop('disabled', true);
         jsons = {
             id: id,
@@ -27,7 +68,7 @@ $(document).ready(function () {
             data: $('#json_' + id).text(),
             before: elem.attr('before'),
             after: elem.attr('after')
-            
+
         };
         $.ajax({
             url: 'grid.php',
@@ -55,20 +96,20 @@ $(document).ready(function () {
         elem = $(this);
         id = elem.parent().find('.grid_class').eq(0).attr('id');
 
-/*
-        function set_edited(id) {
-            $('#' + id + ' .cell_class').removeClass('inserted');            
-            $('#' + id + ' .cell_class').removeClass('edited');
-            var rw = JSON.parse($('#json_' + id).text());
-            for (var key in rw)
-            {
-                if (rw[key][0]['type'] == 1)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
-                if (rw[key][0]['type'] == 2)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');                
-            }
-        }
-        */
+        /*
+         function set_edited(id) {
+         $('#' + id + ' .cell_class').removeClass('inserted');            
+         $('#' + id + ' .cell_class').removeClass('edited');
+         var rw = JSON.parse($('#json_' + id).text());
+         for (var key in rw)
+         {
+         if (rw[key][0]['type'] == 1)
+         $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
+         if (rw[key][0]['type'] == 2)
+         $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');                
+         }
+         }
+         */
         elem.prop('disabled', true);
         jsons = {
             id: id,
@@ -82,9 +123,9 @@ $(document).ready(function () {
             data: jsons
         }).done(function (data) {
             elem.prop('disabled', false);
-           /* $('#json_' + id).empty();
-            $('#json_' + id).append(data);         
-            */
+            /* $('#json_' + id).empty();
+             $('#json_' + id).append(data);         
+             */
             jsn = JSON.parse(data);
             rcd = jsn['js'];
             rcds = JSON.stringify(rcd);
@@ -92,7 +133,7 @@ $(document).ready(function () {
             $('#json_' + id).append(rcds);
             html = jsn['html'];
             $('#' + id).empty();
-            $('#' + id).append(html);           
+            $('#' + id).append(html);
             //set_edited(id);
         });
 
@@ -137,7 +178,7 @@ $(document).ready(function () {
                                     item[key2]['id'] = cont;
                                     item[key2]['name'] = txt; //encodeURIComponent(txt);
                                     if (data[key][0]['type'] != 1) {
-                                      data[key][0]['type'] = 2; // edited 
+                                        data[key][0]['type'] = 2; // edited 
                                     }
                                     elem2.empty();
                                     elem2.append(txt);
@@ -149,7 +190,7 @@ $(document).ready(function () {
                                 } else { // not list field 
                                     item[key2] = cont; //encodeURIComponent(cont);  
                                     if (data[key][0]['type'] != 1) {
-                                      data[key][0]['type'] = 2; // edited 
+                                        data[key][0]['type'] = 2; // edited 
                                     }
                                     elem2.empty();
                                     elem2.append(cont);
