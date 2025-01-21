@@ -40,14 +40,13 @@
     background-color: azure;
 }
 
+.deleted{  
+    background-color: coral;
+}
 
 .Selected{
     border: 1px solid black;
     background-color: gainsboro;
-}
-
-.Deleted{  
-    background-color: coral;
 }
 
 button.insert{

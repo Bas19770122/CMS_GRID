@@ -19,7 +19,7 @@ $(document).ready(function () {
             for (var key in rw)
             {
                 if (rw[key][0]['type'] == 3)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('Deleted');
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
             }
         }
 
@@ -131,11 +131,17 @@ $(document).ready(function () {
 
         function set_edited(id) {
             $('#' + id + ' .cell_class').removeClass('edited');
+            $('#' + id + ' .cell_class').removeClass('inserted');
+            $('#' + id + ' .cell_class').removeClass('deleted');
             var rw = JSON.parse($('#json_' + id).text());
             for (var key in rw)
             {
+                if (rw[key][0]['type'] == 1)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
                 if (rw[key][0]['type'] == 2)
                     $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
+                if (rw[key][0]['type'] == 3)
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');                
             }
         }
 
