@@ -96,20 +96,6 @@ $(document).ready(function () {
         elem = $(this);
         id = elem.parent().find('.grid_class').eq(0).attr('id');
 
-        /*
-         function set_edited(id) {
-         $('#' + id + ' .cell_class').removeClass('inserted');            
-         $('#' + id + ' .cell_class').removeClass('edited');
-         var rw = JSON.parse($('#json_' + id).text());
-         for (var key in rw)
-         {
-         if (rw[key][0]['type'] == 1)
-         $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
-         if (rw[key][0]['type'] == 2)
-         $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');                
-         }
-         }
-         */
         elem.prop('disabled', true);
         jsons = {
             id: id,
