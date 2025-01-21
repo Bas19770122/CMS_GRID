@@ -103,11 +103,16 @@ class grid {
 
         $mysqli = new mysqli($server, $user, $password, $schema);
 
-        $mysqli->multi_query($sql);
+        $mysqli->multi_query($sql); 
+        
+    //    $mysqli->commit();
+      //  $mysqli->close();
+        sleep(1);
+       //
 
         $info = $_SESSION['info_' . $this->id];
 
-        $this->refresh($info);
+        $this->refresh($info, null);
 
         // if all ok 
         /*
@@ -211,12 +216,13 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_visi, $field_list, $ids) { // get data from select SQL
+    public function SQL_Data($sql, $field_visi, $field_list, $ids, $mysqli) { // get data from select SQL
         global $server;
         global $user;
         global $password;
         global $schema;
-        $mysqli = new mysqli($server, $user, $password, $schema);
+        if(!isset($mysqli))
+          $mysqli = new mysqli($server, $user, $password, $schema);
 
         $_SESSION['ids_' . $this->id] = $ids; // array table - id_fields
         $_SESSION['fields_' . $this->id] = $field_list; // all fields
@@ -436,7 +442,7 @@ class grid {
         return [$inhtml, $html];
     }
 
-    public function refresh($info) {
+    public function refresh($info, $mysqli) {
 
         list(
                 $this->sql,
@@ -448,7 +454,7 @@ class grid {
                 $this->ids
                 ) = $this->Fields_SQL($info);
 
-        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids);
+        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids, $mysqli);
 
         $this->js = $this->Data_JS($this->data);
 
@@ -459,7 +465,7 @@ class grid {
 
     public function show() {
 
-        $this->refresh($this->info);
+        $this->refresh($this->info, null);
 
         return $this->html;
     }
