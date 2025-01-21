@@ -44,7 +44,8 @@ $gr->info = [
                 "syn" => "dt",
                 "type" => "date",
                 "№" => 3,                
-                "caption" => "Дата"
+                "caption" => "Дата",
+                "default" => '"2025-01-01"' 
             ],
             [
                 "name" => "sum",
@@ -61,7 +62,7 @@ $gr->info = [
         "syn" => "t2",
         "id_field_syn" => "id2",
         "join" => "left join",
-        "on" => "t1.listid = t2.id",
+        "on" => "t1.id = t2.id",
         "fields" => [
             [
                 "name" => "id",

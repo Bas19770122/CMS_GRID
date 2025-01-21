@@ -48,18 +48,14 @@ class grid {
         $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
         $val = '';
         foreach ($field_visi as $j => $f) {
-            
-            
-                if ($j == 0) {
-                    $newrec[] = ['type' => 1];
-                } 
-                
-                    $newrec[] = '';
-                    $adddata = $adddata . '<div class=cell_class col=' . ($j) . ' row=' . count($data) . '>' . $val . '</div>';
-                   
-                
-            
-            
+
+
+            if ($j == 0) {
+                $newrec[] = ['type' => 1];
+            }
+
+            $newrec[] = '';
+            $adddata = $adddata . '<div class=cell_class col=' . ($j) . ' row=' . count($data) . '>' . $val . '</div>';
         }
 
         /*
@@ -103,12 +99,12 @@ class grid {
 
         $mysqli = new mysqli($server, $user, $password, $schema);
 
-        $mysqli->multi_query($sql); 
-        
-    //    $mysqli->commit();
-      //  $mysqli->close();
-       // sleep(1);
-       //
+        $mysqli->multi_query($sql);
+
+        //    $mysqli->commit();
+        //  $mysqli->close();
+        // sleep(1);
+        //
 
         $info = $_SESSION['info_' . $this->id];
 
@@ -143,29 +139,58 @@ class grid {
         $field_list = $_SESSION['fields_' . $this->id]; // all fields
         $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
         $all_data = $_SESSION['data_' . $this->id]; // all field data not only visible 
+        $info = $_SESSION['info_' . $this->id];
         $sql = '';
         $data = json_decode($js, true);
         foreach ($data as $i => $r) { // data from json 
             if ($r[0]['type'] == 1) { // data was inserted
-                foreach ($ids as $t => $f) { // table circle      
-                    $fld = '';
-                    $fldv = '';
-                    foreach ($field_list as $j => $fm) { // all field circle 
-                        foreach ($field_visi as $jv => $fmv) { // visible field circle 
-                            if ($fmv == $fm['syn'] && $t == $fm['tab']) {
-                                if ($fld != '') {
-                                    $fld .= ', ';
+                //foreach ($ids as $t => $f) { // table circle      
+                foreach ($info as $t => $f) { // table circle      
+                    if ($f['type'] == 'table') {
+
+                        $fld = '';
+                        $fldv = '';
+                        foreach ($field_list as $j => $fm) { // all field circle 
+                            $isvis = 0;
+                            foreach ($field_visi as $jv => $fmv) { // visible field circle 
+                                if ($fmv == $fm['syn'] && $f['name'] == $fm['tab']) {
+                                    $isvis = 1;
+                                    if ($fld != '') {
+                                        $fld .= ', ';
+                                    }
+                                    $fld .= $fm['name'];
+                                    if ($fldv != '') {
+                                        $fldv .= ', ';
+                                    }
+                                    if (isset($fm['default']) and ($r[$jv + 1] == '')) {
+                                        $fldv .= $fm['default'];
+                                    } else
+                                        $fldv .= '"' . $r[$jv + 1] . '"';
+
+                                    break;
                                 }
-                                $fld .= $fm['name'];
-                                if ($fldv != '') {
-                                    $fldv .= ', ';
+                            }
+                            if ($isvis == 0 &&  $f['name'] == $fm['tab']) {
+                                if (isset($fm['default'])) {
+                                    if ($fld != '') {
+                                        $fld .= ', ';
+                                    }
+                                    $fld .= $fm['name'];
+                                    if ($fldv != '') {
+                                        $fldv .= ', ';
+                                    }
+
+                                    $fldv .= $fm['default'];
                                 }
-                                $fldv .= '"' . $r[$jv + 1] . '"';
-                                break;
                             }
                         }
+                        $after_insert = '';
+                        if(isset($f['after_insert'])){
+                            $after_insert = $f['after_insert']; 
+                        }
+                        $sql .= 'insert into ' . $f['name'] . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );'.$after_insert;
                     }
-                    $sql .= 'insert into ' . $t . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );';
+                    
                 }
             }
 
@@ -204,7 +229,7 @@ class grid {
             }
         }
         //}
-        return $sql.' COMMIT;';
+        return $sql . ' COMMIT;';
     }
 
     public function Data_JS($data) {  // json from selected data
