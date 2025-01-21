@@ -6,6 +6,7 @@
 
 .cell_class{
     position: relative;
+    min-height: 20px;
 }
 
 .header_class{

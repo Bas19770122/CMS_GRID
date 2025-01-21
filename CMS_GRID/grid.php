@@ -46,7 +46,7 @@ class grid {
         $adddata = '';
         $data = json_decode($js, true);
         $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
-        $val = 'Новая строка';
+        $val = '';
         foreach ($field_visi as $j => $f) {
             
             
@@ -56,7 +56,7 @@ class grid {
                 
                     $newrec[] = '';
                     $adddata = $adddata . '<div class=cell_class col=' . ($j) . ' row=' . count($data) . '>' . $val . '</div>';
-                    $val = '';
+                   
                 
             
             
