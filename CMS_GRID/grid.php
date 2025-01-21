@@ -164,13 +164,18 @@ class grid {
                                     }
                                     if (isset($fm['default']) and ($r[$jv + 1] == '')) {
                                         $fldv .= $fm['default'];
-                                    } else
-                                        $fldv .= '"' . $r[$jv + 1] . '"';
+                                    } else {                                        
+                                        $v = '"' . $r[$jv + 1] . '"';
+                                        if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                            $v = 'null';
+                                        }
+                                        $fldv .= $v;
+                                    }
 
                                     break;
                                 }
                             }
-                            if ($isvis == 0 &&  $f['name'] == $fm['tab']) {
+                            if ($isvis == 0 && $f['name'] == $fm['tab']) {
                                 if (isset($fm['default'])) {
                                     if ($fld != '') {
                                         $fld .= ', ';
@@ -185,12 +190,11 @@ class grid {
                             }
                         }
                         $after_insert = '';
-                        if(isset($f['after_insert'])){
-                            $after_insert = $f['after_insert']; 
+                        if (isset($f['after_insert'])) {
+                            $after_insert = $f['after_insert'];
                         }
-                        $sql .= 'insert into ' . $f['name'] . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );'.$after_insert;
+                        $sql .= 'insert into ' . $f['name'] . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );' . $after_insert;
                     }
-                    
                 }
             }
 
@@ -204,7 +208,11 @@ class grid {
                                 if ($fld != '') {
                                     $fld .= ', ';
                                 }
-                                $fld .= $fm['name'] . ' = "' . $r[$jv + 1] . '"';
+                                $v = '"' . $r[$jv + 1] . '"';
+                                if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                    $v = 'null';
+                                }
+                                $fld .= $fm['name'] . ' = ' . $v;
                                 break;
                             }
                         }
