@@ -280,7 +280,7 @@ $(document).ready(function () {
                             cont = '';
                             for (var key3 in opt) {
                                 sel = '';
-                                if (data[elem2.attr('row')][key - 1]['id'] == key3) {
+                                if (data[elem2.attr('row')][parseInt(key)+1]['id'] == key3) {
                                     sel = ' selected ';
                                 }
                                 cont = cont + '<option value=' + key3 + sel + '>' + opt[key3] + '</option>';
@@ -291,8 +291,8 @@ $(document).ready(function () {
                             var lst = item[key2];
                             cont = '';
                             jsons = {
-                                id: data[elem2.attr('row')][key - 1]['id'],
-                                name: data[elem2.attr('row')][key - 1]['name'],
+                                id: data[elem2.attr('row')][parseInt(key)+1]['id'],
+                                name: data[elem2.attr('row')][parseInt(key)+1]['name'],
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({

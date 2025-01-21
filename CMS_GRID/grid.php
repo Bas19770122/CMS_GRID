@@ -22,14 +22,14 @@ if (isset($_POST['action'])) {
         echo $data;
         exit();
     }
-   /* if ($_POST['action'] == 'delete') {
-        session_start();
-        $gr = new grid;
-        $gr->id = $_POST['id'];
-        $data = $gr->DelRec($_POST['data']);
-        echo $data;
-        exit();
-    }*/
+    /* if ($_POST['action'] == 'delete') {
+      session_start();
+      $gr = new grid;
+      $gr->id = $_POST['id'];
+      $data = $gr->DelRec($_POST['data']);
+      echo $data;
+      exit();
+      } */
 }
 
 class grid {
@@ -74,11 +74,12 @@ class grid {
 
         return $this->Data_JS($js);
     }
-/*
-    public function DelRec($js) {
 
-        return $this->ModRec($js);
-    }*/
+    /*
+      public function DelRec($js) {
+
+      return $this->ModRec($js);
+      } */
 
     public function ModRec($js) {
         global $server;
@@ -138,7 +139,11 @@ class grid {
                                     if (isset($fm['default']) and ($r[$jv + 1] == '')) {
                                         $fldv .= $fm['default'];
                                     } else {
-                                        $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                        if ($fm['type'] == 'select') {
+                                            $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                        } else {
+                                            $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                        }
                                         if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                             $v = 'null';
                                         }
@@ -181,7 +186,11 @@ class grid {
                                 if ($fld != '') {
                                     $fld .= ', ';
                                 }
-                                $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                if ($fm['type'] == 'select') {
+                                    $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                } else {
+                                    $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                }
                                 if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                     $v = 'null';
                                 }
@@ -265,16 +274,29 @@ class grid {
             while ($row = $result->fetch_assoc()) {
                 $lst_fld = [];
                 $lst_fld[] = ["type" => 0]; // select 
-                foreach ($field_visi as $j => $f) {
-                    $lst_fld[] = htmlspecialchars($row[$f]);
-                    /*
-                      foreach ($field_list as $jf => $vf) {
-                      if($vf['syn']==$f){
-                      $lst_fld[] = $row[$vf['name']];
-                      break;
-                      }
-                      }
-                     */
+                foreach ($field_visi as $jv => $fv) {
+                    foreach ($field_list as $j => $f) {
+                        if ($f['syn'] == $fv) {
+                            if ($f['type'] == 'select') {
+                                if (isset($row[$fv])) {
+                                    $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars($f['options'][$row[$fv]])];
+                                } else {
+                                    $lst_fld[] = ["id" => "", "text" => ""];
+                                }
+                            } else {
+                                $lst_fld[] = htmlspecialchars($row[$fv]);
+                            }
+                            break;
+                        }
+                        /*
+                          foreach ($field_list as $jf => $vf) {
+                          if($vf['syn']==$f){
+                          $lst_fld[] = $row[$vf['name']];
+                          break;
+                          }
+                          }
+                         */
+                    }
                 }
 
 
@@ -436,13 +458,28 @@ class grid {
         $html = $html . '<div id="json_' . $this->id . '" class="hidden">' . $js . '</div>';
         $fld = [];
         foreach ($field_visi as $j => $f) {
-            if (in_array($field_type[$j], ['date', 'number'])) {
-                $element = 'input';
+            if (in_array($field_type[$j], ['select'])) {
+                $options = [];
+                foreach ($field_list as $jf => $ff) {
+                    if ($ff['syn'] == $f) {
+                        $options = $ff['options'];
+                        break;
+                    }
+                }
+                $element = 'select';
+                $fld[] = ['element' => $element, 'name' => $f, 'options' => $options, 'attr' => ['type' => $field_type[$j]]];
+            } else {
+                if (in_array($field_type[$j], ['date', 'number'])) {
+                    $element = 'input';
+                }
+                if (in_array($field_type[$j], ['select'])) {
+                    $element = 'input';
+                }
+                if (in_array($field_type[$j], ['string'])) {
+                    $element = 'textarea';
+                }
+                $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
             }
-            if (in_array($field_type[$j], ['string'])) {
-                $element = 'textarea';
-            }
-            $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
         }
         $html = $html . '<div id="json_f_' . $this->id . '" class="hidden">' . json_encode($fld) . '</div>';
         $style = '<style> #' . $this->id . '{display: grid; grid-auto-rows: auto 20px; grid-template-columns: ' . $style . ';} </style>';
@@ -453,7 +490,12 @@ class grid {
                 if ($j > 0) {
                     foreach ($field_visi as $k => $fv) {
                         if ($j - 1 == $k) {
-                            $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . htmlspecialchars_decode($f) . '</div>';
+                            if (is_array($f)) {
+                                $v = htmlspecialchars_decode($f['text']);
+                            } else {
+                                $v = htmlspecialchars_decode($f);
+                            }
+                            $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }
