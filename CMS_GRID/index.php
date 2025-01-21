@@ -31,6 +31,7 @@ $gr->info = [
         "name" => "table1",
         "syn" => "t1",
         "id_field_syn" => "id1",
+        "after_insert" => "set @id := LAST_INSERT_ID();",
         "fields" => [
             [
                 "name" => "id",
@@ -66,7 +67,8 @@ $gr->info = [
                 "name" => "id",
                 "syn" => "id2",
                 "type" => "int",
-                "visible" => "no"
+                "visible" => "no",
+                "default" => "@id" 
             ],
             [
                 "name" => "name",
