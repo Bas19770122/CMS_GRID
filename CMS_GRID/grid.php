@@ -165,7 +165,7 @@ class grid {
                                     if (isset($fm['default']) and ($r[$jv + 1] == '')) {
                                         $fldv .= $fm['default'];
                                     } else {                                        
-                                        $v = '"' . $r[$jv + 1] . '"';
+                                        $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
                                         if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                             $v = 'null';
                                         }
@@ -208,7 +208,7 @@ class grid {
                                 if ($fld != '') {
                                     $fld .= ', ';
                                 }
-                                $v = '"' . $r[$jv + 1] . '"';
+                                $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
                                 if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                     $v = 'null';
                                 }
@@ -268,7 +268,7 @@ class grid {
                 $lst_fld = [];
                 $lst_fld[] = ["type" => 0]; // select 
                 foreach ($field_visi as $j => $f) {
-                    $lst_fld[] = $row[$f];
+                    $lst_fld[] = htmlspecialchars($row[$f]);
                     /*
                       foreach ($field_list as $jf => $vf) {
                       if($vf['syn']==$f){
@@ -455,7 +455,7 @@ class grid {
                 if ($j > 0) {
                     foreach ($field_visi as $k => $fv) {
                         if ($j - 1 == $k) {
-                            $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . $f . '</div>';
+                            $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . htmlspecialchars_decode($f) . '</div>';
                             //$k = $k + 1;
                             break;
                         }

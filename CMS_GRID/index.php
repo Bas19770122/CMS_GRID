@@ -93,14 +93,13 @@ $gr->info = [
     ],
     [
         "type"=>"button",
-        "text"=>"Сохранить",
-        "class"=>"save"
+        "text"=>"Добавить",
+        "class"=>"insert",
     ],
     [
         "type"=>"button",
-        "text"=>"Вставить",
-        "class"=>"insert",
-        "after"=>"event.php"
+        "text"=>"Сохранить",
+        "class"=>"save"
     ]
 ];
 
