@@ -204,7 +204,7 @@ class grid {
             }
         }
         //}
-        return $sql;
+        return $sql.' COMMIT;';
     }
 
     public function Data_JS($data) {  // json from selected data
