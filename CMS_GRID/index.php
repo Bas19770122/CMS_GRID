@@ -14,6 +14,7 @@ echo
 
 <script src="jquery-3.6.0.min.js"></script>
 <script src="grid.js"></script>
+<script src="list.js"></script>
 
 </head>
 <body>
@@ -38,14 +39,14 @@ $gr->info = [
                 "syn" => "id1",
                 "type" => "int",
                 "visible" => "no"
-            ],            
+            ],
             [
                 "name" => "date",
                 "syn" => "dt",
                 "type" => "date",
-                "№" => 3,                
+                "№" => 3,
                 "caption" => "Дата",
-                "default" => '"2025-01-01"' 
+                "default" => '"2025-01-01"'
             ],
             [
                 "name" => "sum",
@@ -60,10 +61,33 @@ $gr->info = [
                 "type" => "select",
                 "№" => 5,
                 "caption" => "Тип",
-                "options"=>["1"=>"Тип 1","2"=>"Тип 2","3"=>"Тип 3","4"=>"Тип 4"]
+                "options" => ["1" => "Тип 1", "2" => "Тип 2", "3" => "Тип 3", "4" => "Тип 4"]
+            ],
+            [
+                "name" => "listid",
+                "syn" => "lid",
+                "type" => "list",
+                "№" => 6,
+                "caption" => "Справочник",
+                "list" => "list.php",
+                "namecaption" => "listidname"
             ]
         ]
-    ],    
+    ],
+    [
+        "type" => "table",
+        "name" => "table2",
+        "syn" => "t3",
+        "join" => "left join",
+        "on" => "t1.listid = t3.id",
+        "fields" => [
+            [
+                "name" => "name",
+                "syn" => "listidname",
+                "visible" => "no",
+            ]
+        ]
+    ],
     [
         "type" => "table",
         "name" => "table2",
@@ -77,7 +101,7 @@ $gr->info = [
                 "syn" => "id2",
                 "type" => "int",
                 "visible" => "no",
-                "default" => "@id" 
+                "default" => "@id"
             ],
             [
                 "name" => "name",
@@ -100,23 +124,22 @@ $gr->info = [
         "text" => "where t2.id >= 1"
     ],
     [
-        "type"=>"button",
-        "text"=>"Добавить",
-        "class"=>"insert",
+        "type" => "button",
+        "text" => "Добавить",
+        "class" => "insert",
     ],
     [
-        "type"=>"button",
-        "text"=>"Сохранить",
-        "class"=>"save"
+        "type" => "button",
+        "text" => "Сохранить",
+        "class" => "save"
     ],
     [
-        "type"=>"button",
-        "text"=>"Удалить",
-        "class"=>"delete"
+        "type" => "button",
+        "text" => "Удалить",
+        "class" => "delete"
     ]
 ];
 
 echo $gr->show();
-
 ?>
 

@@ -39,6 +39,7 @@ class grid {
     public $data;
     public $info;
     public $buttons;
+    public $hiddens;
     public $field_list; // full list field name
     public $field_visi; // visible list field name
     public $field_cap; // list header
@@ -70,7 +71,7 @@ class grid {
                     //foreach ($field_visi as $j => $f) {
 
 
-                    if ($fm['type'] == 'select') {
+                    if ($fm['type'] == 'select' || $fm['type'] == 'list') {
                         $newrec[] = ['id' => '', 'text' => ''];
                     } else {
                         $newrec[] = '';
@@ -169,7 +170,7 @@ class grid {
                                     if (isset($fm['default']) and ($r[$jv + 1] == '')) {
                                         $fldv .= $fm['default'];
                                     } else {
-                                        if ($fm['type'] == 'select') {
+                                        if ($fm['type'] == 'select' || $fm['type'] == 'list') {
                                             if ($r[$jv + 1]['id'] == '') {
                                                 $v = 'null';
                                             } else {
@@ -221,7 +222,7 @@ class grid {
                                 if ($fld != '') {
                                     $fld .= ', ';
                                 }
-                                if ($fm['type'] == 'select') {
+                                if ($fm['type'] == 'select' || $fm['type'] == 'list') {
                                     if ($r[$jv + 1]['id'] == '') {
                                         $v = 'null';
                                     } else {
@@ -325,7 +326,15 @@ class grid {
                                     $lst_fld[] = ["id" => "", "text" => ""];
                                 }
                             } else {
-                                $lst_fld[] = htmlspecialchars($row[$fv]);
+                                if ($f['type'] == 'list') {
+                                    if (isset($row[$fv])) {
+                                        $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars($row[$f['namecaption']])];
+                                    } else {
+                                        $lst_fld[] = ["id" => "", "text" => ""];
+                                    }
+                                } else {
+                                    $lst_fld[] = htmlspecialchars($row[$fv]);
+                                }
                             }
                             break;
                         }
@@ -367,6 +376,7 @@ class grid {
         $maxno = 0;
         $flds = [];
         $buttons = [];
+        $hiddens = [];
         $ids = [];
         // $id_flds = [];
         //$all_flds = [];
@@ -424,6 +434,9 @@ class grid {
             if ($v['type'] == 'button') {
                 $buttons[] = ['class' => $v['class'], 'text' => $v['text']];
             }
+            if ($v['type'] == 'hidden') {
+                $hiddens[] = ['id' => $v['id']];
+            }            
         }
 
         //$k = $minno;
@@ -484,10 +497,10 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $ids];
+        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids];
     }
 
-    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons) { // get html code
+    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens) { // get html code
         $arr = json_decode($js, true);
         $style = '';
         $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
@@ -510,16 +523,28 @@ class grid {
                 $element = 'select';
                 $fld[] = ['element' => $element, 'name' => $f, 'options' => $options, 'attr' => ['type' => $field_type[$j]]];
             } else {
-                if (in_array($field_type[$j], ['date', 'number'])) {
-                    $element = 'input';
+                if (in_array($field_type[$j], ['list'])) {
+                    $list = '';
+                    foreach ($field_list as $jf => $ff) {
+                        if ($ff['syn'] == $f) {
+                            $list = $ff['list'];
+                            break;
+                        }
+                    }
+                    $element = 'div';
+                    $fld[] = ['element' => $element, 'name' => $f, 'list' => $list, 'attr' => ['type' => $field_type[$j]]];
+                } else {
+                    if (in_array($field_type[$j], ['date', 'number'])) {
+                        $element = 'input';
+                    }
+                    if (in_array($field_type[$j], ['select'])) {
+                        $element = 'input';
+                    }
+                    if (in_array($field_type[$j], ['string'])) {
+                        $element = 'textarea';
+                    }
+                    $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
                 }
-                if (in_array($field_type[$j], ['select'])) {
-                    $element = 'input';
-                }
-                if (in_array($field_type[$j], ['string'])) {
-                    $element = 'textarea';
-                }
-                $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
             }
         }
         $html = $html . '<div id="json_f_' . $this->id . '" class="hidden">' . json_encode($fld) . '</div>';
@@ -550,6 +575,11 @@ class grid {
         foreach ($buttons as $i => $v) {
             $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
         }
+        
+        foreach ($hiddens as $i => $v) {
+            $html = $html . '<input id=' . $v['id'] . ' type=hidden></input>';
+        }
+                
         $html = $html . '</div>';
 
         return [$inhtml, $html];
@@ -564,6 +594,7 @@ class grid {
                 $this->field_cap,
                 $this->field_type,
                 $this->buttons,
+                $this->hiddens,
                 $this->ids
                 ) = $this->Fields_SQL($info);
 
@@ -571,7 +602,10 @@ class grid {
 
         $this->js = $this->Data_JS($this->data);
 
-        list($this->inhtml, $this->html) = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons);
+        list(
+                $this->inhtml,
+                $this->html
+                ) = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons, $this->hiddens);
     }
 
     // show grid 

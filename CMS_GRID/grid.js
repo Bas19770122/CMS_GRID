@@ -292,7 +292,7 @@ $(document).ready(function () {
                             cont = '';
                             jsons = {
                                 id: data[elem2.attr('row')][parseInt(key)+1]['id'],
-                                name: data[elem2.attr('row')][parseInt(key)+1]['name'],
+                                text: data[elem2.attr('row')][parseInt(key)+1]['text'],
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({

@@ -42,7 +42,7 @@ $gr->info = [
                 "name" => "name",
                 "syn" => "n1",
                 "type" => "string",
-                "№" => 3,                
+                "№" => 1,                
                 "caption" => "Название"
             ]
         ]
