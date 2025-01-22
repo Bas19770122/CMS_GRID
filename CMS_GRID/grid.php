@@ -54,16 +54,33 @@ class grid {
         $adddata = '';
         $data = json_decode($js, true);
         $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
+        $field_list = $_SESSION['fields_' . $this->id]; // all fields
         $val = '';
-        foreach ($field_visi as $j => $f) {
+        $k = 0;
 
-
-            if ($j == 0) {
+        foreach ($field_visi as $jv => $fmv) { // visible field circle 
+            if ($k == 0) {
                 $newrec[] = ['type' => 1];
             }
+            $k = $k + 1;
+            foreach ($field_list as $j => $fm) { // all field circle 
+                if ($fmv == $fm['syn']) {
 
-            $newrec[] = '';
-            $adddata = $adddata . '<div class=cell_class col=' . ($j) . ' row=' . count($data) . '>' . $val . '</div>';
+
+                    //foreach ($field_visi as $j => $f) {
+
+
+                    if ($fm['type'] == 'select') {
+                        $newrec[] = ['id' => '', 'text' => ''];
+                    } else {
+                        $newrec[] = '';
+                    }
+
+
+                    $adddata = $adddata . '<div class=cell_class col=' . ($jv) . ' row=' . count($data) . '>' . $val . '</div>';
+                    break;
+                }
+            }
         }
 
         $data[] = $newrec;
@@ -92,6 +109,19 @@ class grid {
         $mysqli = new mysqli($server, $user, $password, $schema);
 
         $mysqli->multi_query($sql);
+
+        do {
+            /* сохранить набор результатов в PHP */
+            if ($result = $mysqli->store_result()) {
+                while ($row = $result->fetch_row()) {
+                    // printf("%s\n", $row[0]);
+                }
+            }
+            /* вывести разделитель */
+            if ($mysqli->more_results()) {
+                //  printf("-----------------\n");
+            }
+        } while ($mysqli->next_result());
 
         $info = $_SESSION['info_' . $this->id];
 
@@ -140,12 +170,17 @@ class grid {
                                         $fldv .= $fm['default'];
                                     } else {
                                         if ($fm['type'] == 'select') {
-                                            $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                            if ($r[$jv + 1]['id'] == '') {
+                                                $v = 'null';
+                                            } else {
+                                                $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                            }
                                         } else {
-                                            $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
-                                        }
-                                        if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
-                                            $v = 'null';
+                                            if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                                $v = 'null';
+                                            } else {
+                                                $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                            }
                                         }
                                         $fldv .= $v;
                                     }
@@ -187,12 +222,18 @@ class grid {
                                     $fld .= ', ';
                                 }
                                 if ($fm['type'] == 'select') {
-                                    $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                    if ($r[$jv + 1]['id'] == '') {
+                                        $v = 'null';
+                                    } else {
+                                        $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                    }
                                 } else {
-                                    $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
-                                }
-                                if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
-                                    $v = 'null';
+                                    if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                        $v = 'null';
+                                    } else {
+
+                                        $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                    }
                                 }
                                 $fld .= $fm['name'] . ' = ' . $v;
                                 break;
