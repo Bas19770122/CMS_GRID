@@ -8,15 +8,15 @@ $(document).ready(function () {
         {
             if ($(this).attr('row') == key) {
                 var item = data[key];
-                $('#grid_list_id').attr('value', item[0]);
+                $('#grid_list_id').attr('value', item[0]['id']);
                 $('#grid_list_name').attr('value', item[1]);
             }
         }
 
-        $('#id_list_1 .cell_class').removeClass('Selected');
-        $('#id_list_1 .cell_class[row=' + $(this).attr('row') + ']').addClass('Selected');
+      //  $('#id_list_1 .cell_class').removeClass('Selected');
+      //  $('#id_list_1 .cell_class[row=' + $(this).attr('row') + ']').addClass('Selected');
 
-
+      return false;
 
     });
 
