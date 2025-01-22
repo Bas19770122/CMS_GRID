@@ -314,8 +314,13 @@ class grid {
         if ($result = $mysqli->query($sql)) {
 
             while ($row = $result->fetch_assoc()) {
+                /*$id = '';
+                foreach ($ids as $t => $idv) {
+                    $id = $idv; // first id
+                    break;
+                }*/
                 $lst_fld = [];
-                $lst_fld[] = ["type" => 0]; // select 
+                $lst_fld[] = ["type" => 0/*, "id" => $row[$id]*/]; // select 
                 foreach ($field_visi as $jv => $fv) {
                     foreach ($field_list as $j => $f) {
                         if ($f['syn'] == $fv) {
