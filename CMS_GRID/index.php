@@ -41,7 +41,7 @@ $gr->info = [
                 "visible" => "no"
             ],
             [
-                "name" => "check",
+                "name" => "chk",
                 "syn" => "ch",
                 "type" => "checkbox",
                 "№" => 1,
