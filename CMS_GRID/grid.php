@@ -426,6 +426,10 @@ class grid {
                 foreach ($v['fields'] as $j => $f) {
                     $f['tsyn'] = $syn;
                     $f['tab'] = $v['name'];
+                    if (isset($v['checkedval']))
+                        $f['checkedval'] = $v['checkedval'];
+                    if (isset($v['uncheckedval']))
+                        $f['uncheckedval'] = $v['uncheckedval'];
                     if (isset($f['№'])) {
                         $flds[$f['№']] = $f;
                         if ($f['№'] < $minno) {
@@ -559,16 +563,31 @@ class grid {
                     $element = 'list';
                     $fld[] = ['element' => $element, 'name' => $f, 'list' => $list, 'attr' => ['type' => $field_type[$j]]];
                 } else {
-                    if (in_array($field_type[$j], ['date', 'number'])) {
+
+                    if (in_array($field_type[$j], ['checkbox'])) {
+
+                        $checkedval = 'Y';
+                        $uncheckedval = 'N';
+                        foreach ($field_list as $jf => $ff) {
+                            if ($ff['syn'] == $f) {
+                                $checkedval = $ff['checkedval'];
+                                $uncheckedval = $ff['uncheckedval']; 
+                                break;
+                            }
+                        }
+
                         $element = 'input';
+                        $fld[] = ['element' => $element, 'name' => $f, 'checkedval' => $checkedval, 'uncheckedval' => $uncheckedval, 'attr' => ['type' => $field_type[$j]]];
+                    } else {
+
+                        if (in_array($field_type[$j], ['date', 'number', 'string'])) {
+                            $element = 'input';
+                        }
+                        if (in_array($field_type[$j], ['text'])) {
+                            $element = 'textarea';
+                        }
+                        $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
                     }
-                    if (in_array($field_type[$j], ['select'])) {
-                        $element = 'input';
-                    }
-                    if (in_array($field_type[$j], ['string'])) {
-                        $element = 'textarea';
-                    }
-                    $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
                 }
             }
         }
@@ -585,12 +604,25 @@ class grid {
                                 $v = htmlspecialchars_decode($f['text']);
                             } else {
                                 $v = htmlspecialchars_decode($f);
+                                if (in_array($field_type[$k], ['checkbox'])) {
+                                    foreach ($field_list as $jf => $ff) {
+                                        if ($ff['syn'] == $fv) {
+                                            if ($v == $ff['checkedval']) {
+                                                $v = '&check;';
+                                            }
+                                            if ($v == $ff['uncheckedval'] || $v == '') {
+                                                $v = '&#9744;';
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             $class = '';
-                            if($k == 0 && $row_no == $i){
+                            if ($k == 0 && $row_no == $i) {
                                 $class = ' Selected';
                             }
-                            $html = $html . '<div class="cell_class'.$class.'" col=' . $k . ' row=' . $i . '>' . $v . '</div>';
+                            $html = $html . '<div class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }

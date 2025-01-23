@@ -41,10 +41,19 @@ $gr->info = [
                 "visible" => "no"
             ],
             [
+                "name" => "check",
+                "syn" => "ch",
+                "type" => "checkbox",
+                "№" => 1,
+                "caption" => "Признак",
+                "checkedval" => "Y",
+                "uncheckedval" => "N"
+            ],            
+            [
                 "name" => "date",
                 "syn" => "dt",
                 "type" => "date",
-                "№" => 3,
+                "№" => 4,
                 "caption" => "Дата",
                 "default" => '"2025-01-01"'
             ],
@@ -52,14 +61,14 @@ $gr->info = [
                 "name" => "sum",
                 "syn" => "sm",
                 "type" => "number",
-                "№" => 4,
+                "№" => 5,
                 "caption" => "Сумма"
             ],
             [
                 "name" => "selectid",
                 "syn" => "sid",
                 "type" => "select",
-                "№" => 5,
+                "№" => 6,
                 "caption" => "Тип",
                 "options" => ["1" => "Тип 1", "2" => "Тип 2", "3" => "Тип 3", "4" => "Тип 4"]
             ],
@@ -67,7 +76,7 @@ $gr->info = [
                 "name" => "listid",
                 "syn" => "lid",
                 "type" => "list",
-                "№" => 6,
+                "№" => 7,
                 "caption" => "Справочник",
                 "list" => "list.php",
                 "namecaption" => "listidname"
@@ -107,14 +116,14 @@ $gr->info = [
                 "name" => "name",
                 "syn" => "name",
                 "type" => "string",
-                "№" => 1,
+                "№" => 2,
                 "caption" => "Название"
             ],
             [
                 "name" => "caption",
                 "syn" => "caption",
                 "type" => "string",
-                "№" => 2,
+                "№" => 3,
                 "caption" => "Описание"
             ]
         ]

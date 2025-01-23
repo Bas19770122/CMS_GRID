@@ -8,7 +8,7 @@ $(document).ready(function () {
         elem.parent().find('.cell_class').removeClass('Selected');
         elem.addClass('Selected');
 
-
+        return false;
     });
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
@@ -222,9 +222,9 @@ $(document).ready(function () {
             grid = $('#cell_editor').find('#' + grid_id).eq(0);
             if ($('#cell_editor').find('#grid_list_id').length > 0) {
                 is_list = 1;
-                grid_list_id = $('#cell_editor').find('#grid_list_id').eq(0);                
-                grid_list_name = $('#cell_editor').find('#grid_list_name').eq(0);                
-                grid_list_action = $('#cell_editor').find('#grid_list_action').eq(0);                
+                grid_list_id = $('#cell_editor').find('#grid_list_id').eq(0);
+                grid_list_name = $('#cell_editor').find('#grid_list_name').eq(0);
+                grid_list_action = $('#cell_editor').find('#grid_list_action').eq(0);
                 cont = grid_list_id.val();
                 txt = grid_list_name.val();
                 act = grid_list_action.val();
@@ -276,7 +276,16 @@ $(document).ready(function () {
                             var attr = item[key2];
                             for (var key3 in attr) {
                                 attr_name = attr_name + ' ' + key3 + '=' + attr[key3];
-                                if (elem_name == 'input') {//(attr[key3] == 'date' || attr[key3] == 'number'){                                                     
+                                if (elem_name == 'input') {//(attr[key3] == 'date' || attr[key3] == 'number'){  
+                                    if (attr['type'] == 'checkbox') {
+                                        if (cont == '✓') {
+                                            cont = item['checkedval'];
+                                            attr_name = attr_name + ' checked '; 
+                                        }    
+                                        if (cont == '☐') {
+                                            cont = item['uncheckedval'];
+                                        }    
+                                    }
                                     attr_name = attr_name + ' value=' + cont;
                                     cont = '';
                                 }
@@ -340,6 +349,6 @@ $(document).ready(function () {
             $('#cell_editor').focus();
         }
 
-
+        return false;
     });
 });
