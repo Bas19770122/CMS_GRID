@@ -47,7 +47,8 @@ class grid {
     public $js;
     public $inhtml;
     public $html;
-    public $show_id; 
+    public $show_id;
+    public $selected_val;
 
     // actions 
 
@@ -299,7 +300,7 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_visi, $field_list, $ids, $show_id) { // get data from select SQL
+    public function SQL_Data($sql, $field_visi, $field_list, $ids, $show_id, $selected_val) { // get data from select SQL
         global $server;
         global $user;
         global $password;
@@ -312,6 +313,9 @@ class grid {
         $_SESSION['data_' . $this->id] = []; // visible data  
 
         $data = [];
+        $row_id = '';
+        $row_no = -1;
+        $i = 0;
         if ($result = $mysqli->query($sql)) {
 
             while ($row = $result->fetch_assoc()) {
@@ -323,12 +327,16 @@ class grid {
                         break;
                     }
                     $lst_fld[] = ["type" => 0, "id" => $row[$id]]; // select 
+                    $row_id = $row[$id];
                 } else {
                     $lst_fld[] = ["type" => 0]; // select 
                 }
                 foreach ($field_visi as $jv => $fv) {
                     foreach ($field_list as $j => $f) {
                         if ($f['syn'] == $fv) {
+                            if ($row_id == $selected_val) {
+                                $row_no = $i;
+                            }
                             if ($f['type'] == 'select') {
                                 if (isset($row[$fv])) {
                                     $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars($f['options'][$row[$fv]])];
@@ -363,12 +371,13 @@ class grid {
                 $data[] = $lst_fld;
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
+                $i = $i + 1;
             }
         }
 
 
 
-        return $data;
+        return [$data, $row_no];
     }
 
     public function Fields_SQL($info) { // get select SQL
@@ -389,6 +398,7 @@ class grid {
         $hiddens = [];
         $ids = [];
         $show_id = '';
+        $selected_val = '';
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
@@ -397,6 +407,8 @@ class grid {
             if ($v['type'] == 'table') {
                 if (isset($v['show_id']))
                     $show_id = $v['show_id'];
+                if (isset($v['selected_val']))
+                    $selected_val = $v['selected_val'];
                 if (isset($v['syn']))
                     $syn = $v['syn'];
                 if (isset($v['join']))
@@ -510,10 +522,10 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id];
+        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val];
     }
 
-    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens) { // get html code
+    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no) { // get html code
         $arr = json_decode($js, true);
         $style = '';
         $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
@@ -574,7 +586,11 @@ class grid {
                             } else {
                                 $v = htmlspecialchars_decode($f);
                             }
-                            $html = $html . '<div class=cell_class col=' . $k . ' row=' . $i . '>' . $v . '</div>';
+                            $class = '';
+                            if($k == 0 && $row_no == $i){
+                                $class = ' Selected';
+                            }
+                            $html = $html . '<div class="cell_class'.$class.'" col=' . $k . ' row=' . $i . '>' . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }
@@ -609,17 +625,36 @@ class grid {
                 $this->buttons,
                 $this->hiddens,
                 $this->ids,
-                $this->show_id
+                $this->show_id,
+                $this->selected_val
                 ) = $this->Fields_SQL($info);
 
-        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids, $this->show_id);
+        list(
+                $this->data,
+                $row_no
+                ) = $this->SQL_Data(
+                $this->sql,
+                $this->field_visi,
+                $this->field_list,
+                $this->ids,
+                $this->show_id,
+                $this->selected_val);
 
         $this->js = $this->Data_JS($this->data);
 
         list(
                 $this->inhtml,
                 $this->html
-                ) = $this->JS_Html($this->js, $this->field_list, $this->field_visi, $this->field_cap, $this->field_type, $this->buttons, $this->hiddens);
+                ) = $this->JS_Html(
+                $this->js,
+                $this->field_list,
+                $this->field_visi,
+                $this->field_cap,
+                $this->field_type,
+                $this->buttons,
+                $this->hiddens,
+                $row_no
+        );
     }
 
     // show grid 
