@@ -8,7 +8,7 @@ $(document).ready(function () {
         elem.parent().find('.cell_class').removeClass('Selected');
         elem.addClass('Selected');
 
-        return false;
+      //  return false;
     });
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
