@@ -334,7 +334,7 @@ class grid {
                 foreach ($field_visi as $jv => $fv) {
                     foreach ($field_list as $j => $f) {
                         if ($f['syn'] == $fv) {
-                            if ($row_id == $selected_val) {
+                            if ($selected_val != '' && $row_id == $selected_val) {
                                 $row_no = $i;
                             }
                             if ($f['type'] == 'select') {
