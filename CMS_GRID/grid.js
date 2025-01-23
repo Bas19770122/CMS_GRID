@@ -137,11 +137,11 @@ $(document).ready(function () {
             for (var key in rw)
             {
                 if (rw[key][0]['type'] == 1)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');                
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');
                 if (rw[key][0]['type'] == 2)
                     $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
                 if (rw[key][0]['type'] == 3)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');                
+                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
             }
         }
 
@@ -168,7 +168,7 @@ $(document).ready(function () {
                                         txt = '';
                                     }
                                     item[key2]['id'] = cont;
-                                    item[key2]['name'] = txt; //encodeURIComponent(txt);
+                                    item[key2]['text'] = txt; //encodeURIComponent(txt);
                                     if (data[key][0]['type'] != 1) {
                                         data[key][0]['type'] = 2; // edited 
                                     }
@@ -213,16 +213,23 @@ $(document).ready(function () {
         elem = $(this);
         elem2 = $(this).parent().eq(0);
         id = elem2.parent().attr('id');
+        grid_id = $('#cell_editor').attr('grid_id');
 
         // save editoк text to grid  
         is_list = 0;
         act = 1; // select
-        $('#cell_editor').find('#' + elem2.attr('list_id') + '_id').each(function (index, value) {
-            is_list = 1;
-            cont = $('#cell_editor #' + elem2.attr('list_id') + '_id').attr('value');
-            txt = $('#cell_editor #' + elem2.attr('list_id') + '_name').attr('value');
-            act = $('#cell_editor #' + elem2.attr('list_id') + '_action').attr('value');
-        });
+        if ($('#cell_editor').find('#' + grid_id).length > 0) {
+            grid = $('#cell_editor').find('#' + grid_id).eq(0);
+            if ($('#cell_editor').find('#grid_list_id').length > 0) {
+                is_list = 1;
+                grid_list_id = $('#cell_editor').find('#grid_list_id').eq(0);                
+                grid_list_name = $('#cell_editor').find('#grid_list_name').eq(0);                
+                grid_list_action = $('#cell_editor').find('#grid_list_action').eq(0);                
+                cont = grid_list_id.val();
+                txt = grid_list_name.val();
+                act = grid_list_action.val();
+            }
+        }
 
 
 
@@ -280,7 +287,7 @@ $(document).ready(function () {
                             cont = '';
                             for (var key3 in opt) {
                                 sel = '';
-                                if (data[elem2.attr('row')][parseInt(key)+1]['id'] == key3) {
+                                if (data[elem2.attr('row')][parseInt(key) + 1]['id'] == key3) {
                                     sel = ' selected ';
                                 }
                                 cont = cont + '<option value=' + key3 + sel + '>' + opt[key3] + '</option>';
@@ -291,8 +298,8 @@ $(document).ready(function () {
                             var lst = item[key2];
                             cont = '';
                             jsons = {
-                                id: data[elem2.attr('row')][parseInt(key)+1]['id'],
-                                text: data[elem2.attr('row')][parseInt(key)+1]['text'],
+                                id: data[elem2.attr('row')][parseInt(key) + 1]['id'],
+                                text: data[elem2.attr('row')][parseInt(key) + 1]['text'],
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
@@ -301,8 +308,13 @@ $(document).ready(function () {
                                 dataType: 'html',
                                 data: jsons
                             }).done(function (data) {
-                                $('#cell_editor').empty();
-                                $('#cell_editor').append(data);
+                                cell_editor = elem2.find('#cell_editor');
+                                cell_editor.empty();
+                                cell_editor.append(data);
+                                grid_id = cell_editor.find('.grid_class').eq(0).attr('id');
+                                cell_editor.attr('grid_id', grid_id);
+                                //$('#cell_editor').empty();
+                                //$('#cell_editor').append(data);
                             });
                         }
                     }

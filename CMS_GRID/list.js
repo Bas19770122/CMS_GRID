@@ -10,6 +10,7 @@ $(document).ready(function () {
                 var item = data[key];
                 $('#grid_list_id').attr('value', item[0]['id']);
                 $('#grid_list_name').attr('value', item[1]);
+                break;
             }
         }
 
@@ -21,7 +22,7 @@ $(document).ready(function () {
     });
 
 
-    $('body').delegate('button .select', 'click', function (e) {
+    $('body').delegate('button.select', 'click', function (e) {
 
         $('#cell_editor').focusout();
         return true;
@@ -29,7 +30,7 @@ $(document).ready(function () {
 
     });
 
-    $('body').delegate('button .cancel', 'click', function (e) {
+    $('body').delegate('button.cancel', 'click', function (e) {
 
         $('#grid_list_id').attr('value', '');
         $('#grid_list_name').attr('value', '');
@@ -40,7 +41,7 @@ $(document).ready(function () {
 
     });
 
-    $('body').delegate('button .clear', 'click', function (e) {
+    $('body').delegate('button.clear', 'click', function (e) {
 
         $('#grid_list_id').attr('value', '');
         $('#grid_list_name').attr('value', '');

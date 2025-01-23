@@ -14,7 +14,8 @@ $gr->info = [
         "name" => "table_1",
         "syn" => "t1",
         "id_field_syn" => "id1",
-        "selected_id" => $_POST['id'],
+        "selected_val" => $_POST['id'],
+        "show_id" => "yes",
         "fields" => [
             [
                 "name" => "id",

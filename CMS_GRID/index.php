@@ -76,7 +76,7 @@ $gr->info = [
     ],
     [
         "type" => "table",
-        "name" => "table2",
+        "name" => "table_1",
         "syn" => "t3",
         "join" => "left join",
         "on" => "t1.listid = t3.id",

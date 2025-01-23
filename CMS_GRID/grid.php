@@ -47,7 +47,7 @@ class grid {
     public $js;
     public $inhtml;
     public $html;
-    public $selected_id;
+    public $show_id; 
 
     // actions 
 
@@ -299,7 +299,7 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_visi, $field_list, $ids, $selected_id) { // get data from select SQL
+    public function SQL_Data($sql, $field_visi, $field_list, $ids, $show_id) { // get data from select SQL
         global $server;
         global $user;
         global $password;
@@ -316,7 +316,7 @@ class grid {
 
             while ($row = $result->fetch_assoc()) {
                 $lst_fld = [];
-                if ($selected_id != '') {
+                if ($show_id == 'yes') {
                     $id = '';
                     foreach ($ids as $t => $idv) {
                         $id = $idv; // first id
@@ -388,15 +388,15 @@ class grid {
         $buttons = [];
         $hiddens = [];
         $ids = [];
-        $selected_id = '';
+        $show_id = '';
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
         $sql = 'select <fields> from <tab> <where>';
         foreach ($info as $i => $v) {
             if ($v['type'] == 'table') {
-                if (isset($v['selected_id']))
-                    $selected_id = $v['selected_id'];
+                if (isset($v['show_id']))
+                    $show_id = $v['show_id'];
                 if (isset($v['syn']))
                     $syn = $v['syn'];
                 if (isset($v['join']))
@@ -510,7 +510,7 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $selected_id];
+        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id];
     }
 
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens) { // get html code
@@ -609,10 +609,10 @@ class grid {
                 $this->buttons,
                 $this->hiddens,
                 $this->ids,
-                $this->selected_id
+                $this->show_id
                 ) = $this->Fields_SQL($info);
 
-        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids, $this->selected_id);
+        $this->data = $this->SQL_Data($this->sql, $this->field_visi, $this->field_list, $this->ids, $this->show_id);
 
         $this->js = $this->Data_JS($this->data);
 
