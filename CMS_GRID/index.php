@@ -33,6 +33,7 @@ $gr->info = [
         "syn" => "t1",
         "id_field_syn" => "id1",
         "after_insert" => "set @id := LAST_INSERT_ID();",
+        "editable" => "yes",
         "fields" => [
             [
                 "name" => "id",
@@ -105,6 +106,7 @@ $gr->info = [
         "id_field_syn" => "id2",
         "join" => "left join",
         "on" => "t1.id = t2.id",
+        "editable" => "yes",
         "fields" => [
             [
                 "name" => "id",

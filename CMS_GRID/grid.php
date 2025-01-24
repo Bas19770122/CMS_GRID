@@ -157,59 +157,65 @@ class grid {
 
                         $fld = '';
                         $fldv = '';
-                        foreach ($field_list as $j => $fm) { // all field circle 
-                            $isvis = 0;
-                            foreach ($field_visi as $jv => $fmv) { // visible field circle 
-                                if ($fmv == $fm['syn'] && $f['name'] == $fm['tab']) {
-                                    $isvis = 1;
-                                    if ($fld != '') {
-                                        $fld .= ', ';
-                                    }
-                                    $fld .= $fm['name'];
-                                    if ($fldv != '') {
-                                        $fldv .= ', ';
-                                    }
-                                    if (isset($fm['default']) and ($r[$jv + 1] == '')) {
-                                        $fldv .= $fm['default'];
-                                    } else {
-                                        if ($fm['type'] == 'select' || $fm['type'] == 'list') {
-                                            if ($r[$jv + 1]['id'] == '') {
-                                                $v = 'null';
-                                            } else {
-                                                $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
-                                            }
-                                        } else {
-                                            if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
-                                                $v = 'null';
-                                            } else {
-                                                $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
-                                            }
+                        $editable = 'no';
+                        if (isset($f['editable'])) {
+                            $editable = $f['editable'];
+                        }
+                        if ($editable == 'yes') {
+                            foreach ($field_list as $j => $fm) { // all field circle 
+                                $isvis = 0;
+                                foreach ($field_visi as $jv => $fmv) { // visible field circle 
+                                    if ($fmv == $fm['syn'] && $f['name'] == $fm['tab']) {
+                                        $isvis = 1;
+                                        if ($fld != '') {
+                                            $fld .= ', ';
                                         }
-                                        $fldv .= $v;
-                                    }
+                                        $fld .= $fm['name'];
+                                        if ($fldv != '') {
+                                            $fldv .= ', ';
+                                        }
+                                        if (isset($fm['default']) and ($r[$jv + 1] == '')) {
+                                            $fldv .= $fm['default'];
+                                        } else {
+                                            if ($fm['type'] == 'select' || $fm['type'] == 'list') {
+                                                if ($r[$jv + 1]['id'] == '') {
+                                                    $v = 'null';
+                                                } else {
+                                                    $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                                }
+                                            } else {
+                                                if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                                    $v = 'null';
+                                                } else {
+                                                    $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                                }
+                                            }
+                                            $fldv .= $v;
+                                        }
 
-                                    break;
+                                        break;
+                                    }
+                                }
+                                if ($isvis == 0 && $f['name'] == $fm['tab']) {
+                                    if (isset($fm['default'])) {
+                                        if ($fld != '') {
+                                            $fld .= ', ';
+                                        }
+                                        $fld .= $fm['name'];
+                                        if ($fldv != '') {
+                                            $fldv .= ', ';
+                                        }
+
+                                        $fldv .= $fm['default'];
+                                    }
                                 }
                             }
-                            if ($isvis == 0 && $f['name'] == $fm['tab']) {
-                                if (isset($fm['default'])) {
-                                    if ($fld != '') {
-                                        $fld .= ', ';
-                                    }
-                                    $fld .= $fm['name'];
-                                    if ($fldv != '') {
-                                        $fldv .= ', ';
-                                    }
-
-                                    $fldv .= $fm['default'];
-                                }
+                            $after_insert = '';
+                            if (isset($f['after_insert'])) {
+                                $after_insert = $f['after_insert'];
                             }
+                            $sql .= 'insert into ' . $f['name'] . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );' . $after_insert;
                         }
-                        $after_insert = '';
-                        if (isset($f['after_insert'])) {
-                            $after_insert = $f['after_insert'];
-                        }
-                        $sql .= 'insert into ' . $f['name'] . ' ( ' . $fld . ' ) values ( ' . $fldv . ' );' . $after_insert;
                     }
                 }
             }
