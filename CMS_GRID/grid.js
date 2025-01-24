@@ -8,7 +8,7 @@ $(document).ready(function () {
         elem.parent().find('.cell_class').removeClass('Selected');
         elem.addClass('Selected');
 
-      //  return false;
+        //  return false;
     });
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
@@ -185,6 +185,13 @@ $(document).ready(function () {
                                         data[key][0]['type'] = 2; // edited 
                                     }
                                     elem2.empty();
+                                    if(fld[key2-1]['attr']['type'] == 'checkbox'){
+                                        if(cont == fld[key2-1]['checkedval']){
+                                         cont = '✓';  
+                                        } else {
+                                         cont = '☐';
+                                        }                                        
+                                    }
                                     elem2.append(cont);
                                     // save json to form
                                     $('#json_' + id).empty();
@@ -234,8 +241,17 @@ $(document).ready(function () {
 
 
         if (is_list == 0) {
-            cont = elem.val();
-            txt = elem.children('option:selected').text();
+            if (elem.attr('type') == 'checkbox') {
+                if (elem.is(":checked")) {
+                    cont = 'Y';
+                } else {
+                    cont = 'N';
+                }
+                txt = '';               
+            } else {
+                cont = elem.val();
+                txt = elem.children('option:selected').text();
+            }
         }
 
 
@@ -280,13 +296,16 @@ $(document).ready(function () {
                                     if (attr['type'] == 'checkbox') {
                                         if (cont == '✓') {
                                             cont = item['checkedval'];
-                                            attr_name = attr_name + ' checked '; 
-                                        }    
+                                            attr_name = attr_name + ' checked ';
+                                        }
                                         if (cont == '☐') {
                                             cont = item['uncheckedval'];
-                                        }    
+                                        }
+                                        attr_name = attr_name +' style="left:-4px;top:1px;" ';
+                                      //  attr_name = attr_name +' style="text-align: center;" ';
+                                        
                                     }
-                                    attr_name = attr_name + ' value=' + cont;
+                                    attr_name = attr_name + ' value="' + cont + '"';
                                     cont = '';
                                 }
                             }

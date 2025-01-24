@@ -30,7 +30,11 @@
     z-index:20;
     background-color: white;
     border: 1px solid grey;
-     user-select: none; 
+    user-select: none;
+}
+
+.halign_center{
+    text-align: center;
 }
 
 .edited{
@@ -41,7 +45,7 @@
     background-color: azure;
 }
 
-.deleted{  
+.deleted{
     background-color: coral;
 }
 

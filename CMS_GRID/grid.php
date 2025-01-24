@@ -506,6 +506,7 @@ class grid {
             //}
         }
 
+        //$field_list = [];
         foreach ($flds as $j => $f) {
             $isf = 0;
             for ($i = $minno; $i <= $maxno; $i++) {
@@ -520,13 +521,14 @@ class grid {
                     $fld = $fld . ', ';
                 }
                 $fld = $fld . $syn . '.' . $f['name'] . ' as ' . $f['syn'];
+                // $field_list[] = $f;
             }
         }
 
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds/* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val];
+        return [$sql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val];
     }
 
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no) { // get html code
@@ -571,7 +573,7 @@ class grid {
                         foreach ($field_list as $jf => $ff) {
                             if ($ff['syn'] == $f) {
                                 $checkedval = $ff['checkedval'];
-                                $uncheckedval = $ff['uncheckedval']; 
+                                $uncheckedval = $ff['uncheckedval'];
                                 break;
                             }
                         }
@@ -600,6 +602,7 @@ class grid {
                 if ($j > 0) {
                     foreach ($field_visi as $k => $fv) {
                         if ($j - 1 == $k) {
+                            $class = '';
                             if (is_array($f)) {
                                 $v = htmlspecialchars_decode($f['text']);
                             } else {
@@ -613,14 +616,18 @@ class grid {
                                             if ($v == $ff['uncheckedval'] || $v == '') {
                                                 $v = '&#9744;';
                                             }
+                                            if (isset($ff['halign'])) {
+                                                if ($ff['halign'] == 'center') {
+                                                    $class = $class . ' halign_center';
+                                                }
+                                            }
                                             break;
                                         }
                                     }
                                 }
                             }
-                            $class = '';
                             if ($k == 0 && $row_no == $i) {
-                                $class = ' Selected';
+                                $class = $class . ' Selected';
                             }
                             $html = $html . '<div class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $v . '</div>';
                             //$k = $k + 1;

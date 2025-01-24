@@ -47,7 +47,8 @@ $gr->info = [
                 "№" => 1,
                 "caption" => "Признак",
                 "checkedval" => "Y",
-                "uncheckedval" => "N"
+                "uncheckedval" => "N",
+                "halign" => "center"
             ],            
             [
                 "name" => "date",
