@@ -200,13 +200,13 @@ class grid {
                                                 if ($r[$jv + 1]['id'] == '') {
                                                     $v = 'null';
                                                 } else {
-                                                    $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                                    $v = '"' . htmlspecialchars(addslashes($r[$jv + 1]['id'])) . '"';
                                                 }
                                             } else {
                                                 if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                                     $v = 'null';
                                                 } else {
-                                                    $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                                    $v = '"' . htmlspecialchars(addslashes($r[$jv + 1])) . '"';
                                                 }
                                             }
                                             $fldv .= $v;
@@ -253,17 +253,17 @@ class grid {
                                     if ($r[$jv + 1]['id'] == '') {
                                         $v = 'null';
                                     } else {
-                                        $v = '"' . htmlspecialchars($r[$jv + 1]['id']) . '"';
+                                        $v = '"' . htmlspecialchars(addslashes($r[$jv + 1]['id'])) . '"';
                                     }
                                 } else {
                                     if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
                                         $v = 'null';
                                     } else {
 
-                                        $v = '"' . htmlspecialchars($r[$jv + 1]) . '"';
+                                        $v = '"' . htmlspecialchars(addslashes($r[$jv + 1])) . '"';
                                     }
                                 }
-                                $fld .= $fm['name'] . ' = ' . $v;
+                                $fld .= $fm['name'] . ' = ' . $v;                                
                                 break;
                             }
                         }
@@ -313,7 +313,7 @@ class grid {
             }
         }
         //}
-        return $sql . ' COMMIT;';
+        return $sql;
     }
 
     public function Data_JS($data) {  // json from selected data
