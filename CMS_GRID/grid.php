@@ -364,19 +364,22 @@ class grid {
                             }
                             if ($f['type'] == 'select') {
                                 if (isset($row[$fv])) {
-                                    $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars($f['options'][$row[$fv]])];
+                                    $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars_decode($f['options'][$row[$fv]])];
+                                    //$lst_fld[] = ["id" => $row[$fv], "text" => $f['options'][$row[$fv]]];
                                 } else {
                                     $lst_fld[] = ["id" => "", "text" => ""];
                                 }
                             } else {
                                 if ($f['type'] == 'list') {
                                     if (isset($row[$fv])) {
-                                        $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars($row[$f['namecaption']])];
+                                        $lst_fld[] = ["id" => $row[$fv], "text" => htmlspecialchars_decode($row[$f['namecaption']])];
+                                        //$lst_fld[] = ["id" => $row[$fv], "text" => $row[$f['namecaption']]];
                                     } else {
                                         $lst_fld[] = ["id" => "", "text" => ""];
                                     }
                                 } else {
-                                    $lst_fld[] = htmlspecialchars($row[$fv]);
+                                    $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    //$lst_fld[] = $row[$fv];
                                 }
                             }
                             break;
@@ -629,9 +632,11 @@ class grid {
                         if ($j - 1 == $k) {
                             $class = '';
                             if (is_array($f)) {
-                                $v = htmlspecialchars_decode($f['text']);
+                                //$v = htmlspecialchars_decode($f['text']);
+                                $v = $f['text'];
                             } else {
-                                $v = htmlspecialchars_decode($f);
+                               // $v = htmlspecialchars_decode($f);
+                                 $v = $f;
                                 if (in_array($field_type[$k], ['checkbox'])) {
                                     foreach ($field_list as $jf => $ff) {
                                         if ($ff['syn'] == $fv) {

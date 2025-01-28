@@ -151,6 +151,7 @@ $(document).ready(function () {
             var data = JSON.parse($('#json_' + id).text());
             var ii = 0;
             var iscell = 0;
+            var chcont = cont;//.replaceAll('"', '&quot;');
             for (var key in data)
             {
                 var item = data[key];
@@ -161,7 +162,7 @@ $(document).ready(function () {
                         jj = jj + 1; // numeric fields from 1                                                                     
                         if (parseInt(key2) - 1 == elem2.attr('col') && ii == elem2.attr('row')) {
                             var islist = fld[jj]['element'] == 'select' || fld[jj]['element'] == 'list';
-                            if (cont != (islist ? item[key2]['id'] : item[key2])) {
+                            if (chcont != (islist ? item[key2]['id'] : item[key2])) {
                                 if (islist) { // list field
                                     if (act == 3) { // clear
                                         cont = '';
@@ -180,7 +181,7 @@ $(document).ready(function () {
                                     $('#json_' + id).append(js);
                                     set_edited(id);
                                 } else { // not list field 
-                                    item[key2] = cont; //encodeURIComponent(cont);  
+                                    item[key2] = chcont; //encodeURIComponent(cont);  
                                     if (data[key][0]['type'] != 1) {
                                         data[key][0]['type'] = 2; // edited 
                                     }
@@ -196,7 +197,8 @@ $(document).ready(function () {
                                     // save json to form
                                     $('#json_' + id).empty();
                                     js = JSON.stringify(data);
-                                    $('#json_' + id).append(js);
+                                   // $('#json_' + id).append(js);
+                                    $('#json_' + id).text(js);
                                     set_edited(id);
 
                                 }
@@ -305,7 +307,8 @@ $(document).ready(function () {
                                       //  attr_name = attr_name +' style="text-align: center;" ';
                                         
                                     }
-                                    attr_name = attr_name + ' value="' + cont + '"';
+                                    var chcont = cont.replaceAll('"', '&quot;');
+                                    attr_name = attr_name + ' value="' + chcont + '"';
                                     cont = '';
                                 }
                             }
