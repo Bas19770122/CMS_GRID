@@ -57,8 +57,7 @@ class grid {
         $adddata = '';
         $data = json_decode($js, true);
         $field_visi = $_SESSION['fvisi_' . $this->id]; // visible fields synonimus
-        $field_list = $_SESSION['fields_' . $this->id]; // all fields
-        $val = '';
+        $field_list = $_SESSION['fields_' . $this->id]; // all fields       
         $k = 0;
 
         foreach ($field_visi as $jv => $fmv) { // visible field circle 
@@ -78,9 +77,29 @@ class grid {
                     } else {
                         $newrec[] = '';
                     }
+                    $v = '';
+                    $class = '';
+                    if (in_array($field_list[$j]['type'], ['checkbox'])) {
+                        // foreach ($field_list as $jf => $ff) {
+                        // if ($fm['syn'] == $fv) {
+                        if ($v == $fm['checkedval']) {
+                            $v = '&check;';
+                        }
+                        if ($v == $fm['uncheckedval'] || $v == '') {
+                            $v = '&#9744;';
+                        }
+                        if (isset($fm['halign'])) {
+                            if ($fm['halign'] == 'center') {
+                                $class = $class . ' halign_center';
+                            }
+                        }
+                        //  break;
+                        // }
+                        //  }
+                    }
 
 
-                    $adddata = $adddata . '<div class=cell_class col=' . ($jv) . ' row=' . count($data) . '>' . $val . '</div>';
+                    $adddata = $adddata . '<div class="cell_class ' . $class . '" col=' . ($jv) . ' row=' . count($data) . '>' . $v . '</div>';
                     break;
                 }
             }
