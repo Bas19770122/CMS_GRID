@@ -125,7 +125,7 @@ $gr->info = [
             [
                 "name" => "caption",
                 "syn" => "caption",
-                "type" => "string",
+                "type" => "text",
                 "№" => 3,
                 "caption" => "Описание"
             ]
