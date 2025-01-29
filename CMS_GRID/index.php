@@ -130,6 +130,14 @@ $gr->info = [
                 "type" => "text",
                 "№" => 3,
                 "caption" => "Описание"
+            ],
+            [
+                "name" => "fname",
+                "syn" => "fn",
+                "type" => "file",
+                "file" => "file.php", 
+                "№" => 8,
+                "caption" => "Файл"
             ]
         ]
     ],

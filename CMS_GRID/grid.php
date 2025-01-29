@@ -102,7 +102,7 @@ class grid {
                         }
                         if ($fm['halign'] == 'right') {
                             $class = $class . ' halign_right';
-                        }                        
+                        }
                     }
 
 
@@ -616,14 +616,26 @@ class grid {
                         $element = 'input';
                         $fld[] = ['element' => $element, 'name' => $f, 'checkedval' => $checkedval, 'uncheckedval' => $uncheckedval, 'attr' => ['type' => $field_type[$j]]];
                     } else {
+                        if (in_array($field_type[$j], ['file'])) {
+                            $file = '';
+                            foreach ($field_list as $jf => $ff) {
+                                if ($ff['syn'] == $f) {
+                                    $file = $ff['file'];
+                                    break;
+                                }
+                            }
+                            $element = 'file';
+                            $fld[] = ['element' => $element, 'name' => $f, 'file' => $file, 'attr' => ['type' => $field_type[$j]]];
+                        } else {
 
-                        if (in_array($field_type[$j], ['date', 'number', 'string'])) {
-                            $element = 'input';
+                            if (in_array($field_type[$j], ['date', 'number', 'string'])) {
+                                $element = 'input';
+                            }
+                            if (in_array($field_type[$j], ['text'])) {
+                                $element = 'textarea';
+                            }
+                            $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
                         }
-                        if (in_array($field_type[$j], ['text'])) {
-                            $element = 'textarea';
-                        }
-                        $fld[] = ['element' => $element, 'name' => $f, 'attr' => ['type' => $field_type[$j]]];
                     }
                 }
             }

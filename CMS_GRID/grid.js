@@ -1,6 +1,12 @@
 $(document).ready(function () {
 
 
+    $('body').delegate('.grid_file', 'click', function (e) {
+
+        $(this).click();
+        
+        return false;
+    });
 
     $('body').delegate('.grid_cont .cell_class', 'click', function (e) {
 
@@ -239,10 +245,18 @@ $(document).ready(function () {
                 act = grid_list_action.val();
             }
         }
+        
+        
+        file_id = $('#cell_editor').attr('file_id');
 
+        // save editoк text to grid  
+        is_file = 0;
+        if ($('#cell_editor').find('#' + file_id).length > 0) {
+            is_file = 1;
+            return false;
+        }                
 
-
-        if (is_list == 0) {
+        if (is_list == 0 && is_file == 0) {
             if (elem.attr('type') == 'checkbox') {
                 if (elem.is(":checked")) {
                     cont = 'Y';
@@ -256,15 +270,19 @@ $(document).ready(function () {
             }
         }
 
-
-
         // remove editor
         elem.remove();
-
+        
         // cancel push 
         if (is_list == 1 && act == '0') {
             return false;
         }
+        
+        // cancel push 
+        if (is_file == 1 ) {
+            return false;
+        }
+               
 
         // save cell into json
         data = save_cell(elem2, cont, txt, act, id);
@@ -348,6 +366,28 @@ $(document).ready(function () {
                                 //$('#cell_editor').append(data);
                             });
                         }
+                        if (key2 == 'file') {
+                            var fil = item[key2];
+                            cont = '';
+                            jsons = {
+                                path: data[elem2.attr('row')][parseInt(key) + 1],  
+                                name: item['name'], 
+                                grid_id: id,
+                                element: 'cell_editor'};
+                            $.ajax({
+                                url: fil,
+                                method: 'POST',
+                                dataType: 'html',
+                                data: jsons
+                            }).done(function (data) {
+                                cell_editor = elem2.find('#cell_editor');
+                                cell_editor.empty();
+                                cell_editor.append(data);
+                                file_id = cell_editor.find('.file_class').eq(0).attr('id');
+                                cell_editor.attr('file_id', file_id);                                
+                            });
+                            
+                        }                        
                     }
                     if (is_list == 0) {
                     }
