@@ -15,6 +15,8 @@ echo
 <script src="jquery-3.6.0.min.js"></script>
 <script src="grid.js"></script>
 <script src="list.js"></script>
+<script src="file.js"></script>
+
 
 </head>
 <body>

@@ -1,13 +1,6 @@
 $(document).ready(function () {
 
 
-    $('body').delegate('.grid_file', 'click', function (e) {
-
-        $(this).click();
-        
-        return false;
-    });
-
     $('body').delegate('.grid_cont .cell_class', 'click', function (e) {
 
         elem = $(this);
@@ -253,7 +246,6 @@ $(document).ready(function () {
         is_file = 0;
         if ($('#cell_editor').find('#' + file_id).length > 0) {
             is_file = 1;
-            return false;
         }                
 
         if (is_list == 0 && is_file == 0) {
@@ -270,6 +262,13 @@ $(document).ready(function () {
             }
         }
 
+
+        
+        // cancel push 
+        if (is_file == 1 ) {
+            return false;
+        }
+
         // remove editor
         elem.remove();
         
@@ -277,12 +276,9 @@ $(document).ready(function () {
         if (is_list == 1 && act == '0') {
             return false;
         }
-        
-        // cancel push 
-        if (is_file == 1 ) {
-            return false;
-        }
+
                
+
 
         // save cell into json
         data = save_cell(elem2, cont, txt, act, id);
