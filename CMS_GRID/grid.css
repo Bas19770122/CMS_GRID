@@ -37,6 +37,14 @@
     text-align: center;
 }
 
+.halign_left{
+    text-align: left;
+}
+
+.halign_right{
+    text-align: right;
+}
+
 .edited{
     background-color: gold;
 }

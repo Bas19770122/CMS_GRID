@@ -57,14 +57,16 @@ $gr->info = [
                 "type" => "date",
                 "№" => 4,
                 "caption" => "Дата",
-                "default" => '"2025-01-01"'
+                "default" => '"2025-01-01"',
+                "halign" => "center"
             ],
             [
                 "name" => "sum",
                 "syn" => "sm",
                 "type" => "number",
                 "№" => 5,
-                "caption" => "Сумма"
+                "caption" => "Сумма",
+                "halign" => "right"
             ],
             [
                 "name" => "selectid",

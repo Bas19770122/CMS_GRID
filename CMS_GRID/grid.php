@@ -88,14 +88,21 @@ class grid {
                         if ($v == $fm['uncheckedval'] || $v == '') {
                             $v = '&#9744;';
                         }
-                        if (isset($fm['halign'])) {
-                            if ($fm['halign'] == 'center') {
-                                $class = $class . ' halign_center';
-                            }
-                        }
+
                         //  break;
                         // }
                         //  }
+                    }
+                    if (isset($fm['halign'])) {
+                        if ($fm['halign'] == 'center') {
+                            $class = $class . ' halign_center';
+                        }
+                        if ($fm['halign'] == 'left') {
+                            $class = $class . ' halign_left';
+                        }
+                        if ($fm['halign'] == 'right') {
+                            $class = $class . ' halign_right';
+                        }                        
                     }
 
 
@@ -263,7 +270,7 @@ class grid {
                                         $v = '"' . htmlspecialchars(addslashes($r[$jv + 1])) . '"';
                                     }
                                 }
-                                $fld .= $fm['name'] . ' = ' . $v;                                
+                                $fld .= $fm['name'] . ' = ' . $v;
                                 break;
                             }
                         }
@@ -635,24 +642,30 @@ class grid {
                                 //$v = htmlspecialchars_decode($f['text']);
                                 $v = $f['text'];
                             } else {
-                               // $v = htmlspecialchars_decode($f);
-                                 $v = $f;
-                                if (in_array($field_type[$k], ['checkbox'])) {
-                                    foreach ($field_list as $jf => $ff) {
-                                        if ($ff['syn'] == $fv) {
+                                // $v = htmlspecialchars_decode($f);
+                                $v = $f;
+                                foreach ($field_list as $jf => $ff) {
+                                    if ($ff['syn'] == $fv) {
+                                        if (in_array($field_type[$k], ['checkbox'])) {
                                             if ($v == $ff['checkedval']) {
                                                 $v = '&check;';
                                             }
                                             if ($v == $ff['uncheckedval'] || $v == '') {
                                                 $v = '&#9744;';
                                             }
-                                            if (isset($ff['halign'])) {
-                                                if ($ff['halign'] == 'center') {
-                                                    $class = $class . ' halign_center';
-                                                }
-                                            }
-                                            break;
                                         }
+                                        if (isset($ff['halign'])) {
+                                            if ($ff['halign'] == 'center') {
+                                                $class = $class . ' halign_center';
+                                            }
+                                            if ($ff['halign'] == 'left') {
+                                                $class = $class . ' halign_left';
+                                            }
+                                            if ($ff['halign'] == 'right') {
+                                                $class = $class . ' halign_right';
+                                            }
+                                        }
+                                        break;
                                     }
                                 }
                             }
