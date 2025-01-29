@@ -9,11 +9,10 @@ CREATE TABLE `table1` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=cp1251 COLLATE=cp1251_bin COMMENT='test table1'
 
 
-
 CREATE TABLE `table2` (
   `id` int NOT NULL,
   `name` varchar(45) COLLATE cp1251_bin DEFAULT NULL,
-  `caption` varchar(45) COLLATE cp1251_bin DEFAULT NULL,
+  `caption` text COLLATE cp1251_bin,
+  `fname` varchar(255) COLLATE cp1251_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 COLLATE=cp1251_bin COMMENT='Test Table2'
-

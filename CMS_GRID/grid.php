@@ -629,7 +629,7 @@ class grid {
             }
         }
         $html = $html . '<div id="json_f_' . $this->id . '" class="hidden">' . json_encode($fld) . '</div>';
-        $style = '<style> #' . $this->id . '{display: grid; grid-auto-rows: auto 20px; grid-template-columns: ' . $style . ';} </style>';
+        $style = '<style> #' . $this->id . '{display: grid; /*grid-auto-rows: auto 20px;*/ grid-template-columns: ' . $style . ';} </style>';
 
         foreach ($arr as $i => $r) {
             $k = 0;
