@@ -192,6 +192,11 @@ class grid {
                                 $isvis = 0;
                                 foreach ($field_visi as $jv => $fmv) { // visible field circle 
                                     if ($fmv == $fm['syn'] && $f['name'] == $fm['tab']) {
+                                        if ($fm['type'] == 'file') {
+                                            if (substr(trim($r[$jv + 1]), 0, 1) == '<') {
+                                                continue;
+                                            }
+                                        }
                                         $isvis = 1;
                                         if ($fld != '') {
                                             $fld .= ', ';
@@ -253,6 +258,11 @@ class grid {
                     foreach ($field_list as $j => $fm) { // all field circle 
                         foreach ($field_visi as $jv => $fmv) { // visible field circle 
                             if ($fmv == $fm['syn'] && $t == $fm['tab']) {
+                                if ($fm['type'] == 'file') {
+                                    if (substr(trim($r[$jv + 1]), 0, 1) == '<') {
+                                        continue;
+                                    }
+                                }
                                 if ($fld != '') {
                                     $fld .= ', ';
                                 }
@@ -385,15 +395,15 @@ class grid {
                                         $lst_fld[] = ["id" => "", "text" => ""];
                                     }
                                 } else {
-                                    if ($f['type'] == 'file') {
-                                        if ($row[$fv] != '') {
-                                            $lst_fld[] = '<img src="' . $row[$fv] . '" width=40 height=40>';
-                                        } else {
-                                            $lst_fld[] = '';
-                                        }
-                                    } else {
-                                        $lst_fld[] = htmlspecialchars_decode($row[$fv]);
-                                    }
+                                    /* if ($f['type'] == 'file') {
+                                      if ($row[$fv] != '') {
+                                      $lst_fld[] = '<img src="' . $row[$fv] . '" width=40 height=40>';
+                                      } else {
+                                      $lst_fld[] = '';
+                                      }
+                                      } else { */
+                                    $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    //}
                                     //$lst_fld[] = $row[$fv];
                                 }
                             }
@@ -672,6 +682,14 @@ class grid {
                                             }
                                             if ($v == $ff['uncheckedval'] || $v == '') {
                                                 $v = '&#9744;';
+                                            }
+                                        } else {
+                                            if (in_array($field_type[$k], ['file'])) {
+                                                if ($f != '') {
+                                                    $v = '<img src="' . $f . '" width=40 height=40>';
+                                                } else {
+                                                    $v = '';
+                                                }
                                             }
                                         }
                                         if (isset($ff['halign'])) {
