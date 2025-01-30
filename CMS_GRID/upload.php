@@ -14,7 +14,8 @@ $deny = array(
 );
  
 // Директория куда будут загружаться файлы.
-$path = __DIR__ . '/uploads/';
+$path0 = '/uploads/';
+$path = __DIR__ . $path0;
  
  
 $error = $success = '';
@@ -45,7 +46,7 @@ if (!isset($_FILES[$input_name])) {
 			// Перемещаем файл в директорию.
 			if (move_uploaded_file($file['tmp_name'], $path . $name)) {
 				// Далее можно сохранить название файла в БД и т.п.
-				$success = '<p style="color: green">Файл «' . $name . '» успешно загружен.</p>';
+				$success = $path0 . $name;
 			} else {
 				$error = 'Не удалось загрузить файл.';
 			}

@@ -80,3 +80,15 @@ button.delete{
     margin-top: 5px;
     margin-right: 5px;
 }
+
+button.save_file{
+    width:100px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+button.cancel_file{
+    width:100px;
+    margin-top: 5px;
+    margin-right: 5px;
+}

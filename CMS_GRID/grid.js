@@ -185,18 +185,18 @@ $(document).ready(function () {
                                         data[key][0]['type'] = 2; // edited 
                                     }
                                     elem2.empty();
-                                    if(fld[key2-1]['attr']['type'] == 'checkbox'){
-                                        if(cont == fld[key2-1]['checkedval']){
-                                         cont = '✓';  
+                                    if (fld[key2 - 1]['attr']['type'] == 'checkbox') {
+                                        if (cont == fld[key2 - 1]['checkedval']) {
+                                            cont = '✓';
                                         } else {
-                                         cont = '☐';
-                                        }                                        
+                                            cont = '☐';
+                                        }
                                     }
                                     elem2.append(cont);
                                     // save json to form
                                     $('#json_' + id).empty();
                                     js = JSON.stringify(data);
-                                   // $('#json_' + id).append(js);
+                                    // $('#json_' + id).append(js);
                                     $('#json_' + id).text(js);
                                     set_edited(id);
 
@@ -238,15 +238,31 @@ $(document).ready(function () {
                 act = grid_list_action.val();
             }
         }
-        
-        
+
+
         file_id = $('#cell_editor').attr('file_id');
 
         // save editoк text to grid  
         is_file = 0;
+        act = '0';
         if ($('#cell_editor').find('#' + file_id).length > 0) {
             is_file = 1;
-        }                
+            contaner = $('#cell_editor').find('#' + file_id).eq(0);
+            if (contaner.attr('done') == 'Y') {
+                if ($('#cell_editor').find('.grid_file').length > 0) {
+                    //grid_file = $('#cell_editor').find('.grid_file').eq(0);
+                    //cont = grid_file.val();
+                    //cont = cont.split(/(\\|\/)/g).pop();
+                    cont = contaner.attr('path');
+                    txt = '';
+                    act = '2';
+                }
+            }
+            if (contaner.attr('opening') == 'Y') {
+                contaner.attr('opening', 'N');
+                act = '0';
+            }
+        }
 
         if (is_list == 0 && is_file == 0) {
             if (elem.attr('type') == 'checkbox') {
@@ -255,7 +271,7 @@ $(document).ready(function () {
                 } else {
                     cont = 'N';
                 }
-                txt = '';               
+                txt = '';
             } else {
                 cont = elem.val();
                 txt = elem.children('option:selected').text();
@@ -263,21 +279,21 @@ $(document).ready(function () {
         }
 
 
-        
+
         // cancel push 
-        if (is_file == 1 ) {
+        if (is_file == 1 && act == '0') {
             return false;
         }
 
         // remove editor
         elem.remove();
-        
+
         // cancel push 
         if (is_list == 1 && act == '0') {
             return false;
         }
 
-               
+
 
 
         // save cell into json
@@ -317,9 +333,9 @@ $(document).ready(function () {
                                         if (cont == '☐') {
                                             cont = item['uncheckedval'];
                                         }
-                                        attr_name = attr_name +' style="left:-4px;top:1px;" ';
-                                      //  attr_name = attr_name +' style="text-align: center;" ';
-                                        
+                                        attr_name = attr_name + ' style="left:-4px;top:1px;" ';
+                                        //  attr_name = attr_name +' style="text-align: center;" ';
+
                                     }
                                     var chcont = cont.replaceAll('"', '&quot;');
                                     attr_name = attr_name + ' value="' + chcont + '"';
@@ -366,8 +382,8 @@ $(document).ready(function () {
                             var fil = item[key2];
                             cont = '';
                             jsons = {
-                                path: data[elem2.attr('row')][parseInt(key) + 1],  
-                                name: item['name'], 
+                                path: data[elem2.attr('row')][parseInt(key) + 1],
+                                name: item['name'],
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
@@ -380,10 +396,10 @@ $(document).ready(function () {
                                 cell_editor.empty();
                                 cell_editor.append(data);
                                 file_id = cell_editor.find('.file_class').eq(0).attr('id');
-                                cell_editor.attr('file_id', file_id);                                
+                                cell_editor.attr('file_id', file_id);
                             });
-                            
-                        }                        
+
+                        }
                     }
                     if (is_list == 0) {
                     }

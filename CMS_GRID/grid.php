@@ -385,7 +385,15 @@ class grid {
                                         $lst_fld[] = ["id" => "", "text" => ""];
                                     }
                                 } else {
-                                    $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    if ($f['type'] == 'file') {
+                                        if ($row[$fv] != '') {
+                                            $lst_fld[] = '<img src="' . $row[$fv] . '" width=40 height=40>';
+                                        } else {
+                                            $lst_fld[] = '';
+                                        }
+                                    } else {
+                                        $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    }
                                     //$lst_fld[] = $row[$fv];
                                 }
                             }
