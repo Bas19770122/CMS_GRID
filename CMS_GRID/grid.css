@@ -75,20 +75,12 @@ button.save{
     margin-right: 5px;
 }
 
-button.delete{
+.file_class button{
     width:100px;
     margin-top: 5px;
     margin-right: 5px;
 }
 
-button.save_file{
-    width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
-}
-
-button.cancel_file{
-    width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+.grid_file{
+    display: none;
 }

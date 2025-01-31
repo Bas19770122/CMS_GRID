@@ -1,9 +1,20 @@
 $(document).ready(function () {
 
-    $('body').delegate('.grid_file', 'click', function (e) {
+    $('body').delegate('button.file_select', 'click', function (e) {
         var f = $(this);
         
-        f.parent().attr('opening', 'Y');
+       var btn = f.parent().find('.grid_file').eq(0);
+        btn.parent().attr('opening', 'Y');
+        btn.click();
+        
+         return true;
+        
+    });
+
+    $('body').delegate('.grid_file', 'click', function (e) {
+       // var f = $(this);
+        
+        //f.parent().attr('opening', 'Y');
         
          return true;
         
@@ -11,7 +22,9 @@ $(document).ready(function () {
 
     $('body').delegate('button.file_save', 'click', function (e) {
 
-
+        var sbtn = $(this);
+        sbtn.prop('disabled', true);
+        
         var f = $(this).parent().find('[type=file]').eq(0);
 
         f.parent().attr('done', 'N');
@@ -34,9 +47,11 @@ $(document).ready(function () {
                 data: formData,
                 dataType: 'json',
                 success: function (msg) {
+                    sbtn.prop('disabled', false);
                     if (msg.error == '') {
                         f.parent().attr('done', 'Y');
                         f.parent().attr('path', msg.success);
+                        $('#cell_editor').focusout();
                     } else {
                     }
                 }
@@ -45,7 +60,7 @@ $(document).ready(function () {
         }
 
         // $('#cell_editor').remove();
-        $('#cell_editor').focusout();
+        //$('#cell_editor').focusout();
 
         return true;
 
