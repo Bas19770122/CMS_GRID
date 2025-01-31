@@ -75,11 +75,9 @@ $(document).ready(function () {
 
     $('body').delegate('button.file_clear', 'click', function (e) {
 
-
         $(this).parent().attr('done', 'Y');
         $(this).parent().attr('path', '');
         $('#cell_editor').focusout();
-
 
         return true;
 
