@@ -192,8 +192,8 @@ $(document).ready(function () {
                                             cont = '☐';
                                         }
                                     }
-                                    if (fld[key2 - 1]['attr']['type'] == 'file') {
-                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');
+                                    if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {                                        
+                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');                                    
                                     } else {
                                         elem2.append(cont);
                                     }

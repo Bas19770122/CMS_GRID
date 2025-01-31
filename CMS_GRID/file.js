@@ -2,29 +2,29 @@ $(document).ready(function () {
 
     $('body').delegate('button.file_select', 'click', function (e) {
         var f = $(this);
-        
-       var btn = f.parent().find('.grid_file').eq(0);
+
+        var btn = f.parent().find('.grid_file').eq(0);
         btn.parent().attr('opening', 'Y');
         btn.click();
-        
-         return true;
-        
+
+        return true;
+
     });
 
     $('body').delegate('.grid_file', 'click', function (e) {
-       // var f = $(this);
-        
+        // var f = $(this);
+
         //f.parent().attr('opening', 'Y');
-        
-         return true;
-        
+
+        return true;
+
     });
 
     $('body').delegate('button.file_save', 'click', function (e) {
 
         var sbtn = $(this);
         sbtn.prop('disabled', true);
-        
+
         var f = $(this).parent().find('[type=file]').eq(0);
 
         f.parent().attr('done', 'N');
@@ -69,6 +69,18 @@ $(document).ready(function () {
     $('body').delegate('button.file_cancel', 'click', function (e) {
 
         $('#cell_editor').remove();
+        return true;
+
+    });
+
+    $('body').delegate('button.file_clear', 'click', function (e) {
+
+
+        $(this).parent().attr('done', 'Y');
+        $(this).parent().attr('path', '');
+        $('#cell_editor').focusout();
+
+
         return true;
 
     });
