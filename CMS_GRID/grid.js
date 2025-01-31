@@ -192,7 +192,11 @@ $(document).ready(function () {
                                             cont = '☐';
                                         }
                                     }
-                                    elem2.append(cont);
+                                    if (fld[key2 - 1]['attr']['type'] == 'file') {
+                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');
+                                    } else {
+                                        elem2.append(cont);
+                                    }
                                     // save json to form
                                     $('#json_' + id).empty();
                                     js = JSON.stringify(data);
@@ -244,7 +248,7 @@ $(document).ready(function () {
 
         // save editoк text to grid  
         is_file = 0;
-        act = '0';
+        actf = '0';
         if ($('#cell_editor').find('#' + file_id).length > 0) {
             is_file = 1;
             contaner = $('#cell_editor').find('#' + file_id).eq(0);
@@ -255,12 +259,12 @@ $(document).ready(function () {
                     //cont = cont.split(/(\\|\/)/g).pop();
                     cont = contaner.attr('path');
                     txt = '';
-                    act = '2';
+                    actf = '2';
                 }
             }
             if (contaner.attr('opening') == 'Y') {
                 contaner.attr('opening', 'N');
-                act = '0';
+                actf = '0';
             }
         }
 
@@ -281,7 +285,7 @@ $(document).ready(function () {
 
 
         // cancel push 
-        if (is_file == 1 && act == '0') {
+        if (is_file == 1 && actf == '0') {
             return false;
         }
 
