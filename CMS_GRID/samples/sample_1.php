@@ -10,16 +10,16 @@ echo
 
 <title>Sample_1 - simple data list </title>
 
-<link rel="stylesheet" type="text/css" href="grid.css" />
+<link rel="stylesheet" type="text/css" href="lib/grid.css" />
 
-<script src="jquery-3.6.0.min.js"></script>
-<script src="grid.js"></script>
+<script src="lib/jquery-3.6.0.min.js"></script>
+<script src="lib/grid.js"></script>
 
 </head>
 <body>
 ';
 
-include_once 'grid.php';
+include_once 'lib/grid.php';
 
 $gr = new grid;
 
@@ -31,6 +31,7 @@ $gr->info = [
         "name" => "table_1",
         "syn" => "t1",
         "id_field_syn" => "id1",
+        "editable" => "yes",        
         "fields" => [
             [
                 "name" => "id",

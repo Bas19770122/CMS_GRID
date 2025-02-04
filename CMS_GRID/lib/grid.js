@@ -70,7 +70,7 @@ $(document).ready(function () {
 
         };
         $.ajax({
-            url: 'grid.php',
+            url: 'lib/grid.php',
             method: 'POST',
             dataType: 'html',
             data: jsons

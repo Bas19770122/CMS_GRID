@@ -252,55 +252,63 @@ class grid {
             }
 
             if ($r[0]['type'] == 2) { // data was modified 
-                foreach ($ids as $t => $f) { // table circle      
-                    $fld = '';
-                    $fn = '';
-                    foreach ($field_list as $j => $fm) { // all field circle 
-                        foreach ($field_visi as $jv => $fmv) { // visible field circle 
-                            if ($fmv == $fm['syn'] && $t == $fm['tab']) {
-                                if ($fm['type'] == 'file') {
-                                    if (substr(trim($r[$jv + 1]), 0, 1) == '<') {
-                                        continue;
-                                    }
-                                }
-                                if ($fld != '') {
-                                    $fld .= ', ';
-                                }
-                                if ($fm['type'] == 'select' || $fm['type'] == 'list') {
-                                    if ($r[$jv + 1]['id'] == '') {
-                                        $v = 'null';
-                                    } else {
-                                        $v = '"' . htmlspecialchars(addslashes($r[$jv + 1]['id'])) . '"';
-                                    }
-                                } else {
-                                    if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
-                                        $v = 'null';
-                                    } else {
+                foreach ($info as $t => $f) { // table circle     
+                    if ($f['type'] == 'table') {
+                        $fld = '';
+                        $fn = '';
+                        $editable = 'no';
+                        if (isset($f['editable'])) {
+                            $editable = $f['editable'];
+                        }
+                        if ($editable == 'yes') {
+                            foreach ($field_list as $j => $fm) { // all field circle 
+                                foreach ($field_visi as $jv => $fmv) { // visible field circle 
+                                    if ($fmv == $fm['syn'] && $f['name'] == $fm['tab']) {
+                                        if ($fm['type'] == 'file') {
+                                            if (substr(trim($r[$jv + 1]), 0, 1) == '<') {
+                                                continue;
+                                            }
+                                        }
+                                        if ($fld != '') {
+                                            $fld .= ', ';
+                                        }
+                                        if ($fm['type'] == 'select' || $fm['type'] == 'list') {
+                                            if ($r[$jv + 1]['id'] == '') {
+                                                $v = 'null';
+                                            } else {
+                                                $v = '"' . htmlspecialchars(addslashes($r[$jv + 1]['id'])) . '"';
+                                            }
+                                        } else {
+                                            if (($fm['type'] == 'date' || $fm['type'] == 'number') && $r[$jv + 1] == '') {
+                                                $v = 'null';
+                                            } else {
 
-                                        $v = '"' . htmlspecialchars(addslashes($r[$jv + 1])) . '"';
+                                                $v = '"' . htmlspecialchars(addslashes($r[$jv + 1])) . '"';
+                                            }
+                                        }
+                                        $fld .= $fm['name'] . ' = ' . $v;
+                                        break;
                                     }
                                 }
-                                $fld .= $fm['name'] . ' = ' . $v;
-                                break;
+                                if ($f['id_field_syn'] == $fm['syn']) {
+                                    $fn = $fm['name'];
+                                }
                             }
-                        }
-                        if ($f == $fm['syn']) {
-                            $fn = $fm['name'];
-                        }
-                    }
-                    $fv = '';
-                    foreach ($all_data as $ii => $dd) { // get id value
-                        if ($ii == $i) {
-                            foreach ($dd as $jj => $ff) {
-                                if ($f == $jj) {
-                                    $fv = $ff;
+                            $fv = '';
+                            foreach ($all_data as $ii => $dd) { // get id value
+                                if ($ii == $i) {
+                                    foreach ($dd as $jj => $ff) {
+                                        if ($f['id_field_syn'] == $jj) {
+                                            $fv = $ff;
+                                            break;
+                                        }
+                                    }
                                     break;
                                 }
                             }
-                            break;
+                            $sql .= 'update ' . $f['name'] . ' set ' . $fld . ' where ' . $fn . ' = ' . $fv . ';';
                         }
                     }
-                    $sql .= 'update ' . $t . ' set ' . $fld . ' where ' . $fn . ' = ' . $fv . ';';
                 }
             }
             ///
