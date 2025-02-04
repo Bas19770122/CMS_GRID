@@ -10,19 +10,19 @@ echo
 
 <title></title>
 
-<link rel="stylesheet" type="text/css" href="grid.css" />
+<link rel="stylesheet" type="text/css" href="lib/grid.css" />
 
-<script src="jquery-3.6.0.min.js"></script>
-<script src="grid.js"></script>
-<script src="list.js"></script>
-<script src="file.js"></script>
+<script src="lib/jquery-3.6.0.min.js"></script>
+<script src="lib/grid.js"></script>
+<script src="lib/list.js"></script>
+<script src="lib/file.js"></script>
 
 
 </head>
 <body>
 ';
 
-include_once 'grid.php';
+include_once 'lib/grid.php';
 
 $gr = new grid;
 

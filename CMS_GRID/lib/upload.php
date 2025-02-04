@@ -14,8 +14,12 @@ $deny = array(
 );
 
 // Директория куда будут загружаться файлы.
-$path0 = __DIR__;
+$path0 = __DIR__.'/..';
 $path = '/uploads/';
+
+if (!file_exists($path0.$path)) {
+    mkdir($path0.$path);
+}
 
 $date = new DateTime();
 $year = $date->format('Y');
@@ -52,10 +56,12 @@ if (!isset($_FILES[$input_name])) {
         $error = 'Не удалось загрузить файл.';
     } else {
         // Оставляем в имени файла только буквы, цифры и некоторые символы.
+        
         $pattern = "[^a-zа-яё0-9,~!@#%^-_\$\?\(\)\{\}\[\]\.]";
         $name = mb_eregi_replace($pattern, '-', $file['name']);
         $name = mb_ereg_replace('[-]+', '-', $name);
         $parts = pathinfo($name);
+        $name = substr(md5(microtime() . rand(0, 9999)), 0, 20).'.'.$parts['extension'];
 
         if (empty($name) || empty($parts['extension'])) {
             $error = 'Недопустимый тип файла';
