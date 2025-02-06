@@ -28,7 +28,7 @@ if (isset($_POST['action'])) {
         $gr = new grid;
         $gr->id = $_POST['id'];
         $number = $_POST['number'];
-        $data = $gr->Refr($_POST['data'], $number);
+        $data = $gr->Ref($_POST['data'], $number);
         echo $data;
         exit();
     }
@@ -161,14 +161,14 @@ class grid {
         } while ($mysqli->next_result());
 
         $info = $_SESSION['info_' . $this->id];
-        
+
         foreach ($info as $i => $v) {
             if (isset($v['type'])) {
                 if ($v['type'] == 'page') {
                     $info[$i]['number'] = $number;
                 }
             }
-        }        
+        }
 
         $this->refresh($info);
 
@@ -181,7 +181,7 @@ class grid {
         return $this->Data_JS($res);
     }
 
-    public function Refr($js, $number) {
+    public function Ref($js, $number) {
         global $server;
         global $user;
         global $password;
@@ -494,9 +494,11 @@ class grid {
         } else {
             $cntrec = 1;
         }
-         
-        for ($i = 1; $i <= $cntrec; $i++) {
-            $page[] = $i;
+
+        if ($cnt != 0) {
+            for ($i = 1; $i <= $cntrec; $i++) {
+                $page[] = $i;
+            }
         }
 
         return [$data, $row_no, $page];
