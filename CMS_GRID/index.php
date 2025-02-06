@@ -161,6 +161,11 @@ $gr->info = [
         "type" => "button",
         "text" => "Удалить",
         "class" => "delete"
+    ],
+    [
+        "type"=>"page",
+        "count"=>"3",
+        "number"=>"1"
     ]
 ];
 

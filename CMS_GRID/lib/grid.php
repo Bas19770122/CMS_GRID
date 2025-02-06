@@ -10,7 +10,8 @@ if (isset($_POST['action'])) {
         session_start();
         $gr = new grid;
         $gr->id = $_POST['id'];
-        $data = $gr->ModRec($_POST['data']);
+        $number = $_POST['number'];
+        $data = $gr->ModRec($_POST['data'], $number);
         echo $data;
         exit();
     }
@@ -22,14 +23,15 @@ if (isset($_POST['action'])) {
         echo $data;
         exit();
     }
-    /* if ($_POST['action'] == 'delete') {
-      session_start();
-      $gr = new grid;
-      $gr->id = $_POST['id'];
-      $data = $gr->DelRec($_POST['data']);
-      echo $data;
-      exit();
-      } */
+    if ($_POST['action'] == 'refresh') {
+        session_start();
+        $gr = new grid;
+        $gr->id = $_POST['id'];
+        $number = $_POST['number'];
+        $data = $gr->Refr($_POST['data'], $number);
+        echo $data;
+        exit();
+    }
 }
 
 class grid {
@@ -46,9 +48,15 @@ class grid {
     public $field_type; // field types
     public $js;
     public $inhtml;
+    public $inpager;
     public $html;
     public $show_id;
     public $selected_val;
+    public $pagesql;
+    public $sql;
+    public $cnt;
+    public $page;
+    public $pnumber;
 
     // actions 
 
@@ -127,7 +135,7 @@ class grid {
       return $this->ModRec($js);
       } */
 
-    public function ModRec($js) {
+    public function ModRec($js, $number) {
         global $server;
         global $user;
         global $password;
@@ -153,6 +161,14 @@ class grid {
         } while ($mysqli->next_result());
 
         $info = $_SESSION['info_' . $this->id];
+        
+        foreach ($info as $i => $v) {
+            if (isset($v['type'])) {
+                if ($v['type'] == 'page') {
+                    $info[$i]['number'] = $number;
+                }
+            }
+        }        
 
         $this->refresh($info);
 
@@ -160,6 +176,33 @@ class grid {
 
         $res['js'] = $this->js;
         $res['html'] = $this->inhtml;
+        $res['pager'] = $this->inpager;
+
+        return $this->Data_JS($res);
+    }
+
+    public function Refr($js, $number) {
+        global $server;
+        global $user;
+        global $password;
+        global $schema;
+
+        $info = $_SESSION['info_' . $this->id];
+
+        foreach ($info as $i => $v) {
+            if (isset($v['type'])) {
+                if ($v['type'] == 'page') {
+                    $info[$i]['number'] = $number;
+                }
+            }
+        }
+        $this->refresh($info);
+
+        $res = [];
+
+        $res['js'] = $this->js;
+        $res['html'] = $this->inhtml;
+        $res['pager'] = $this->inpager;
 
         return $this->Data_JS($res);
     }
@@ -350,7 +393,7 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $field_visi, $field_list, $ids, $show_id, $selected_val) { // get data from select SQL
+    public function SQL_Data($sql, $pagesql, $field_visi, $field_list, $ids, $show_id, $selected_val, $cnt) { // get data from select SQL
         global $server;
         global $user;
         global $password;
@@ -436,13 +479,32 @@ class grid {
             }
         }
 
+        $page = [];
+        if ($result = $mysqli->query($pagesql)) {
+            while ($row = $result->fetch_assoc()) {
+                $cntall = $row['cnt'];
+            }
+        }
+        $add = 0;
+        if ($cnt != 0) {
+            if ($cntall % $cnt != 0) {
+                $add = 1;
+            }
+            $cntrec = intdiv($cntall, $cnt) + $add;
+        } else {
+            $cntrec = 1;
+        }
+         
+        for ($i = 1; $i <= $cntrec; $i++) {
+            $page[] = $i;
+        }
 
-
-        return [$data, $row_no];
+        return [$data, $row_no, $page];
     }
 
     public function Fields_SQL($info) { // get select SQL
         $sql = '';
+        $pagesql = '';
         //$field_list = [];
         $field_visi = [];
         $field_cap = [];
@@ -460,11 +522,23 @@ class grid {
         $ids = [];
         $show_id = '';
         $selected_val = '';
+        $cnt = '0';
+        $number = '1';
+        $limit = '';
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
-        $sql = 'select <fields> from <tab> <where>';
+        $sql = 'select <fields> from <tab> <where> <limit>';
+        $pagesql = 'select count(*) cnt from <tab> <where>';
         foreach ($info as $i => $v) {
+            if ($v['type'] == 'page') {
+                if (isset($v['count']))
+                    $cnt = $v['count'];
+                if (isset($v['number']))
+                    $number = $v['number'];
+                $limit = ' limit ' . ($number - 1) * $cnt . ', ' . $cnt;
+                $this->pnumber = $number;
+            }
             if ($v['type'] == 'table') {
                 if (isset($v['show_id']))
                     $show_id = $v['show_id'];
@@ -589,10 +663,15 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
-        return [$sql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val];
+        $sql = str_replace('<limit>', $limit, $sql);
+
+        $pagesql = str_replace('<tab>', $tab, $pagesql);
+        $pagesql = str_replace('<where>', $whe, $pagesql);
+
+        return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt];
     }
 
-    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no) { // get html code
+    public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
         $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
@@ -729,6 +808,18 @@ class grid {
 
         $inhtml = $style . $html;
         $html = str_replace('<<html>>', $inhtml, $temp_html);
+
+        $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';
+        $this->inpager = '';
+        foreach ($page as $i => $v) {
+            $addclass = '';
+            if ($this->pnumber == $v) {
+                $addclass = ' curpage';
+            }
+            $this->inpager = $this->inpager . '<div class="pager' . $addclass . '" val=' . $v . '>' . $v . '</div>';
+        }
+        $html = $html . $this->inpager . '</div>';
+
         foreach ($buttons as $i => $v) {
             $html = $html . '<button class=' . $v['class'] . '>' . $v['text'] . '</button>';
         }
@@ -746,6 +837,7 @@ class grid {
 
         list(
                 $this->sql,
+                $this->pagesql,
                 $this->field_list,
                 $this->field_visi,
                 $this->field_cap,
@@ -754,19 +846,23 @@ class grid {
                 $this->hiddens,
                 $this->ids,
                 $this->show_id,
-                $this->selected_val
+                $this->selected_val,
+                $this->cnt
                 ) = $this->Fields_SQL($info);
 
         list(
                 $this->data,
-                $row_no
+                $row_no,
+                $this->page
                 ) = $this->SQL_Data(
                 $this->sql,
+                $this->pagesql,
                 $this->field_visi,
                 $this->field_list,
                 $this->ids,
                 $this->show_id,
-                $this->selected_val);
+                $this->selected_val,
+                $this->cnt);
 
         $this->js = $this->Data_JS($this->data);
 
@@ -781,7 +877,8 @@ class grid {
                 $this->field_type,
                 $this->buttons,
                 $this->hiddens,
-                $row_no
+                $row_no,
+                $this->page
         );
     }
 

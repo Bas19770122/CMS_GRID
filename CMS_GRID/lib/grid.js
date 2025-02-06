@@ -1,9 +1,43 @@
 $(document).ready(function () {
 
+    $('body').delegate('.pager', 'click', function (e) {
+
+        var elem = $(this);
+        var grid = elem.parent().parent().find('.grid_class').eq(0);
+        var id = grid.attr('id');
+        var num = elem.attr('val');
+
+        jsons = {
+            id: id,
+            action: 'refresh',
+            data: $('#json_' + id).text(),
+            number: num
+        };
+        $.ajax({
+            url: 'lib/grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            jsn = JSON.parse(data);
+            rcd = jsn['js'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(rcds);
+            html = jsn['html'];
+            $('#' + id).empty();
+            $('#' + id).append(html);
+            pgr = jsn['pager'];
+            $('#pager_' + id).empty();
+            $('#pager_' + id).append(pgr);
+        });
+
+        //  return false;
+    });
 
     $('body').delegate('.grid_cont .cell_class', 'click', function (e) {
 
-        elem = $(this);
+        var elem = $(this);
         elem.parent().find('.cell_class').removeClass('Selected');
         elem.addClass('Selected');
 
@@ -92,14 +126,21 @@ $(document).ready(function () {
 
     $('body').delegate('.grid_cont .save', 'click', function (e) {
 
-        elem = $(this);
-        id = elem.parent().find('.grid_class').eq(0).attr('id');
+        var elem = $(this);
+        var id = elem.parent().find('.grid_class').eq(0).attr('id');
+        if (elem.parent().find('#pager_' + id).length > 0) {
+            var pager = elem.parent().find('#pager_' + id).eq(0);
+            if (pager.find('.curpage').length > 0) {
+                var num = pager.find('.curpage').eq(0).attr('val');
+            }
+        }
 
         elem.prop('disabled', true);
         jsons = {
             id: id,
             action: 'save',
-            data: $('#json_' + id).text()
+            data: $('#json_' + id).text(),
+            number: num
         };
         $.ajax({
             url: 'lib/grid.php',
@@ -119,6 +160,9 @@ $(document).ready(function () {
             html = jsn['html'];
             $('#' + id).empty();
             $('#' + id).append(html);
+            pgr = jsn['pager'];
+            $('#pager_' + id).empty();
+            $('#pager_' + id).append(pgr);
             //set_edited(id);
         });
 
@@ -192,8 +236,8 @@ $(document).ready(function () {
                                             cont = '☐';
                                         }
                                     }
-                                    if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {                                        
-                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');                                    
+                                    if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {
+                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');
                                     } else {
                                         elem2.append(cont);
                                     }
@@ -368,7 +412,7 @@ $(document).ready(function () {
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
-                                url: 'lib/'+lst,
+                                url: 'lib/' + lst,
                                 method: 'POST',
                                 dataType: 'html',
                                 data: jsons
@@ -391,7 +435,7 @@ $(document).ready(function () {
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
-                                url: 'lib/'+fil,
+                                url: 'lib/' + fil,
                                 method: 'POST',
                                 dataType: 'html',
                                 data: jsons

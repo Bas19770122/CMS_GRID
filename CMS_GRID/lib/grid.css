@@ -84,3 +84,18 @@ button.save{
 .grid_file{
     display: none;
 }
+
+.pager{
+    display: inline;
+    padding: 5px;
+    cursor: default;
+}
+
+.pager_cont{
+    padding: 5px;
+    margin: 2px;
+}
+
+.curpage{
+    border: solid black 1px;
+}
