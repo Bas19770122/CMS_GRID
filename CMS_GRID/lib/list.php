@@ -1,5 +1,7 @@
 <?php
 
+ session_start();
+
 if (isset($_POST['id'])) {
 
 include_once 'grid.php';
@@ -58,6 +60,11 @@ $gr->info = [
         "type"=>"button",
         "text"=>"Очистить",
         "class"=>"clear"
+    ],
+    [
+        "type"=>"page",
+        "count"=>"5",
+        "number"=>"1"
     ]
 ];
 
