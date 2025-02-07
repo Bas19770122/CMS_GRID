@@ -9,7 +9,7 @@ $(document).ready(function () {
     $('body').delegate('.search_class', 'change', function (e) {
         
       var elem = $(this);
-        var grid = elem.parent().parent().find('.grid_class').eq(0);
+        var grid = elem.parent().parent().parent().find('.grid_class').eq(0);
         var id = grid.attr('id');
         var num = '1';
 

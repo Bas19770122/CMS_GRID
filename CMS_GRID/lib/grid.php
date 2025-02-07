@@ -734,7 +734,7 @@ class grid {
                 if ($fli['syn'] == $f) {
                     foreach ($this->search as $jj => $ff) {
                         if ($fli['tsyn'] . '.' . $fli['name'] == $ff) {
-                            $html = $html . '<input class=search_class value="" fld="' . $ff . '">';
+                            $html = $html . '<div class=search_cont><input class=search_class value="" fld="' . $ff . '"></div>';
                             $isfld = 1;
                             break;
                         }

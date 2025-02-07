@@ -100,3 +100,12 @@ button.save{
 .curpage{
     border: solid black 1px;
 }
+
+.search_class{
+    width: 97%;
+    border: none;
+}
+
+.search_cont{
+    border: solid 1px grey;
+}
