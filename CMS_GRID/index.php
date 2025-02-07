@@ -169,7 +169,7 @@ $gr->info = [
     ],
     [
         "type"=>"search",
-        "syn"=>["t2.name"]
+        "fields"=>["t2.name"]
     ]
 ];
 

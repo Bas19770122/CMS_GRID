@@ -1,6 +1,11 @@
 $(document).ready(function () {
     
-        
+    
+   $('body').delegate('.search_class', 'focusout', function (e) {
+        return false;
+    });
+    
+    
     $('body').delegate('.search_class', 'change', function (e) {
         
       var elem = $(this);
@@ -35,7 +40,7 @@ $(document).ready(function () {
             $('#pager_' + id).append(pgr);
         });
         
-        
+        return true;
     });
     
 

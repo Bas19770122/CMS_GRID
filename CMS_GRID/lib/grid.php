@@ -574,7 +574,7 @@ class grid {
         $pagesql = 'select count(*) cnt from <tab> <where>';
         foreach ($info as $i => $v) {
             if ($v['type'] == 'search') {
-                foreach ($v['syn'] as $j => $f) {
+                foreach ($v['fields'] as $j => $f) {
                     $search[] = $f;
                 }
             }
@@ -733,7 +733,7 @@ class grid {
             foreach ($field_list as $jf => $fli) {
                 if ($fli['syn'] == $f) {
                     foreach ($this->search as $jj => $ff) {
-                        if ($fli['tsyn'] . '.' . $f == $ff) {
+                        if ($fli['tsyn'] . '.' . $fli['name'] == $ff) {
                             $html = $html . '<input class=search_class value="" fld="' . $ff . '">';
                             $isfld = 1;
                             break;

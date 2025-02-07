@@ -67,6 +67,10 @@ $gr->info = [
         "type"=>"page",
         "count"=>"5",
         "number"=>"1"
+    ],
+    [
+        "type"=>"search",
+        "fields"=>["t1.name"]
     ]
 ];
 
