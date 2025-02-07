@@ -28,7 +28,17 @@ if (isset($_POST['action'])) {
         $gr = new grid;
         $gr->id = $_POST['id'];
         $number = $_POST['number'];
-        $data = $gr->Ref($_POST['data'], $number);
+        if (isset($_POST['search'])) {
+            $search = $_POST['search'];
+        } else {
+            $search = '';
+        }
+        if (isset($_POST['searchfld'])) {
+            $searchfld = $_POST['searchfld'];
+        } else {
+            $searchfld = '';
+        }
+        $data = $gr->Ref($_POST['data'], $number, $search, $searchfld);
         echo $data;
         exit();
     }
@@ -57,6 +67,7 @@ class grid {
     public $cnt;
     public $page;
     public $pnumber;
+    public $search;
 
     // actions 
 
@@ -181,7 +192,7 @@ class grid {
         return $this->Data_JS($res);
     }
 
-    public function Ref($js, $number) {
+    public function Ref($js, $number, $search, $searchfld) {
         global $server;
         global $user;
         global $password;
@@ -190,12 +201,39 @@ class grid {
         $info = $_SESSION['info_' . $this->id];
 
         foreach ($info as $i => $v) {
+            if ($searchfld != '') {
+                if ($v['type'] == 'where') {
+                    if (isset($info[$i]['oldtext'])) {
+                        $info[$i]['text'] = $info[$i]['oldtext'];
+                        $info[$i]['oldtext'] = null;
+                    }
+                }
+            }
+        }
+
+        $issearch = 0;
+        foreach ($info as $i => $v) {
             if (isset($v['type'])) {
                 if ($v['type'] == 'page') {
                     $info[$i]['number'] = $number;
                 }
+                if ($searchfld != '') {
+                    if ($v['type'] == 'where') {
+                        if (!isset($info[$i]['oldtext'])) {
+                            $info[$i]['oldtext'] = $info[$i]['text'];
+                        }
+                        $info[$i]['text'] = $info[$i]['text'] . ' and ' . $searchfld . " like '%" . $search . "%'";
+                        $issearch = 1;
+                    }
+                }
             }
         }
+        if ($searchfld != '') {
+            if ($issearch == 0) {
+                $info[] = ['type' => 'where', 'text' => 'where ' . $searchfld . " like '%" . $search . "%'"];
+            }
+        }
+
         $this->refresh($info);
 
         $res = [];
@@ -480,6 +518,7 @@ class grid {
         }
 
         $page = [];
+        $cntall = 0;
         if ($result = $mysqli->query($pagesql)) {
             while ($row = $result->fetch_assoc()) {
                 $cntall = $row['cnt'];
@@ -527,12 +566,18 @@ class grid {
         $cnt = '0';
         $number = '1';
         $limit = '';
+        $search = [];
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
         $sql = 'select <fields> from <tab> <where> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
         foreach ($info as $i => $v) {
+            if ($v['type'] == 'search') {
+                foreach ($v['syn'] as $j => $f) {
+                    $search[] = $f;
+                }
+            }
             if ($v['type'] == 'page') {
                 if (isset($v['count']))
                     $cnt = $v['count'];
@@ -601,11 +646,11 @@ class grid {
                 $buttons[] = ['class' => $v['class'], 'text' => $v['text']];
             }
             if ($v['type'] == 'hidden') {
-                if(isset($v['value'])){
-                 $hiddens[] = ['id' => $v['id'],'value' => $v['value']];   
+                if (isset($v['value'])) {
+                    $hiddens[] = ['id' => $v['id'], 'value' => $v['value']];
                 } else {
-                 $hiddens[] = ['id' => $v['id'],'value' => ''];   
-                }                
+                    $hiddens[] = ['id' => $v['id'], 'value' => ''];
+                }
             }
         }
 
@@ -674,7 +719,7 @@ class grid {
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
 
-        return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt];
+        return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
 
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
@@ -682,6 +727,26 @@ class grid {
         $style = '';
         $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
         $html = '';
+
+        foreach ($field_visi as $j => $f) {
+            $isfld = 0;
+            foreach ($field_list as $jf => $fli) {
+                if ($fli['syn'] == $f) {
+                    foreach ($this->search as $jj => $ff) {
+                        if ($fli['tsyn'] . '.' . $f == $ff) {
+                            $html = $html . '<input class=search_class value="" fld="' . $ff . '">';
+                            $isfld = 1;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if ($isfld == 0) {
+                $html = $html . '<div></div>';
+            }
+        }
+
         foreach ($field_cap as $j => $f) {
             $html = $html . '<div class=header_class>' . $f . '</div>';
             $style = $style . ' auto';
@@ -831,7 +896,7 @@ class grid {
         }
 
         foreach ($hiddens as $i => $v) {
-            $html = $html . '<input id=' . $v['id'] . ' type=hidden value="'.$v['value'].'"></input>';
+            $html = $html . '<input id=' . $v['id'] . ' type=hidden value="' . $v['value'] . '"></input>';
         }
 
         $html = $html . '</div>';
@@ -853,7 +918,8 @@ class grid {
                 $this->ids,
                 $this->show_id,
                 $this->selected_val,
-                $this->cnt
+                $this->cnt,
+                $this->search
                 ) = $this->Fields_SQL($info);
 
         list(

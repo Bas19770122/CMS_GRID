@@ -1,4 +1,43 @@
 $(document).ready(function () {
+    
+        
+    $('body').delegate('.search_class', 'change', function (e) {
+        
+      var elem = $(this);
+        var grid = elem.parent().parent().find('.grid_class').eq(0);
+        var id = grid.attr('id');
+        var num = '1';
+
+        jsons = {
+            id: id,
+            action: 'refresh',
+            data: $('#json_' + id).text(),
+            number: num,
+            search: elem.val(),
+            searchfld: elem.attr('fld')
+        };
+        $.ajax({
+            url: 'lib/grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            jsn = JSON.parse(data);
+            rcd = jsn['js'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(rcds);
+            html = jsn['html'];
+            $('#' + id).empty();
+            $('#' + id).append(html);
+            pgr = jsn['pager'];
+            $('#pager_' + id).empty();
+            $('#pager_' + id).append(pgr);
+        });
+        
+        
+    });
+    
 
     $('body').delegate('.pager', 'click', function (e) {
 

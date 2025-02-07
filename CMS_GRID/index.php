@@ -166,6 +166,10 @@ $gr->info = [
         "type"=>"page",
         "count"=>"10",
         "number"=>"1"
+    ],
+    [
+        "type"=>"search",
+        "syn"=>["t2.name"]
     ]
 ];
 
