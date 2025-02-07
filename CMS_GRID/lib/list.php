@@ -36,11 +36,13 @@ $gr->info = [
     ],  
     [
         "type"=>"hidden",
-        "id"=>"grid_list_id"
+        "id"=>"grid_list_id",
+        "value"=>$_POST['id']
     ],   
     [
         "type"=>"hidden",
-        "id"=>"grid_list_name"
+        "id"=>"grid_list_name",
+        "value"=>$_POST['text']
     ],               
     [
         "type"=>"hidden",

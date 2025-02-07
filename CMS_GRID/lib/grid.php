@@ -601,7 +601,11 @@ class grid {
                 $buttons[] = ['class' => $v['class'], 'text' => $v['text']];
             }
             if ($v['type'] == 'hidden') {
-                $hiddens[] = ['id' => $v['id']];
+                if(isset($v['value'])){
+                 $hiddens[] = ['id' => $v['id'],'value' => $v['value']];   
+                } else {
+                 $hiddens[] = ['id' => $v['id'],'value' => ''];   
+                }                
             }
         }
 
@@ -827,7 +831,7 @@ class grid {
         }
 
         foreach ($hiddens as $i => $v) {
-            $html = $html . '<input id=' . $v['id'] . ' type=hidden></input>';
+            $html = $html . '<input id=' . $v['id'] . ' type=hidden value="'.$v['value'].'"></input>';
         }
 
         $html = $html . '</div>';
