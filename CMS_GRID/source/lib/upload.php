@@ -14,7 +14,7 @@ $deny = array(
 );
 
 // Директория куда будут загружаться файлы.
-$path0 = __DIR__.'/..';
+$path0 = __DIR__.'/../..';
 $path = '/uploads/';
 
 if (!file_exists($path0.$path)) {

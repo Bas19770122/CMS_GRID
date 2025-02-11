@@ -4,7 +4,7 @@
 
 if (isset($_POST['id'])) {
 
-include_once 'grid.php';
+include_once '../lib/grid.php';
 
 $gr = new grid;
 

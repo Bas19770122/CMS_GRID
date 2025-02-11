@@ -10,19 +10,19 @@ echo
 
 <title></title>
 
-<link rel="stylesheet" type="text/css" href="lib/grid.css" />
+<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
 
-<script src="lib/jquery-3.6.0.min.js"></script>
-<script src="lib/grid.js"></script>
-<script src="lib/list.js"></script>
-<script src="lib/file.js"></script>
+<script src="source/lib/jquery-3.6.0.min.js"></script>
+<script src="source/lib/grid.js"></script>
+<script src="source/list/list.js"></script>
+<script src="source/lib/file.js"></script>
 
 
 </head>
 <body>
 ';
 
-include_once 'lib/grid.php';
+include_once 'source/lib/grid.php';
 
 $gr = new grid;
 
@@ -84,7 +84,7 @@ $gr->info = [
                 "type" => "list",
                 "№" => 7,
                 "caption" => "Справочник",
-                "list" => "list.php",
+                "list" => "source/list/list.php",
                 "namecaption" => "listidname"
             ]
         ]

@@ -22,7 +22,7 @@ $(document).ready(function () {
             searchfld: elem.attr('fld')
         };
         $.ajax({
-            url: 'lib/grid.php',
+            url: 'source/lib/grid.php',
             method: 'POST',
             dataType: 'html',
             data: jsons
@@ -58,7 +58,7 @@ $(document).ready(function () {
             number: num
         };
         $.ajax({
-            url: 'lib/grid.php',
+            url: 'source/lib/grid.php',
             method: 'POST',
             dataType: 'html',
             data: jsons
@@ -148,7 +148,7 @@ $(document).ready(function () {
 
         };
         $.ajax({
-            url: 'lib/grid.php',
+            url: 'source/lib/grid.php',
             method: 'POST',
             dataType: 'html',
             data: jsons
@@ -187,7 +187,7 @@ $(document).ready(function () {
             number: num
         };
         $.ajax({
-            url: 'lib/grid.php',
+            url: 'source/lib/grid.php',
             method: 'POST',
             dataType: 'html',
             data: jsons
@@ -456,7 +456,7 @@ $(document).ready(function () {
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
-                                url: 'lib/' + lst,
+                                url: lst,
                                 method: 'POST',
                                 dataType: 'html',
                                 data: jsons
@@ -479,7 +479,7 @@ $(document).ready(function () {
                                 grid_id: id,
                                 element: 'cell_editor'};
                             $.ajax({
-                                url: 'lib/' + fil,
+                                url: 'source/lib/' + fil,
                                 method: 'POST',
                                 dataType: 'html',
                                 data: jsons

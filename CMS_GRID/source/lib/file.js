@@ -40,7 +40,7 @@ $(document).ready(function () {
 
             $.ajax({
                 type: "POST",
-                url: 'lib/upload.php',
+                url: 'source/lib/upload.php',
                 cache: false,
                 contentType: false,
                 processData: false,
