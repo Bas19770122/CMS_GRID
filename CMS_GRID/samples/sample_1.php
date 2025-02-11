@@ -10,16 +10,16 @@ echo
 
 <title>Sample_1 - simple data list </title>
 
-<link rel="stylesheet" type="text/css" href="lib/grid.css" />
+<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
 
-<script src="lib/jquery-3.6.0.min.js"></script>
-<script src="lib/grid.js"></script>
+<script src="source/lib/jquery-3.6.0.min.js"></script>
+<script src="source/lib/grid.js"></script>
 
 </head>
 <body>
 ';
 
-include_once 'lib/grid.php';
+include_once 'source/lib/grid.php';
 
 $gr = new grid;
 

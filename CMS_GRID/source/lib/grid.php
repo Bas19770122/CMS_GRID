@@ -10,7 +10,11 @@ if (isset($_POST['action'])) {
         session_start();
         $gr = new grid;
         $gr->id = $_POST['id'];
-        $number = $_POST['number'];
+        if (isset($_POST['number'])) {
+            $number = $_POST['number'];
+        } else {
+            $number = '';
+        }
         $data = $gr->ModRec($_POST['data'], $number);
         echo $data;
         exit();
@@ -27,7 +31,11 @@ if (isset($_POST['action'])) {
         session_start();
         $gr = new grid;
         $gr->id = $_POST['id'];
-        $number = $_POST['number'];
+        if (isset($_POST['number'])) {
+            $number = $_POST['number'];
+        } else {
+            $number = '';
+        }
         if (isset($_POST['search'])) {
             $search = $_POST['search'];
         } else {
