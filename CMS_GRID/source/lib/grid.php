@@ -34,18 +34,23 @@ if (isset($_POST['action'])) {
         if (isset($_POST['number'])) {
             $number = $_POST['number'];
         } else {
-            $number = '';
+            $number = null;
         }
         if (isset($_POST['search'])) {
-            $search = $_POST['search'];
+            $search = json_decode($_POST['search'], true);
+            // $_SESSION['srch_val_' . $this->id] = $search;
         } else {
-            $search = '';
+            $search = null;
         }
+        $gr->searchval = $search;
         if (isset($_POST['searchfld'])) {
-            $searchfld = $_POST['searchfld'];
+            $searchfld = json_decode($_POST['searchfld'], true);
+            // $_SESSION['srch_fld_' . $this->id] = $searchfld;
         } else {
-            $searchfld = '';
+            $searchfld = null;
         }
+        $gr->searchfld = $searchfld;
+
         $data = $gr->Ref($_POST['data'], $number, $search, $searchfld);
         echo $data;
         exit();
@@ -76,6 +81,8 @@ class grid {
     public $page;
     public $pnumber;
     public $search;
+    public $searchval;
+    public $searchfld;
 
     // actions 
 
@@ -230,7 +237,9 @@ class grid {
                         if (!isset($info[$i]['oldtext'])) {
                             $info[$i]['oldtext'] = $info[$i]['text'];
                         }
-                        $info[$i]['text'] = $info[$i]['text'] . ' and ' . $searchfld . " like '%" . $search . "%'";
+                        foreach ($searchfld as $k => $f) {
+                            $info[$i]['text'] = $info[$i]['text'] . ' and ' . $f . " like '%" . $search[$k] . "%'";
+                        }
                         $issearch = 1;
                     }
                 }
@@ -238,7 +247,9 @@ class grid {
         }
         if ($searchfld != '') {
             if ($issearch == 0) {
-                $info[] = ['type' => 'where', 'text' => 'where ' . $searchfld . " like '%" . $search . "%'"];
+                foreach ($searchfld as $k => $f) {
+                    $info[] = ['type' => 'where', 'text' => 'where ' . $f . " like '%" . $search[$k] . "%'"];
+                }
             }
         }
 
@@ -549,30 +560,30 @@ class grid {
 
         $k = 0;
         if ($cnt != 0) {
-                for ($i = 1; $i <= 3; $i++) {
-                    if ($i <= $cntrec) {
-                        $page[] = $i;
-                        $k = $i; 
-                    }    
+            for ($i = 1; $i <= 3; $i++) {
+                if ($i <= $cntrec) {
+                    $page[] = $i;
+                    $k = $i;
                 }
-                for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
-                    if($i > $k){
-                        $page[] = $i;
-                        $k = $i;
-                    }    
+            }
+            for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
+                if ($i > $k) {
+                    $page[] = $i;
+                    $k = $i;
                 }
-                for ($i = $pnumber + 1; $i <= $pnumber+2; $i++) {
-                    if($i > $k && $i <= $cntrec){
-                        $page[] = $i;
-                        $k = $i;
-                    }    
-                }      
-                for ($i = $cntrec-2; $i <= $cntrec; $i++) {
-                    if($i > $k){
-                        $page[] = $i;
-                        $k = $i; 
-                    }    
-                }                
+            }
+            for ($i = $pnumber + 1; $i <= $pnumber + 2; $i++) {
+                if ($i > $k && $i <= $cntrec) {
+                    $page[] = $i;
+                    $k = $i;
+                }
+            }
+            for ($i = $cntrec - 2; $i <= $cntrec; $i++) {
+                if ($i > $k) {
+                    $page[] = $i;
+                    $k = $i;
+                }
+            }
         }
 
         /*
@@ -775,8 +786,17 @@ class grid {
             foreach ($field_list as $jf => $fli) {
                 if ($fli['syn'] == $f) {
                     foreach ($this->search as $jj => $ff) {
+                        $v = '';
+                        if (isset($this->searchfld)) {
+                            foreach ($this->searchfld as $sj => $sf) {
+                                if ($sf == $ff) {
+                                    $v = $this->searchval[$jj];
+                                    break;
+                                }
+                            }
+                        }
                         if ($fli['tsyn'] . '.' . $fli['name'] == $ff) {
-                            $html = $html . '<div class=search_cont><input class=search_class value="" fld="' . $ff . '"></div>';
+                            $html = $html . '<div class=search_cont><input class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
                             $isfld = 1;
                             break;
                         }
@@ -930,10 +950,10 @@ class grid {
             if ($this->pnumber == $v) {
                 $addclass = ' curpage';
             }
-            if($oldv != '' && $v != $oldv+1){
+            if ($oldv != '' && $v != $oldv + 1) {
                 $this->inpager = $this->inpager . '<div class="points">...</div>';
             }
-            $oldv = $v; 
+            $oldv = $v;
             $this->inpager = $this->inpager . '<div class="pager' . $addclass . '" val=' . $v . '>' . $v . '</div>';
         }
         $html = $html . $this->inpager . '</div>';

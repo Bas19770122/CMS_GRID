@@ -1,25 +1,37 @@
 $(document).ready(function () {
-    
-    
-   $('body').delegate('.search_class', 'focusout', function (e) {
+
+
+    $('body').delegate('.search_class', 'focusout', function (e) {
         return false;
     });
-    
-    
+
+
     $('body').delegate('.search_class', 'change', function (e) {
-        
-      var elem = $(this);
+
+        var elem = $(this);
         var grid = elem.parent().parent().parent().find('.grid_class').eq(0);
         var id = grid.attr('id');
         var num = '1';
+
+        var cont = $('#' + id).find('.search_cont').eq(0);
+
+        var searchlst = [];
+        var searchfldlst = [];
+        cont.find('.search_class').each(function () {
+            searchlst.push($(this).val());
+            searchfldlst.push($(this).attr('fld'));
+        });
+        
+        var searchlst_s = JSON.stringify(searchlst);
+        var searchfldlst_s = JSON.stringify(searchfldlst);
 
         jsons = {
             id: id,
             action: 'refresh',
             data: $('#json_' + id).text(),
             number: num,
-            search: elem.val(),
-            searchfld: elem.attr('fld')
+            search: searchlst_s, //elem.val(),
+            searchfld: searchfldlst_s //elem.attr('fld')
         };
         $.ajax({
             url: 'source/lib/grid.php',
@@ -39,10 +51,10 @@ $(document).ready(function () {
             $('#pager_' + id).empty();
             $('#pager_' + id).append(pgr);
         });
-        
+
         return true;
     });
-    
+
 
     $('body').delegate('.pager', 'click', function (e) {
 
@@ -51,12 +63,27 @@ $(document).ready(function () {
         var id = grid.attr('id');
         var num = elem.attr('val');
 
+        var cont = $('#' + id).find('.search_cont').eq(0);
+
+        var searchlst = [];
+        var searchfldlst = [];
+        cont.find('.search_class').each(function () {
+            searchlst.push($(this).val());
+            searchfldlst.push($(this).attr('fld'));
+        });
+        
+        var searchlst_s = JSON.stringify(searchlst);
+        var searchfldlst_s = JSON.stringify(searchfldlst);
+
         jsons = {
             id: id,
             action: 'refresh',
             data: $('#json_' + id).text(),
-            number: num
+            number: num,
+            search: searchlst_s, //elem.val(),
+            searchfld: searchfldlst_s //elem.attr('fld')       
         };
+        
         $.ajax({
             url: 'source/lib/grid.php',
             method: 'POST',
