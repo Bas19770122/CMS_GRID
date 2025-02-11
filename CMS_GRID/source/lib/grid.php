@@ -542,11 +542,45 @@ class grid {
             $cntrec = 1;
         }
 
-        if ($cnt != 0) {
-            for ($i = 1; $i <= $cntrec; $i++) {
-                $page[] = $i;
-            }
+        $pnumber = 0;
+        if (isset($this->pnumber)) {
+            $pnumber = $this->pnumber; // current page number
         }
+
+        $k = 0;
+        if ($cnt != 0) {
+                for ($i = 1; $i <= 3; $i++) {
+                    if ($i <= $cntrec) {
+                        $page[] = $i;
+                        $k = $i; 
+                    }    
+                }
+                for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
+                    if($i > $k){
+                        $page[] = $i;
+                        $k = $i;
+                    }    
+                }
+                for ($i = $pnumber + 1; $i <= $pnumber+2; $i++) {
+                    if($i > $k && $i <= $cntrec){
+                        $page[] = $i;
+                        $k = $i;
+                    }    
+                }      
+                for ($i = $cntrec-2; $i <= $cntrec; $i++) {
+                    if($i > $k){
+                        $page[] = $i;
+                        $k = $i; 
+                    }    
+                }                
+        }
+
+        /*
+          if ($cnt != 0) {
+          for ($i = 1; $i <= $cntrec; $i++) {
+          $page[] = $i;
+          }
+          } */
 
         return [$data, $row_no, $page];
     }
@@ -890,11 +924,16 @@ class grid {
 
         $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';
         $this->inpager = '';
+        $oldv = '';
         foreach ($page as $i => $v) {
             $addclass = '';
             if ($this->pnumber == $v) {
                 $addclass = ' curpage';
             }
+            if($oldv != '' && $v != $oldv+1){
+                $this->inpager = $this->inpager . '<div class="points">...</div>';
+            }
+            $oldv = $v; 
             $this->inpager = $this->inpager . '<div class="pager' . $addclass . '" val=' . $v . '>' . $v . '</div>';
         }
         $html = $html . $this->inpager . '</div>';

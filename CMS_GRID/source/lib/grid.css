@@ -87,9 +87,12 @@ button.save{
 
 .pager{
     display: inline;
-    padding: 5px;
+    padding: 5px 10px 5px 10px;
     cursor: default;
     text-decoration: none;
+}
+.points{
+    display: inline;
 }
 
 .pager_cont{
