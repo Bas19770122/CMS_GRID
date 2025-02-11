@@ -13,7 +13,7 @@ $(document).ready(function () {
         var id = grid.attr('id');
         var num = '1';
 
-        var cont = $('#' + id).find('.search_cont').eq(0);
+        var cont = $('#' + id).find('.search_cont').parent().eq(0);
 
         var searchlst = [];
         var searchfldlst = [];
@@ -63,7 +63,7 @@ $(document).ready(function () {
         var id = grid.attr('id');
         var num = elem.attr('val');
 
-        var cont = $('#' + id).find('.search_cont').eq(0);
+        var cont = $('#' + id).find('.search_cont').parent().eq(0);
 
         var searchlst = [];
         var searchfldlst = [];
