@@ -164,7 +164,7 @@ $gr->info = [
     ],
     [
         "type"=>"page",
-        "count"=>"2",
+        "count"=>"10",
         "number"=>"1"
     ],
     [
