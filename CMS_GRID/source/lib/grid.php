@@ -216,7 +216,7 @@ class grid {
         $info = $_SESSION['info_' . $this->id];
 
         foreach ($info as $i => $v) {
-            if ($searchfld != '') {
+            if (isset($searchfld)) {
                 if ($v['type'] == 'where') {
                     if (isset($info[$i]['oldtext'])) {
                         $info[$i]['text'] = $info[$i]['oldtext'];
@@ -232,23 +232,27 @@ class grid {
                 if ($v['type'] == 'page') {
                     $info[$i]['number'] = $number;
                 }
-                if ($searchfld != '') {
+                if (isset($searchfld)) {
                     if ($v['type'] == 'where') {
                         if (!isset($info[$i]['oldtext'])) {
                             $info[$i]['oldtext'] = $info[$i]['text'];
                         }
                         foreach ($searchfld as $k => $f) {
-                            $info[$i]['text'] = $info[$i]['text'] . ' and ' . $f . " like '%" . $search[$k] . "%'";
+                            if ($search[$k] != '') {
+                                $info[$i]['text'] = $info[$i]['text'] . ' and ' . $f . " like '%" . $search[$k] . "%'";
+                            }
                         }
                         $issearch = 1;
                     }
                 }
             }
         }
-        if ($searchfld != '') {
+        if (isset($searchfld)) {
             if ($issearch == 0) {
                 foreach ($searchfld as $k => $f) {
-                    $info[] = ['type' => 'where', 'text' => 'where ' . $f . " like '%" . $search[$k] . "%'"];
+                    if ($search[$k] != '') {
+                        $info[] = ['type' => 'where', 'text' => 'where ' . $f . " like '%" . $search[$k] . "%'"];
+                    }
                 }
             }
         }
