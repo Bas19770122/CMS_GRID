@@ -18,10 +18,18 @@ $(document).ready(function () {
         var searchlst = [];
         var searchfldlst = [];
         cont.find('.search_class').each(function () {
-            searchlst.push($(this).val());
+            if($(this).attr('type')=='checkbox'){
+               if($(this).is(':checked')) {
+                  searchlst.push('Y');      
+               } else {
+                   searchlst.push('');      
+               }
+            } else {
+             searchlst.push($(this).val());   
+            }            
             searchfldlst.push($(this).attr('fld'));
         });
-        
+
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
 
@@ -71,7 +79,7 @@ $(document).ready(function () {
             searchlst.push($(this).val());
             searchfldlst.push($(this).attr('fld'));
         });
-        
+
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
 
@@ -83,7 +91,7 @@ $(document).ready(function () {
             search: searchlst_s, //elem.val(),
             searchfld: searchfldlst_s //elem.attr('fld')       
         };
-        
+
         $.ajax({
             url: 'source/lib/grid.php',
             method: 'POST',
@@ -243,100 +251,6 @@ $(document).ready(function () {
 
     $('body').delegate('#cell_editor', 'focusout', function (e) {
 
-        function set_edited(id) {
-            $('#' + id + ' .cell_class').removeClass('edited');
-            $('#' + id + ' .cell_class').removeClass('inserted');
-            $('#' + id + ' .cell_class').removeClass('deleted');
-            var rw = JSON.parse($('#json_' + id).text());
-            for (var key in rw)
-            {
-                if (rw[key][0]['type'] == 1)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');
-                if (rw[key][0]['type'] == 2)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
-                if (rw[key][0]['type'] == 3)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
-            }
-        }
-
-
-        function save_cell(elem2, cont, txt, act, id) {
-            var fld = JSON.parse($('#json_f_' + id).text());
-            var data = JSON.parse($('#json_' + id).text());
-            var ii = 0;
-            var iscell = 0;
-            var chcont = cont;//.replaceAll('"', '&quot;');
-            for (var key in data)
-            {
-                var item = data[key];
-                var jj = -1;
-                for (var key2 in item)
-                {
-                    if (key2 != 0) {
-                        jj = jj + 1; // numeric fields from 1                                                                     
-                        if (parseInt(key2) - 1 == elem2.attr('col') && ii == elem2.attr('row')) {
-                            var islist = fld[jj]['element'] == 'select' || fld[jj]['element'] == 'list';
-                            if (chcont != (islist ? item[key2]['id'] : item[key2])) {
-                                if (islist) { // list field
-                                    if (act == 3) { // clear
-                                        cont = '';
-                                        txt = '';
-                                    }
-                                    item[key2]['id'] = cont;
-                                    item[key2]['text'] = txt; //encodeURIComponent(txt);
-                                    if (data[key][0]['type'] != 1) {
-                                        data[key][0]['type'] = 2; // edited 
-                                    }
-                                    elem2.empty();
-                                    elem2.append(txt);
-                                    // save json to form
-                                    $('#json_' + id).empty();
-                                    js = JSON.stringify(data);
-                                    $('#json_' + id).append(js);
-                                    set_edited(id);
-                                } else { // not list field 
-                                    item[key2] = chcont; //encodeURIComponent(cont);  
-                                    if (data[key][0]['type'] != 1) {
-                                        data[key][0]['type'] = 2; // edited 
-                                    }
-                                    elem2.empty();
-                                    if (fld[key2 - 1]['attr']['type'] == 'checkbox') {
-                                        if (cont == fld[key2 - 1]['checkedval']) {
-                                            cont = '✓';
-                                        } else {
-                                            cont = '☐';
-                                        }
-                                    }
-                                    if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {
-                                        elem2.append('<img src=' + cont + ' width=40 height=40 >');
-                                    } else {
-                                        elem2.append(cont);
-                                    }
-                                    // save json to form
-                                    $('#json_' + id).empty();
-                                    js = JSON.stringify(data);
-                                    // $('#json_' + id).append(js);
-                                    $('#json_' + id).text(js);
-                                    set_edited(id);
-
-                                }
-                                iscell = 1;
-                                break;
-                            } else {
-                                iscell = 1;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (iscell == 1) {
-                    break;
-                }
-                ii = ii + 1;
-            }
-            return data;
-        }
-
         elem = $(this);
         elem2 = $(this).parent().eq(0);
         id = elem2.parent().attr('id');
@@ -357,7 +271,6 @@ $(document).ready(function () {
                 act = grid_list_action.val();
             }
         }
-
 
         file_id = $('#cell_editor').attr('file_id');
 
@@ -397,8 +310,6 @@ $(document).ready(function () {
             }
         }
 
-
-
         // cancel push 
         if (is_file == 1 && actf == '0') {
             return false;
@@ -412,9 +323,6 @@ $(document).ready(function () {
             return false;
         }
 
-
-
-
         // save cell into json
         data = save_cell(elem2, cont, txt, act, id);
 
@@ -422,111 +330,6 @@ $(document).ready(function () {
 
 
     $('body').delegate('.cell_class', 'dblclick', function (e) {
-
-        function get_editor_code(elem2, cont, id) {
-            var data = JSON.parse($('#json_' + id).text());
-            var fld = JSON.parse($('#json_f_' + id).text());
-            var ii = 0;
-            var iscell = 0;
-            var elem_name = '';
-            var attr_name = ' id=cell_editor';
-            for (var key in fld)
-            {
-                if (elem2.attr('col') == key) {
-                    var item = fld[key];
-                    var is_list = 0;
-                    for (var key2 in item) {
-                        if (key2 == 'element') {
-                            elem_name = item[key2];
-                        }
-                        if (key2 == 'attr') {
-                            var attr = item[key2];
-                            for (var key3 in attr) {
-                                attr_name = attr_name + ' ' + key3 + '=' + attr[key3];
-                                if (elem_name == 'input') {//(attr[key3] == 'date' || attr[key3] == 'number'){  
-                                    if (attr['type'] == 'checkbox') {
-                                        if (cont == '✓') {
-                                            cont = item['checkedval'];
-                                            attr_name = attr_name + ' checked ';
-                                        }
-                                        if (cont == '☐') {
-                                            cont = item['uncheckedval'];
-                                        }
-                                        attr_name = attr_name + ' style="left:-4px;top:1px;" ';
-                                        //  attr_name = attr_name +' style="text-align: center;" ';
-
-                                    }
-                                    var chcont = cont.replaceAll('"', '&quot;');
-                                    attr_name = attr_name + ' value="' + chcont + '"';
-                                    cont = '';
-                                }
-                            }
-                        }
-                        if (key2 == 'options') {
-                            var opt = item[key2];
-                            cont = '';
-                            for (var key3 in opt) {
-                                sel = '';
-                                if (data[elem2.attr('row')][parseInt(key) + 1]['id'] == key3) {
-                                    sel = ' selected ';
-                                }
-                                cont = cont + '<option value=' + key3 + sel + '>' + opt[key3] + '</option>';
-                            }
-                        }
-                        if (key2 == 'list') {
-                            is_list = 1;
-                            var lst = item[key2];
-                            cont = '';
-                            jsons = {
-                                id: data[elem2.attr('row')][parseInt(key) + 1]['id'],
-                                text: data[elem2.attr('row')][parseInt(key) + 1]['text'],
-                                grid_id: id,
-                                element: 'cell_editor'};
-                            $.ajax({
-                                url: lst,
-                                method: 'POST',
-                                dataType: 'html',
-                                data: jsons
-                            }).done(function (data) {
-                                cell_editor = elem2.find('#cell_editor');
-                                cell_editor.empty();
-                                cell_editor.append(data);
-                                grid_id = cell_editor.find('.grid_class').eq(0).attr('id');
-                                cell_editor.attr('grid_id', grid_id);
-                                //$('#cell_editor').empty();
-                                //$('#cell_editor').append(data);
-                            });
-                        }
-                        if (key2 == 'file') {
-                            var fil = item[key2];
-                            cont = '';
-                            jsons = {
-                                path: data[elem2.attr('row')][parseInt(key) + 1],
-                                name: item['name'],
-                                grid_id: id,
-                                element: 'cell_editor'};
-                            $.ajax({
-                                url: 'source/lib/' + fil,
-                                method: 'POST',
-                                dataType: 'html',
-                                data: jsons
-                            }).done(function (data) {
-                                cell_editor = elem2.find('#cell_editor');
-                                cell_editor.empty();
-                                cell_editor.append(data);
-                                file_id = cell_editor.find('.file_class').eq(0).attr('id');
-                                cell_editor.attr('file_id', file_id);
-                            });
-
-                        }
-                    }
-                    if (is_list == 0) {
-                    }
-                    return '<' + elem_name + ' ' + attr_name + '>' + cont + '</' + elem_name + '>';
-                }
-            }
-            return '<textarea id=cell_editor>' + cont + '</textarea>';
-        }
 
         var iseditor = 0;
         $('body').find('#cell_editor').each(function (index, value) {
@@ -544,4 +347,206 @@ $(document).ready(function () {
 
         return false;
     });
+
+
+    function set_edited(id) {
+        $('#' + id + ' .cell_class').removeClass('edited');
+        $('#' + id + ' .cell_class').removeClass('inserted');
+        $('#' + id + ' .cell_class').removeClass('deleted');
+        var rw = JSON.parse($('#json_' + id).text());
+        for (var key in rw)
+        {
+            if (rw[key][0]['type'] == 1)
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('inserted');
+            if (rw[key][0]['type'] == 2)
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('edited');
+            if (rw[key][0]['type'] == 3)
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
+        }
+    }
+
+
+    function save_cell(elem2, cont, txt, act, id) {
+        var fld = JSON.parse($('#json_f_' + id).text());
+        var data = JSON.parse($('#json_' + id).text());
+        var ii = 0;
+        var iscell = 0;
+        var chcont = cont;//.replaceAll('"', '&quot;');
+        for (var key in data)
+        {
+            var item = data[key];
+            var jj = -1;
+            for (var key2 in item)
+            {
+                if (key2 != 0) {
+                    jj = jj + 1; // numeric fields from 1                                                                     
+                    if (parseInt(key2) - 1 == elem2.attr('col') && ii == elem2.attr('row')) {
+                        var islist = fld[jj]['element'] == 'select' || fld[jj]['element'] == 'list';
+                        if (chcont != (islist ? item[key2]['id'] : item[key2])) {
+                            if (islist) { // list field
+                                if (act == 3) { // clear
+                                    cont = '';
+                                    txt = '';
+                                }
+                                item[key2]['id'] = cont;
+                                item[key2]['text'] = txt; //encodeURIComponent(txt);
+                                if (data[key][0]['type'] != 1) {
+                                    data[key][0]['type'] = 2; // edited 
+                                }
+                                elem2.empty();
+                                elem2.append(txt);
+                                // save json to form
+                                $('#json_' + id).empty();
+                                js = JSON.stringify(data);
+                                $('#json_' + id).append(js);
+                                set_edited(id);
+                            } else { // not list field 
+                                item[key2] = chcont; //encodeURIComponent(cont);  
+                                if (data[key][0]['type'] != 1) {
+                                    data[key][0]['type'] = 2; // edited 
+                                }
+                                elem2.empty();
+                                if (fld[key2 - 1]['attr']['type'] == 'checkbox') {
+                                    if (cont == fld[key2 - 1]['checkedval']) {
+                                        cont = '✓';
+                                    } else {
+                                        cont = '☐';
+                                    }
+                                }
+                                if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {
+                                    elem2.append('<img src=' + cont + ' width=40 height=40 >');
+                                } else {
+                                    elem2.append(cont);
+                                }
+                                // save json to form
+                                $('#json_' + id).empty();
+                                js = JSON.stringify(data);
+                                // $('#json_' + id).append(js);
+                                $('#json_' + id).text(js);
+                                set_edited(id);
+
+                            }
+                            iscell = 1;
+                            break;
+                        } else {
+                            iscell = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (iscell == 1) {
+                break;
+            }
+            ii = ii + 1;
+        }
+        return data;
+    }
+
+    function get_editor_code(elem2, cont, id) {
+        var data = JSON.parse($('#json_' + id).text());
+        var fld = JSON.parse($('#json_f_' + id).text());
+        var ii = 0;
+        var iscell = 0;
+        var elem_name = '';
+        var attr_name = ' id=cell_editor';
+        for (var key in fld)
+        {
+            if (elem2.attr('col') == key) {
+                var item = fld[key];
+                var is_list = 0;
+                for (var key2 in item) {
+                    if (key2 == 'element') {
+                        elem_name = item[key2];
+                    }
+                    if (key2 == 'attr') {
+                        var attr = item[key2];
+                        for (var key3 in attr) {
+                            attr_name = attr_name + ' ' + key3 + '=' + attr[key3];
+                            if (elem_name == 'input') {//(attr[key3] == 'date' || attr[key3] == 'number'){  
+                                if (attr['type'] == 'checkbox') {
+                                    if (cont == '✓') {
+                                        cont = item['checkedval'];
+                                        attr_name = attr_name + ' checked ';
+                                    }
+                                    if (cont == '☐') {
+                                        cont = item['uncheckedval'];
+                                    }
+                                    attr_name = attr_name + ' style="left:-4px;top:1px;" ';
+                                    //  attr_name = attr_name +' style="text-align: center;" ';
+
+                                }
+                                var chcont = cont.replaceAll('"', '&quot;');
+                                attr_name = attr_name + ' value="' + chcont + '"';
+                                cont = '';
+                            }
+                        }
+                    }
+                    if (key2 == 'options') {
+                        var opt = item[key2];
+                        cont = '';
+                        for (var key3 in opt) {
+                            sel = '';
+                            if (data[elem2.attr('row')][parseInt(key) + 1]['id'] == key3) {
+                                sel = ' selected ';
+                            }
+                            cont = cont + '<option value=' + key3 + sel + '>' + opt[key3] + '</option>';
+                        }
+                    }
+                    if (key2 == 'list') {
+                        is_list = 1;
+                        var lst = item[key2];
+                        cont = '';
+                        jsons = {
+                            id: data[elem2.attr('row')][parseInt(key) + 1]['id'],
+                            text: data[elem2.attr('row')][parseInt(key) + 1]['text'],
+                            grid_id: id,
+                            element: 'cell_editor'};
+                        $.ajax({
+                            url: lst,
+                            method: 'POST',
+                            dataType: 'html',
+                            data: jsons
+                        }).done(function (data) {
+                            cell_editor = elem2.find('#cell_editor');
+                            cell_editor.empty();
+                            cell_editor.append(data);
+                            grid_id = cell_editor.find('.grid_class').eq(0).attr('id');
+                            cell_editor.attr('grid_id', grid_id);
+                            //$('#cell_editor').empty();
+                            //$('#cell_editor').append(data);
+                        });
+                    }
+                    if (key2 == 'file') {
+                        var fil = item[key2];
+                        cont = '';
+                        jsons = {
+                            path: data[elem2.attr('row')][parseInt(key) + 1],
+                            name: item['name'],
+                            grid_id: id,
+                            element: 'cell_editor'};
+                        $.ajax({
+                            url: 'source/lib/' + fil,
+                            method: 'POST',
+                            dataType: 'html',
+                            data: jsons
+                        }).done(function (data) {
+                            cell_editor = elem2.find('#cell_editor');
+                            cell_editor.empty();
+                            cell_editor.append(data);
+                            file_id = cell_editor.find('.file_class').eq(0).attr('id');
+                            cell_editor.attr('file_id', file_id);
+                        });
+
+                    }
+                }
+                if (is_list == 0) {
+                }
+                return '<' + elem_name + ' ' + attr_name + '>' + cont + '</' + elem_name + '>';
+            }
+        }
+        return '<textarea id=cell_editor>' + cont + '</textarea>';
+    }
+
+
 });

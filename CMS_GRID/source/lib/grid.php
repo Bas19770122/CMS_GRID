@@ -794,13 +794,35 @@ class grid {
                         if (isset($this->searchfld)) {
                             foreach ($this->searchfld as $sj => $sf) {
                                 if ($sf == $ff) {
-                                    $v = $this->searchval[$jj];
+                                    $v = $this->searchval[$sj];
                                     break;
                                 }
                             }
                         }
                         if ($fli['tsyn'] . '.' . $fli['name'] == $ff) {
-                            $html = $html . '<div class=search_cont><input class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
+                            if (isset($fli['type'])) {
+                                if ($fli['type'] == 'select') {
+                                    $options = '';
+                                    foreach ($fli['options'] as $oj => $ov) {
+                                        $selected = '';
+                                        if ($v == $oj) {
+                                            $selected = 'selected';
+                                        }
+                                        $options .= '<option ' . $selected . ' value="' . $oj . '">' . $ov . '</option>';
+                                    }
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><select class=search_class value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
+                                } else {
+                                    $type = 'text';
+                                    $checked = '';
+                                    if ($fli['type'] == 'checkbox') {
+                                        $type = $fli['type'];
+                                        if ($v == 'Y') {
+                                            $checked = 'checked';
+                                        };
+                                    }
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><input ' . $checked . ' type=' . $type . ' class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
+                                }
+                            }
                             $isfld = 1;
                             break;
                         }
