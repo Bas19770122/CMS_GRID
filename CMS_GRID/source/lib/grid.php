@@ -814,7 +814,7 @@ class grid {
                                 } else {
                                     $type = 'text';
                                     $checked = '';
-                                    if ($fli['type'] == 'checkbox') {
+                                    if (in_array($fli['type'],['checkbox', 'date'])) {
                                         $type = $fli['type'];
                                         if ($v == 'Y') {
                                             $checked = 'checked';

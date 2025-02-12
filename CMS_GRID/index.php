@@ -169,7 +169,7 @@ $gr->info = [
     ],
     [
         "type"=>"search",
-        "fields"=>["t2.name", "t1.sum", "t1.selectid", "t1.chk"]
+        "fields"=>["t2.name", "t1.sum", "t1.selectid", "t1.chk", 't1.date']
     ]
 ];
 

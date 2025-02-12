@@ -105,10 +105,11 @@ button.save{
 }
 
 .search_class{
-    width: 97%;
+    width: 100%;
     border: none;
 }
 
 .search_cont{
     border: solid 1px grey;
+    overflow-x: hidden;
 }
