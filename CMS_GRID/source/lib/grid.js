@@ -5,6 +5,24 @@ $(document).ready(function () {
         return false;
     });
 
+    function getsearchlist(cont) {
+        let searchlst = [];
+        let searchfldlst = [];
+        cont.find('.search_class').each(function () {
+            if ($(this).attr('type') == 'checkbox') {
+                if ($(this).is(':checked')) {
+                    searchlst.push('Y');
+                } else {
+                    searchlst.push('');
+                }
+            } else {
+                searchlst.push($(this).val());
+            }
+            searchfldlst.push($(this).attr('fld'));
+        });
+        return [searchlst, searchfldlst];
+    }
+
 
     $('body').delegate('.search_class', 'change', function (e) {
 
@@ -15,20 +33,25 @@ $(document).ready(function () {
 
         var cont = $('#' + id).find('.search_cont').parent().eq(0);
 
-        var searchlst = [];
-        var searchfldlst = [];
-        cont.find('.search_class').each(function () {
-            if($(this).attr('type')=='checkbox'){
-               if($(this).is(':checked')) {
-                  searchlst.push('Y');      
-               } else {
-                   searchlst.push('');      
-               }
-            } else {
-             searchlst.push($(this).val());   
-            }            
-            searchfldlst.push($(this).attr('fld'));
-        });
+        /*
+         let searchlst = [];
+         let searchfldlst = [];
+         
+         cont.find('.search_class').each(function () {
+         if($(this).attr('type')=='checkbox'){
+         if($(this).is(':checked')) {
+         searchlst.push('Y');      
+         } else {
+         searchlst.push('');      
+         }
+         } else {
+         searchlst.push($(this).val());   
+         }            
+         searchfldlst.push($(this).attr('fld'));
+         });
+         */
+
+        let [searchlst, searchfldlst] = getsearchlist(cont);
 
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
@@ -73,12 +96,16 @@ $(document).ready(function () {
 
         var cont = $('#' + id).find('.search_cont').parent().eq(0);
 
-        var searchlst = [];
-        var searchfldlst = [];
-        cont.find('.search_class').each(function () {
-            searchlst.push($(this).val());
-            searchfldlst.push($(this).attr('fld'));
-        });
+        /*
+         var searchlst = [];
+         var searchfldlst = [];
+         cont.find('.search_class').each(function () {
+         searchlst.push($(this).val());
+         searchfldlst.push($(this).attr('fld'));
+         });
+         */
+
+        let [searchlst, searchfldlst] = getsearchlist(cont);
 
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
@@ -213,13 +240,22 @@ $(document).ready(function () {
                 var num = pager.find('.curpage').eq(0).attr('val');
             }
         }
+        
+        let cont = $('#' + id).find('.search_cont').parent().eq(0);
+
+        let [searchlst, searchfldlst] = getsearchlist(cont);
+
+        var searchlst_s = JSON.stringify(searchlst);
+        var searchfldlst_s = JSON.stringify(searchfldlst);
 
         elem.prop('disabled', true);
         jsons = {
             id: id,
             action: 'save',
             data: $('#json_' + id).text(),
-            number: num
+            number: num,
+            search: searchlst_s, //elem.val(),
+            searchfld: searchfldlst_s //elem.attr('fld')       
         };
         $.ajax({
             url: 'source/lib/grid.php',

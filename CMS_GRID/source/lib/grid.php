@@ -10,12 +10,20 @@ if (isset($_POST['action'])) {
         session_start();
         $gr = new grid;
         $gr->id = $_POST['id'];
-        if (isset($_POST['number'])) {
-            $number = $_POST['number'];
-        } else {
-            $number = '';
-        }
-        $data = $gr->ModRec($_POST['data'], $number);
+
+        /*
+          if (isset($_POST['number'])) {
+          $number = $_POST['number'];
+          } else {
+          $number = '';
+          }
+         */
+        list($number, $search, $searchfld) = getparams();
+
+        $gr->searchval = $search;
+        $gr->searchfld = $searchfld;
+
+        $data = $gr->ModRec($_POST['data'], $number, $search, $searchfld);
         echo $data;
         exit();
     }
@@ -31,30 +39,62 @@ if (isset($_POST['action'])) {
         session_start();
         $gr = new grid;
         $gr->id = $_POST['id'];
-        if (isset($_POST['number'])) {
-            $number = $_POST['number'];
-        } else {
-            $number = null;
-        }
-        if (isset($_POST['search'])) {
-            $search = json_decode($_POST['search'], true);
-            // $_SESSION['srch_val_' . $this->id] = $search;
-        } else {
-            $search = null;
-        }
+
+        /*
+          if (isset($_POST['number'])) {
+          $number = $_POST['number'];
+          } else {
+          $number = null;
+          }
+          if (isset($_POST['search'])) {
+          $search = json_decode($_POST['search'], true);
+          // $_SESSION['srch_val_' . $this->id] = $search;
+          } else {
+          $search = null;
+          }
+          $gr->searchval = $search;
+          if (isset($_POST['searchfld'])) {
+          $searchfld = json_decode($_POST['searchfld'], true);
+          // $_SESSION['srch_fld_' . $this->id] = $searchfld;
+          } else {
+          $searchfld = null;
+          }
+          $gr->searchfld = $searchfld;
+         */
+
+        list($number, $search, $searchfld) = getparams();
+
         $gr->searchval = $search;
-        if (isset($_POST['searchfld'])) {
-            $searchfld = json_decode($_POST['searchfld'], true);
-            // $_SESSION['srch_fld_' . $this->id] = $searchfld;
-        } else {
-            $searchfld = null;
-        }
         $gr->searchfld = $searchfld;
 
         $data = $gr->Ref($_POST['data'], $number, $search, $searchfld);
         echo $data;
         exit();
     }
+}
+
+function getparams() {
+
+    if (isset($_POST['number'])) {
+        $number = $_POST['number'];
+    } else {
+        $number = null;
+    }
+    if (isset($_POST['search'])) {
+        $search = json_decode($_POST['search'], true);
+        // $_SESSION['srch_val_' . $this->id] = $search;
+    } else {
+        $search = null;
+    }
+
+    if (isset($_POST['searchfld'])) {
+        $searchfld = json_decode($_POST['searchfld'], true);
+        // $_SESSION['srch_fld_' . $this->id] = $searchfld;
+    } else {
+        $searchfld = null;
+    }
+
+    return [$number, $search, $searchfld];
 }
 
 class grid {
@@ -161,59 +201,7 @@ class grid {
       return $this->ModRec($js);
       } */
 
-    public function ModRec($js, $number) {
-        global $server;
-        global $user;
-        global $password;
-        global $schema;
-
-        $sql = $this->JS_SQL($js);
-
-        $mysqli = new mysqli($server, $user, $password, $schema);
-
-        $mysqli->multi_query($sql);
-
-        do {
-            /* сохранить набор результатов в PHP */
-            if ($result = $mysqli->store_result()) {
-                while ($row = $result->fetch_row()) {
-                    // printf("%s\n", $row[0]);
-                }
-            }
-            /* вывести разделитель */
-            if ($mysqli->more_results()) {
-                //  printf("-----------------\n");
-            }
-        } while ($mysqli->next_result());
-
-        $info = $_SESSION['info_' . $this->id];
-
-        foreach ($info as $i => $v) {
-            if (isset($v['type'])) {
-                if ($v['type'] == 'page') {
-                    $info[$i]['number'] = $number;
-                }
-            }
-        }
-
-        $this->refresh($info);
-
-        $res = [];
-
-        $res['js'] = $this->js;
-        $res['html'] = $this->inhtml;
-        $res['pager'] = $this->inpager;
-
-        return $this->Data_JS($res);
-    }
-
-    public function Ref($js, $number, $search, $searchfld) {
-        global $server;
-        global $user;
-        global $password;
-        global $schema;
-
-        $info = $_SESSION['info_' . $this->id];
+    public function getinfo($info, $number, $search, $searchfld) {
 
         foreach ($info as $i => $v) {
             if (isset($searchfld)) {
@@ -257,6 +245,49 @@ class grid {
             }
         }
 
+        return $info;
+    }
+    
+        
+    
+    public function ModRec($js, $number, $search, $searchfld) {
+        global $server;
+        global $user;
+        global $password;
+        global $schema;
+
+        $sql = $this->JS_SQL($js);
+
+        $mysqli = new mysqli($server, $user, $password, $schema);
+
+        $mysqli->multi_query($sql);
+
+        do {
+            /* сохранить набор результатов в PHP */
+            if ($result = $mysqli->store_result()) {
+                while ($row = $result->fetch_row()) {
+                    // printf("%s\n", $row[0]);
+                }
+            }
+            /* вывести разделитель */
+            if ($mysqli->more_results()) {
+                //  printf("-----------------\n");
+            }
+        } while ($mysqli->next_result());
+
+        $info = $_SESSION['info_' . $this->id];
+/*
+        foreach ($info as $i => $v) {
+            if (isset($v['type'])) {
+                if ($v['type'] == 'page') {
+                    $info[$i]['number'] = $number;
+                }
+            }
+        }*/
+        
+        $info = $this->getinfo($info, $number, $search, $searchfld);        
+
+
         $this->refresh($info);
 
         $res = [];
@@ -268,6 +299,29 @@ class grid {
         return $this->Data_JS($res);
     }
 
+    public function Ref($js, $number, $search, $searchfld) {
+        global $server;
+        global $user;
+        global $password;
+        global $schema;
+
+        $info = $_SESSION['info_' . $this->id];
+        
+        $info = $this->getinfo($info, $number, $search, $searchfld);        
+
+        $this->refresh($info);
+
+        $res = [];
+
+        $res['js'] = $this->js;
+        $res['html'] = $this->inhtml;
+        $res['pager'] = $this->inpager;
+
+        return $this->Data_JS($res);
+    }
+
+
+    
     // transform 
 
     public function JS_SQL($js) { // insert, update, delete SQL
