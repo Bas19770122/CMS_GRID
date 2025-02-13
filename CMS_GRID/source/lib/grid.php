@@ -789,6 +789,18 @@ class grid {
             $isfld = 0;
             foreach ($field_list as $jf => $fli) {
                 if ($fli['syn'] == $f) {
+                    if (isset($fli['type']) && $fli['type'] == 'list') {
+                        foreach ($field_list as $jf_2 => $fli_2) {
+                            if ($fli['namecaption'] == $fli_2['syn']) {
+                                $tsyn = $fli_2['tsyn'];
+                                $name = $fli_2['name'];
+                                break;
+                            }
+                        }
+                    } else {
+                        $tsyn = $fli['tsyn'];
+                        $name = $fli['name'];
+                    }
                     foreach ($this->search as $jj => $ff) {
                         $v = '';
                         if (isset($this->searchfld)) {
@@ -799,7 +811,7 @@ class grid {
                                 }
                             }
                         }
-                        if ($fli['tsyn'] . '.' . $fli['name'] == $ff) {
+                        if ($tsyn . '.' . $name == $ff) {
                             if (isset($fli['type'])) {
                                 if ($fli['type'] == 'select') {
                                     $options = '';
@@ -814,7 +826,7 @@ class grid {
                                 } else {
                                     $type = 'text';
                                     $checked = '';
-                                    if (in_array($fli['type'],['checkbox', 'date'])) {
+                                    if (in_array($fli['type'], ['checkbox', 'date'])) {
                                         $type = $fli['type'];
                                         if ($v == 'Y') {
                                             $checked = 'checked';
