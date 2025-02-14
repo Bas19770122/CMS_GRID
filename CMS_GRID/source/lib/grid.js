@@ -1,6 +1,54 @@
 $(document).ready(function () {
 
 
+  $('body').delegate('.header_class', 'click', function (e) {
+
+        var elem = $(this);
+        var srt = $(this).attr('fld');
+        var grid = elem.parent().parent().find('.grid_class').eq(0);
+        var id = grid.attr('id');
+        var num = '1';
+
+        var cont = $('#' + id).find('.search_cont').parent().eq(0);
+
+        let [searchlst, searchfldlst] = getsearchlist(cont);
+
+        var searchlst_s = JSON.stringify(searchlst);
+        var searchfldlst_s = JSON.stringify(searchfldlst);
+
+        jsons = {
+            id: id,
+            action: 'refresh',
+            data: $('#json_' + id).text(),
+            number: num,
+            search: searchlst_s, //elem.val(),
+            searchfld: searchfldlst_s, //elem.attr('fld')
+            sort: srt
+        };
+        $.ajax({
+            url: 'source/lib/grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            jsn = JSON.parse(data);
+            rcd = jsn['js'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(rcds);
+            html = jsn['html'];
+            $('#' + id).empty();
+            $('#' + id).append(html);
+            pgr = jsn['pager'];
+            $('#pager_' + id).empty();
+            $('#pager_' + id).append(pgr);
+        });
+
+        return true;
+    });
+
+
+
     $('body').delegate('.search_class', 'focusout', function (e) {
         return false;
     });

@@ -146,7 +146,7 @@ $gr->info = [
     [
         "type" => "where",
         "text" => "where t2.id >= 1"
-    ],
+    ],  
     [
         "type" => "button",
         "text" => "Добавить",
@@ -172,7 +172,16 @@ $gr->info = [
         "fields"=>["t2.name", "t1.sum", "t1.selectid", "t1.chk", "t1.date", "t3.name"]
     ]
 ];
+/*
+  [
+        "type" => "order",
+        "text" => "order by t2.id"
+    ],    
+ * 
+ *  */
+
 
 echo $gr->show();
 ?>
+
 

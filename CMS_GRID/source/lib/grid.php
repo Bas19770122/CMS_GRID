@@ -18,7 +18,7 @@ if (isset($_POST['action'])) {
           $number = '';
           }
          */
-        list($number, $search, $searchfld) = getparams();
+        list($number, $search, $searchfld, $sort) = getparams();
 
         $gr->searchval = $search;
         $gr->searchfld = $searchfld;
@@ -62,12 +62,12 @@ if (isset($_POST['action'])) {
           $gr->searchfld = $searchfld;
          */
 
-        list($number, $search, $searchfld) = getparams();
+        list($number, $search, $searchfld, $sort) = getparams();
 
         $gr->searchval = $search;
         $gr->searchfld = $searchfld;
 
-        $data = $gr->Ref($_POST['data'], $number, $search, $searchfld);
+        $data = $gr->Ref($_POST['data'], $number, $search, $searchfld, $sort);
         echo $data;
         exit();
     }
@@ -94,7 +94,14 @@ function getparams() {
         $searchfld = null;
     }
 
-    return [$number, $search, $searchfld];
+    if (isset($_POST['sort'])) {
+        $sort = $_POST['sort'];
+        // $_SESSION['srch_fld_' . $this->id] = $searchfld;
+    } else {
+        $sort = null;
+    }
+
+    return [$number, $search, $searchfld, $sort];
 }
 
 class grid {
@@ -201,7 +208,9 @@ class grid {
       return $this->ModRec($js);
       } */
 
-    public function getinfo($info, $number, $search, $searchfld) {
+    public function getinfo($info, $number, $search, $searchfld, $sort) {
+
+        // where 
 
         foreach ($info as $i => $v) {
             if (isset($searchfld)) {
@@ -211,10 +220,17 @@ class grid {
                         $info[$i]['oldtext'] = null;
                     }
                 }
+                if ($v['type'] == 'order') {
+                    if (isset($info[$i]['oldtext'])) {
+                        $info[$i]['text'] = $info[$i]['oldtext'];
+                        $info[$i]['oldtext'] = null;
+                    }
+                }
             }
         }
 
         $issearch = 0;
+        $issort = 0;
         foreach ($info as $i => $v) {
             if (isset($v['type'])) {
                 if ($v['type'] == 'page') {
@@ -232,6 +248,15 @@ class grid {
                         }
                         $issearch = 1;
                     }
+                    if ($v['type'] == 'order') {
+                        if (!isset($info[$i]['oldtext'])) {
+                            $info[$i]['oldtext'] = $info[$i]['text'];
+                        }
+                        if ($sort != '') {
+                            $info[$i]['text'] = $info[$i]['text'] . ' ,  ' . $sort;
+                        }
+                        $issort = 1;
+                    }
                 }
             }
         }
@@ -243,13 +268,19 @@ class grid {
                     }
                 }
             }
+            if ($issort == 0) {
+                if ($sort != '') {
+                    $info[] = ['type' => 'order', 'text' => 'order by ' . $sort];
+                }
+            }
         }
+
+
+
 
         return $info;
     }
-    
-        
-    
+
     public function ModRec($js, $number, $search, $searchfld) {
         global $server;
         global $user;
@@ -276,17 +307,16 @@ class grid {
         } while ($mysqli->next_result());
 
         $info = $_SESSION['info_' . $this->id];
-/*
-        foreach ($info as $i => $v) {
-            if (isset($v['type'])) {
-                if ($v['type'] == 'page') {
-                    $info[$i]['number'] = $number;
-                }
-            }
-        }*/
-        
-        $info = $this->getinfo($info, $number, $search, $searchfld);        
+        /*
+          foreach ($info as $i => $v) {
+          if (isset($v['type'])) {
+          if ($v['type'] == 'page') {
+          $info[$i]['number'] = $number;
+          }
+          }
+          } */
 
+        $info = $this->getinfo($info, $number, $search, $searchfld);
 
         $this->refresh($info);
 
@@ -299,15 +329,15 @@ class grid {
         return $this->Data_JS($res);
     }
 
-    public function Ref($js, $number, $search, $searchfld) {
+    public function Ref($js, $number, $search, $searchfld, $sort) {
         global $server;
         global $user;
         global $password;
         global $schema;
 
         $info = $_SESSION['info_' . $this->id];
-        
-        $info = $this->getinfo($info, $number, $search, $searchfld);        
+
+        $info = $this->getinfo($info, $number, $search, $searchfld, $sort);
 
         $this->refresh($info);
 
@@ -320,8 +350,6 @@ class grid {
         return $this->Data_JS($res);
     }
 
-
-    
     // transform 
 
     public function JS_SQL($js) { // insert, update, delete SQL
@@ -664,6 +692,7 @@ class grid {
         $fld = '';
         $tab = '';
         $whe = '';
+        $order = '';
         $joi = '';
         $on = '';
         $minno = 999999;
@@ -681,7 +710,7 @@ class grid {
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
-        $sql = 'select <fields> from <tab> <where> <limit>';
+        $sql = 'select <fields> from <tab> <where> <order> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
         foreach ($info as $i => $v) {
             if ($v['type'] == 'search') {
@@ -752,6 +781,9 @@ class grid {
             }
             if ($v['type'] == 'where') {
                 $whe = $v['text'];
+            }
+            if ($v['type'] == 'order') {
+                $order = $v['text'];
             }
             if ($v['type'] == 'button') {
                 $buttons[] = ['class' => $v['class'], 'text' => $v['text']];
@@ -825,6 +857,7 @@ class grid {
         $sql = str_replace('<fields>', $fld, $sql);
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
+         $sql = str_replace('<order>', $order, $sql);
         $sql = str_replace('<limit>', $limit, $sql);
 
         $pagesql = str_replace('<tab>', $tab, $pagesql);
@@ -902,7 +935,14 @@ class grid {
         }
 
         foreach ($field_cap as $j => $f) {
-            $html = $html . '<div class=header_class>' . $f . '</div>';
+            $name = '';
+            foreach ($field_list as $jf => $ff) {
+                if ($field_visi[$j] == $ff['syn']) {
+                    $name = $ff['tsyn'].'.'.$ff['name'];
+                    break;
+                }
+            }
+            $html = $html . '<div class=header_class fld="' . $name . '">' . $f . '</div>';
             $style = $style . ' auto';
         }
         $html = $html . '<div id="json_' . $this->id . '" class="hidden">' . $js . '</div>';
