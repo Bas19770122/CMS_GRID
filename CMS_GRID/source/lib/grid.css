@@ -15,6 +15,7 @@
     background-color: Gainsboro;
     padding: 10px;
     text-align: center;
+    position: relative;
 }
 
 .hidden{
@@ -112,4 +113,11 @@ button.save{
 .search_cont{
     border: solid 1px grey;
     overflow-x: hidden;
+}
+.search_sig{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    padding-top: 2px;
+    padding-left: 5px;
 }

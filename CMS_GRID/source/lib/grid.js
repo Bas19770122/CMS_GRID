@@ -1,20 +1,31 @@
 $(document).ready(function () {
 
 
-  $('body').delegate('.header_class', 'click', function (e) {
+    $('body').delegate('.header_class', 'click', function (e) {
 
-        var elem = $(this);
-        var srt = $(this).attr('fld');
-        var grid = elem.parent().parent().find('.grid_class').eq(0);
-        var id = grid.attr('id');
-        var num = '1';
+        let elem = $(this);
+        let fld = $(this).attr('fld');
+        let srt = $(this).attr('srt');
+        if (srt == null || srt == '') {
+            srt = 'asc';
+        } else {
+            if (srt == 'asc') {
+                srt = 'desc';
+            } else {                
+                srt = '';
+            }
+        }
+        $(this).attr('srt', srt);
+        let grid = elem.parent().parent().find('.grid_class').eq(0);
+        let id = grid.attr('id');
+        let num = '1';
 
-        var cont = $('#' + id).find('.search_cont').parent().eq(0);
+        let cont = $('#' + id).find('.search_cont').parent().eq(0);
 
         let [searchlst, searchfldlst] = getsearchlist(cont);
 
-        var searchlst_s = JSON.stringify(searchlst);
-        var searchfldlst_s = JSON.stringify(searchfldlst);
+        let searchlst_s = JSON.stringify(searchlst);
+        let searchfldlst_s = JSON.stringify(searchfldlst);
 
         jsons = {
             id: id,
@@ -23,7 +34,8 @@ $(document).ready(function () {
             number: num,
             search: searchlst_s, //elem.val(),
             searchfld: searchfldlst_s, //elem.attr('fld')
-            sort: srt
+            sortfld: fld,
+            sorttp: srt
         };
         $.ajax({
             url: 'source/lib/grid.php',
@@ -288,7 +300,7 @@ $(document).ready(function () {
                 var num = pager.find('.curpage').eq(0).attr('val');
             }
         }
-        
+
         let cont = $('#' + id).find('.search_cont').parent().eq(0);
 
         let [searchlst, searchfldlst] = getsearchlist(cont);
