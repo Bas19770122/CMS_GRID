@@ -16,6 +16,7 @@
     padding: 10px;
     text-align: center;
     position: relative;
+    text-shadow: 2px 2px 5px white;
 }
 
 .hidden{
@@ -118,6 +119,7 @@ button.save{
     position: absolute;
     /*left: 0px;
     top: 0px;
-    padding-top: 2px;*/
-    padding-left: 5px;
+    padding-top: 2px;
+    padding-left: 5px;*/
+    text-shadow: 2px 2px 5px white;
 }

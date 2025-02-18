@@ -274,6 +274,10 @@ class grid {
                             }
                             $info[$i]['ord'] = $sorttp;
                             $info[$i]['fld'] = $sort;
+                        } else {
+                            $info[$i]['text'] = '';
+                            $info[$i]['ord'] = '';
+                            $info[$i]['fld'] = '';
                         }
                         $issort = 1;
                     }
@@ -969,10 +973,10 @@ class grid {
                                     $ord = 'srt="' . $fli_2['ord'] . '"';
                                     $ords = '';
                                     if ($fli_2['ord'] == 'asc'){
-                                        $ords = '&and;';
+                                        $ords = '&#9660;';//'&dArr;';//&or;';
                                     }
                                     if ($fli_2['ord'] == 'desc'){
-                                        $ords = '&or;';
+                                        $ords = '&#9650;';// '&uArr;';//'&and;';
                                     }
                                     $sig = '<div class="search_sig" >'.$ords.'</div>';
                                     break;
