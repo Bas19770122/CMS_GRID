@@ -116,10 +116,10 @@ button.save{
     overflow-x: hidden;
 }
 .search_sig{
-    position: absolute;
-    /*left: 0px;
-    top: 0px;
-    padding-top: 2px;
-    padding-left: 5px;*/
+    position: absolute;    
+    text-shadow: 2px 2px 5px white;
+}
+.cell_footer{
+    background: Gainsboro;
     text-shadow: 2px 2px 5px white;
 }

@@ -137,6 +137,8 @@ class grid {
     public $search;
     public $searchval;
     public $searchfld;
+    public $sqlf;
+    public $footer;
 
     // actions 
 
@@ -696,6 +698,27 @@ class grid {
             }
         }
 
+
+        $this->footer = [];
+        if ($this->sqlf != '') {
+            if ($result = $mysqli->query($this->sqlf)) {
+                while ($row = $result->fetch_assoc()) {
+                    foreach ($field_visi as $j => $f) {
+                        $txt = '';
+                        foreach ($field_list as $jf => $fv) {
+                            if ($fv['syn'] == $f) {
+                                if (isset($fv['footertext'])) {
+                                    $txt = $fv['footertext'];
+                                }
+                                break;
+                            }
+                        }
+                        $this->footer[$f] = $txt . ' ' . $row[$f];
+                    }
+                }
+            }
+        }
+
         /*
           if ($cnt != 0) {
           for ($i = 1; $i <= $cntrec; $i++) {
@@ -714,6 +737,7 @@ class grid {
         $field_cap = [];
         $field_type = [];
         $fld = '';
+        $fldf = '';
         $tab = '';
         $whe = '';
         $order = '';
@@ -737,6 +761,7 @@ class grid {
         $this->info = $info;
         $sql = 'select <fields> from <tab> <where> <order> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
+        $sqlf = 'select <fields> from <tab> <where>';
         foreach ($info as $i => $v) {
             if ($v['type'] == 'search') {
                 foreach ($v['fields'] as $j => $f) {
@@ -823,6 +848,7 @@ class grid {
         }
 
         //$k = $minno;
+        $isfooter = 0;
         for ($i = $minno; $i <= $maxno; $i++) {
             //foreach ($flds as $j => $fv) {
 
@@ -832,6 +858,17 @@ class grid {
                 $fld = $fld . ', ';
             }
             $fld = $fld . $syn . '.' . $f['name'] . ' as ' . $f['syn'];
+
+            if ($fldf != '') {
+                $fldf = $fldf . ', ';
+            }
+            if (isset($f['footer'])) {
+                $fldf = $fldf . $f['footer'] . '(' . $syn . '.' . $f['name'] . ') as ' . $f['syn'];
+                $isfooter = 1;
+            } else {
+                $fldf = $fldf . ' null as ' . $f['syn'];
+            }
+
 
             //if (isset($flds[$i])) {
             //if ($k == $i) {
@@ -866,6 +903,7 @@ class grid {
             for ($i = $minno; $i <= $maxno; $i++) {
                 if ($i == $j) {
                     $isf = 1;
+                    break;
                 }
             }
             if ($isf == 0) {
@@ -887,6 +925,14 @@ class grid {
 
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
+
+        if ($isfooter == 1) {
+            $sqlf = str_replace('<fields>', $fldf, $sqlf);
+            $sqlf = str_replace('<tab>', $tab, $sqlf);
+            $sqlf = str_replace('<where>', $whe, $sqlf);
+        }
+
+        $this->sqlf = $sqlf;
 
         return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
@@ -972,13 +1018,13 @@ class grid {
                                 if ($fli_2['fld'] == $ff['tsyn'] . '.' . $ff['name']) {
                                     $ord = 'srt="' . $fli_2['ord'] . '"';
                                     $ords = '';
-                                    if ($fli_2['ord'] == 'asc'){
-                                        $ords = '&#9660;';//'&dArr;';//&or;';
+                                    if ($fli_2['ord'] == 'asc') {
+                                        $ords = '&#9660;'; //'&dArr;';//&or;';
                                     }
-                                    if ($fli_2['ord'] == 'desc'){
-                                        $ords = '&#9650;';// '&uArr;';//'&and;';
+                                    if ($fli_2['ord'] == 'desc') {
+                                        $ords = '&#9650;'; // '&uArr;';//'&and;';
                                     }
-                                    $sig = '<div class="search_sig" >'.$ords.'</div>';
+                                    $sig = '<div class="search_sig" >' . $ords . '</div>';
                                     break;
                                 }
                             }
@@ -987,7 +1033,7 @@ class grid {
                     break;
                 }
             }
-            $html = $html . '<div class=header_class fld="' . $name . '" ' . $ord . '>'.$sig . $f . '</div>';
+            $html = $html . '<div class=header_class fld="' . $name . '" ' . $ord . '>' . $sig . $f . '</div>';
             $style = $style . ' auto';
         }
         $html = $html . '<div id="json_' . $this->id . '" class="hidden">' . $js . '</div>';
@@ -1117,6 +1163,30 @@ class grid {
         }
 
         $inhtml = $style . $html;
+
+        foreach ($this->footer as $j => $v) {
+            $class = '';
+            foreach ($field_list as $jf => $ff) {
+                if ($ff['syn'] == $j) {
+                    if (isset($ff['halign'])) {
+                        if ($ff['halign'] == 'center') {
+                            $class = $class . ' halign_center';
+                        }
+                        if ($ff['halign'] == 'left') {
+                            $class = $class . ' halign_left';
+                        }
+                        if ($ff['halign'] == 'right') {
+                            $class = $class . ' halign_right';
+                        }
+                    }
+                    break;
+                }
+            }
+
+
+            $inhtml .= '<div class="cell_footer' . $class . '">' . $v . '</div>';
+        }
+
         $html = str_replace('<<html>>', $inhtml, $temp_html);
 
         $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';

@@ -51,7 +51,9 @@ $gr->info = [
                 "caption" => "Признак",
                 "checkedval" => "Y",
                 "uncheckedval" => "N",
-                "halign" => "center"
+                "halign" => "center",
+                "footer" => "count",
+                "footertext" => "Количество"
             ],            
             [
                 "name" => "date",
@@ -68,7 +70,9 @@ $gr->info = [
                 "type" => "number",
                 "№" => 5,
                 "caption" => "Сумма",
-                "halign" => "right"
+                "halign" => "right",
+                "footer" => "sum",
+                "footertext" => "Сумма"
             ],
             [
                 "name" => "selectid",
