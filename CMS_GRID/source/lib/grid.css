@@ -116,8 +116,8 @@ button.save{
 }
 .search_sig{
     position: absolute;
-    left: 0px;
+    /*left: 0px;
     top: 0px;
-    padding-top: 2px;
+    padding-top: 2px;*/
     padding-left: 5px;
 }

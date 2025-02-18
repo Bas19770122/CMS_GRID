@@ -1,20 +1,35 @@
 $(document).ready(function () {
 
 
-    $('body').delegate('.header_class', 'click', function (e) {
+    function getsrt(elem) {
 
-        let elem = $(this);
-        let fld = $(this).attr('fld');
-        let srt = $(this).attr('srt');
+        elem.parent().find('.header_class').each(function () {
+            if ($(this).attr('col') != elem.attr('col')) {
+                $(this).attr('srt', '');
+            }
+        });
+
+        let srt = elem.attr('srt');
         if (srt == null || srt == '') {
             srt = 'asc';
         } else {
             if (srt == 'asc') {
                 srt = 'desc';
-            } else {                
+            } else {
                 srt = '';
             }
         }
+
+        return srt;
+    }
+
+    $('body').delegate('.header_class', 'click', function (e) {
+
+        let elem = $(this);
+        let fld = $(this).attr('fld');
+
+        let srt = getsrt(elem);
+
         $(this).attr('srt', srt);
         let grid = elem.parent().parent().find('.grid_class').eq(0);
         let id = grid.attr('id');
@@ -307,6 +322,15 @@ $(document).ready(function () {
 
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
+        
+        let srt = '';
+        let fld = '';
+        elem.parent().parent().find('.header_class').each(function () {
+            if ($(this).attr('srt') != '' && $(this).attr('srt') != undefined) {
+                srt = $(this).attr('srt');
+                fld = $(this).attr('fld');
+            }
+        });
 
         elem.prop('disabled', true);
         jsons = {
@@ -315,7 +339,9 @@ $(document).ready(function () {
             data: $('#json_' + id).text(),
             number: num,
             search: searchlst_s, //elem.val(),
-            searchfld: searchfldlst_s //elem.attr('fld')       
+            searchfld: searchfldlst_s, //elem.attr('fld')       
+            sortfld: fld,
+            sorttp: srt
         };
         $.ajax({
             url: 'source/lib/grid.php',

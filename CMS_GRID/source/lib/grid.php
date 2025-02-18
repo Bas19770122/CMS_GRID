@@ -23,7 +23,7 @@ if (isset($_POST['action'])) {
         $gr->searchval = $search;
         $gr->searchfld = $searchfld;
 
-        $data = $gr->ModRec($_POST['data'], $number, $search, $searchfld);
+        $data = $gr->ModRec($_POST['data'], $number, $search, $searchfld, $sort, $sorttp);
         echo $data;
         exit();
     }
@@ -301,7 +301,7 @@ class grid {
         return $info;
     }
 
-    public function ModRec($js, $number, $search, $searchfld) {
+    public function ModRec($js, $number, $search, $searchfld, $sort, $sorttp) {
         global $server;
         global $user;
         global $password;
