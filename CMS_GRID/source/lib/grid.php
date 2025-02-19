@@ -1019,10 +1019,10 @@ class grid {
                                     $ord = 'srt="' . $fli_2['ord'] . '"';
                                     $ords = '';
                                     if ($fli_2['ord'] == 'asc') {
-                                        $ords = '&#9660;'; //'&dArr;';//&or;';
+                                        $ords = '&#9650;'; // '&uArr;';//'&and;';
                                     }
                                     if ($fli_2['ord'] == 'desc') {
-                                        $ords = '&#9650;'; // '&uArr;';//'&and;';
+                                        $ords = '&#9660;'; //'&dArr;';//&or;';
                                     }
                                     $sig = '<div class="search_sig" >' . $ords . '</div>';
                                     break;

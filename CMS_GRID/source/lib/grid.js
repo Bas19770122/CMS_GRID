@@ -130,15 +130,15 @@ $(document).ready(function () {
 
         let searchlst_s = JSON.stringify(searchlst);
         let searchfldlst_s = JSON.stringify(searchfldlst);
-        
+
         let srt = '';
-        let fld = '';        
+        let fld = '';
         elem.parent().parent().find('.header_class').each(function () {
             if ($(this).attr('srt') != '' && $(this).attr('srt') != undefined) {
                 srt = $(this).attr('srt');
                 fld = $(this).attr('fld');
             }
-        });                
+        });
 
         jsons = {
             id: id,
@@ -148,7 +148,7 @@ $(document).ready(function () {
             search: searchlst_s, //elem.val(),
             searchfld: searchfldlst_s, //elem.attr('fld')
             sortfld: fld,
-            sorttp: srt                  
+            sorttp: srt
         };
         $.ajax({
             url: 'source/lib/grid.php',
@@ -195,15 +195,15 @@ $(document).ready(function () {
 
         let searchlst_s = JSON.stringify(searchlst);
         let searchfldlst_s = JSON.stringify(searchfldlst);
-        
+
         let srt = '';
-        let fld = '';        
+        let fld = '';
         elem.parent().parent().find('.header_class').each(function () {
             if ($(this).attr('srt') != '' && $(this).attr('srt') != undefined) {
                 srt = $(this).attr('srt');
                 fld = $(this).attr('fld');
             }
-        });        
+        });
 
         jsons = {
             id: id,
@@ -213,7 +213,7 @@ $(document).ready(function () {
             search: searchlst_s, //elem.val(),
             searchfld: searchfldlst_s, //elem.attr('fld')       
             sortfld: fld,
-            sorttp: srt            
+            sorttp: srt
         };
 
         $.ajax({
@@ -320,7 +320,11 @@ $(document).ready(function () {
             $('#json_' + id).append(rcds);
             nrcd = jsn['adddata'];
             //nrcds = JSON.stringify(nrcd);
-            $('#' + id).append(nrcd);
+            if ($('#' + id).find('.cell_footer').length > 0) {
+               $(nrcd).insertBefore('#' + id+' .cell_footer:first');
+            } else {
+                $('#' + id).append(nrcd);
+            }
             set_inserted(id);
         });
 
@@ -344,7 +348,7 @@ $(document).ready(function () {
 
         var searchlst_s = JSON.stringify(searchlst);
         var searchfldlst_s = JSON.stringify(searchfldlst);
-        
+
         let srt = '';
         let fld = '';
         elem.parent().parent().find('.header_class').each(function () {
