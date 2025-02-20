@@ -139,6 +139,11 @@ class grid {
     public $searchfld;
     public $sqlf;
     public $footer;
+    public $tree;
+    public $root;
+    public $key;
+    public $parent;
+    public $levels;
 
     // actions 
 
@@ -562,23 +567,9 @@ class grid {
         return $data;
     }
 
-    public function SQL_Data($sql, $pagesql, $field_visi, $field_list, $ids, $show_id, $selected_val, $cnt) { // get data from select SQL
-        global $server;
-        global $user;
-        global $password;
-        global $schema;
-        $mysqli = new mysqli($server, $user, $password, $schema);
-
-        $_SESSION['ids_' . $this->id] = $ids; // array table - id_fields
-        $_SESSION['fields_' . $this->id] = $field_list; // all fields
-        $_SESSION['fvisi_' . $this->id] = $field_visi; // visible fields synonimus
-        $_SESSION['data_' . $this->id] = []; // visible data  
-
-        $data = [];
-        $row_id = '';
-        $row_no = -1;
-        $i = 0;
-        if ($result = $mysqli->query($sql)) {
+    public function loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $parent) {
+        $lv = $lv + 1;
+        if ($result = $mysqli->query($sql . $parent)) {
 
             while ($row = $result->fetch_assoc()) {
                 $lst_fld = [];
@@ -642,58 +633,113 @@ class grid {
 
 
                 $data[] = $lst_fld;
+                $levels[] = $lv;
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
                 $i = $i + 1;
+
+                $inparent = '';
+                if ($this->tree == 1) {
+                    $inparent = ' and ' . $this->parent . ' = "' . $row[$this->key] . '"';
+                    list($data, $levels, $i) = $this->loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $inparent);
+                }
             }
         }
+
+        return [$data, $levels, $i];
+    }
+
+    public function SQL_Data($sql, $pagesql, $field_visi, $field_list, $ids, $show_id, $selected_val, $cnt) { // get data from select SQL
+        global $server;
+        global $user;
+        global $password;
+        global $schema;
+        $mysqli = new mysqli($server, $user, $password, $schema);
+
+        $_SESSION['ids_' . $this->id] = $ids; // array table - id_fields
+        $_SESSION['fields_' . $this->id] = $field_list; // all fields
+        $_SESSION['fvisi_' . $this->id] = $field_visi; // visible fields synonimus
+        $_SESSION['data_' . $this->id] = []; // visible data  
+
+        $data = [];
+        $row_id = '';
+        $row_no = -1;
+        $i = 0;
+        $levels = [];
+        $lv = -1;
+
+        /*
+
+          $tree;
+          $root;
+          $key;
+          $parent;
+         */
+
+        $parent = '';
+
+        if ($this->tree == 1) {
+            if ($this->root == 'null') {
+                $root = ' is null ';
+            } else {
+                $root = ' = "' . $this->root . '"';
+            }
+            $parent = ' and ' . $this->parent . $root;
+        }
+
+        list($data, $levels, $i) = $this->loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $parent);
+
+        $this->levels = $levels;
 
         $page = [];
         $cntall = 0;
-        if ($result = $mysqli->query($pagesql)) {
-            while ($row = $result->fetch_assoc()) {
-                $cntall = $row['cnt'];
-            }
-        }
-        $add = 0;
-        if ($cnt != 0) {
-            if ($cntall % $cnt != 0) {
-                $add = 1;
-            }
-            $cntrec = intdiv($cntall, $cnt) + $add;
-        } else {
-            $cntrec = 1;
-        }
+        if ($this->tree == 0) {
 
-        $pnumber = 0;
-        if (isset($this->pnumber)) {
-            $pnumber = $this->pnumber; // current page number
-        }
+            if ($result = $mysqli->query($pagesql)) {
+                while ($row = $result->fetch_assoc()) {
+                    $cntall = $row['cnt'];
+                }
+            }
+            $add = 0;
+            if ($cnt != 0) {
+                if ($cntall % $cnt != 0) {
+                    $add = 1;
+                }
+                $cntrec = intdiv($cntall, $cnt) + $add;
+            } else {
+                $cntrec = 1;
+            }
 
-        $k = 0;
-        if ($cnt != 0) {
-            for ($i = 1; $i <= 3; $i++) {
-                if ($i <= $cntrec) {
-                    $page[] = $i;
-                    $k = $i;
-                }
+            $pnumber = 0;
+            if (isset($this->pnumber)) {
+                $pnumber = $this->pnumber; // current page number
             }
-            for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
-                if ($i > $k) {
-                    $page[] = $i;
-                    $k = $i;
+
+            $k = 0;
+            if ($cnt != 0) {
+                for ($i = 1; $i <= 3; $i++) {
+                    if ($i <= $cntrec) {
+                        $page[] = $i;
+                        $k = $i;
+                    }
                 }
-            }
-            for ($i = $pnumber + 1; $i <= $pnumber + 2; $i++) {
-                if ($i > $k && $i <= $cntrec) {
-                    $page[] = $i;
-                    $k = $i;
+                for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
+                    if ($i > $k) {
+                        $page[] = $i;
+                        $k = $i;
+                    }
                 }
-            }
-            for ($i = $cntrec - 2; $i <= $cntrec; $i++) {
-                if ($i > $k) {
-                    $page[] = $i;
-                    $k = $i;
+                for ($i = $pnumber + 1; $i <= $pnumber + 2; $i++) {
+                    if ($i > $k && $i <= $cntrec) {
+                        $page[] = $i;
+                        $k = $i;
+                    }
+                }
+                for ($i = $cntrec - 2; $i <= $cntrec; $i++) {
+                    if ($i > $k) {
+                        $page[] = $i;
+                        $k = $i;
+                    }
                 }
             }
         }
@@ -755,6 +801,7 @@ class grid {
         $number = '1';
         $limit = '';
         $search = [];
+
         // $id_flds = [];
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
@@ -762,6 +809,28 @@ class grid {
         $sql = 'select <fields> from <tab> <where> <order> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
         $sqlf = 'select <fields> from <tab> <where>';
+
+        // options
+        $tree = 0;
+        $root = '';
+        $key = '';
+        $parent = '';
+        foreach ($info as $i => $v) {
+            if ($v['type'] == 'options') {
+                if (isset($v['root'])) {
+                    $tree = 1;
+                    $root = $v['root'];
+                    $key = $v['keysyn'];
+                    $parent = $v['parentfield'];
+                }
+                break;
+            }
+        }
+        $this->tree = $tree;
+        $this->root = $root;
+        $this->key = $key;
+        $this->parent = $parent;
+
         foreach ($info as $i => $v) {
             if ($v['type'] == 'search') {
                 foreach ($v['fields'] as $j => $f) {
@@ -769,12 +838,14 @@ class grid {
                 }
             }
             if ($v['type'] == 'page') {
-                if (isset($v['count']))
-                    $cnt = $v['count'];
-                if (isset($v['number']))
-                    $number = $v['number'];
-                $limit = ' limit ' . ($number - 1) * $cnt . ', ' . $cnt;
-                $this->pnumber = $number;
+                if ($tree == 0) {
+                    if (isset($v['count']))
+                        $cnt = $v['count'];
+                    if (isset($v['number']))
+                        $number = $v['number'];
+                    $limit = ' limit ' . ($number - 1) * $cnt . ', ' . $cnt;
+                    $this->pnumber = $number;
+                }
             }
             if ($v['type'] == 'table') {
                 if (isset($v['show_id']))
@@ -1153,7 +1224,17 @@ class grid {
                             if ($k == 0 && $row_no == $i) {
                                 $class = $class . ' Selected';
                             }
-                            $html = $html . '<div class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $v . '</div>';
+                            $stl = '';
+                            $addt = '';
+                            if ($k == 0) {
+                                if ($this->tree == 1) {
+                                    $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px" '; //border:none;  border-left:solid 1px black;  
+                                    //if ($this->levels[$i] != 0) {
+                                      //  $addt = '<div style="width:50px;left:-50px;"  class="treearrow"></div>';
+                                    //}
+                                }
+                            }
+                            $html = $html . '<div ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }

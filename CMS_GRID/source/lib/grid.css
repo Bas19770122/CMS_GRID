@@ -116,10 +116,18 @@ button.save{
     overflow-x: hidden;
 }
 .search_sig{
-    position: absolute;    
+    position: absolute;
     text-shadow: 2px 2px 5px white;
 }
 .cell_footer{
     background: Gainsboro;
     text-shadow: 2px 2px 5px white;
+}
+.treearrow{        
+    height:100%;
+    border-left: solid 1px black;
+  /*  border-bottom: solid 1px black;*/
+    display: inline;
+    left: 0px;
+    position: absolute;
 }

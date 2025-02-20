@@ -30,6 +30,12 @@ $gr->id = 'id_1';
 
 $gr->info = [
     [
+        "type" => "options",
+        "root" => "null",
+        "keysyn" => "id2", 
+        "parentfield" => "t2.parentid"
+    ],
+    [
         "type" => "table",
         "name" => "table1",
         "syn" => "t1",
@@ -47,7 +53,7 @@ $gr->info = [
                 "name" => "chk",
                 "syn" => "ch",
                 "type" => "checkbox",
-                "№" => 1,
+                "№" => 2,
                 "caption" => "Признак",
                 "checkedval" => "Y",
                 "uncheckedval" => "N",
@@ -127,7 +133,7 @@ $gr->info = [
                 "name" => "name",
                 "syn" => "name",
                 "type" => "string",
-                "№" => 2,
+                "№" => 1,
                 "caption" => "Название"
             ],
             [
