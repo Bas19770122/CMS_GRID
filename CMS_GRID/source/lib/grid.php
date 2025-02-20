@@ -569,7 +569,10 @@ class grid {
 
     public function loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $parent) {
         $lv = $lv + 1;
-        if ($result = $mysqli->query($sql . $parent)) {
+                
+        $sqlt = str_replace('<parent>', $parent, $sql);
+        
+        if ($result = $mysqli->query($sqlt)) {
 
             while ($row = $result->fetch_assoc()) {
                 $lst_fld = [];
@@ -806,7 +809,7 @@ class grid {
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
         $this->info = $info;
-        $sql = 'select <fields> from <tab> <where> <order> <limit>';
+        $sql = 'select <fields> from <tab> <where> <parent> <order> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
         $sqlf = 'select <fields> from <tab> <where>';
 
@@ -992,8 +995,12 @@ class grid {
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
         $sql = str_replace('<order>', $order, $sql);
-        $sql = str_replace('<limit>', $limit, $sql);
-
+        $sql = str_replace('<limit>', $limit, $sql);        
+        
+        if ($this->tree == 0) {            
+            $sql = str_replace('<parent>', '', $sql);
+        }
+        
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
 
