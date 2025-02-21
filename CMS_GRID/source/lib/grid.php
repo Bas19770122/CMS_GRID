@@ -573,15 +573,15 @@ class grid {
 
         //$sqlt = str_replace('<parent>', $parent, $sql);
         // if ($result = $mysqli->query($sqlt)) {
-        
+
         $nrec = 0;
-        
+
         $result->data_seek($nrec);
-        
+
         while ($row = $result->fetch_assoc()) {
             $nrec = $nrec + 1;
             $fnd = false;
-            if($this->tree == 1){
+            if ($this->tree == 1) {
                 $fnd = ($root == $row[$parent]);
             } else {
                 $fnd = true;
@@ -652,10 +652,10 @@ class grid {
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
                 $i = $i + 1;
-            
-               // $inparent = '';
+
+                // $inparent = '';
                 if ($this->tree == 1) {
-                   // $inparent = ' and ' . $this->parent . ' = "' . $row[$this->key] . '"';
+                    // $inparent = ' and ' . $this->parent . ' = "' . $row[$this->key] . '"';
 
                     $inroot = $row[$key];
 
@@ -663,11 +663,11 @@ class grid {
                             $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
                             $inroot, $key, $parent);
                 }
-                  /* */
+                /* */
             }
             $result->data_seek($nrec);
         }
-       //  $result->data_seek(0);
+        //  $result->data_seek(0);
         // }
 
         return [$result, $data, $levels, $i, $row_no];
@@ -700,17 +700,17 @@ class grid {
           $parent;
          */
         /*
-        $parent = '';
+          $parent = '';
 
-        if ($this->tree == 1) {
-            if ($this->root == 'null') {
-                $root = ' is null ';
-            } else {
-                $root = ' = "' . $this->root . '"';
-            }
-            $parent = ' and ' . $this->parent . $root;
-        }
-        */
+          if ($this->tree == 1) {
+          if ($this->root == 'null') {
+          $root = ' is null ';
+          } else {
+          $root = ' = "' . $this->root . '"';
+          }
+          $parent = ' and ' . $this->parent . $root;
+          }
+         */
 
         //$sqlt = str_replace('<parent>', $parent, $sql);
 
@@ -1033,10 +1033,10 @@ class grid {
         $sql = str_replace('<limit>', $limit, $sql);
 
         /*
-        if ($this->tree == 0) {
-            $sql = str_replace('<parent>', '', $sql);
-        }
-        */
+          if ($this->tree == 0) {
+          $sql = str_replace('<parent>', '', $sql);
+          }
+         */
 
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
@@ -1273,9 +1273,20 @@ class grid {
                             if ($k == 0) {
                                 if ($this->tree == 1) {
                                     $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px" '; //border:none;  border-left:solid 1px black;  
-                                    //if ($this->levels[$i] != 0) {
-                                    //  $addt = '<div style="width:50px;left:-50px;"  class="treearrow"></div>';
-                                    //}
+                                    if ($this->levels[$i] != 0) {
+                                        for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
+                                            if ($ii == 1) {
+                                                $addt .= '<div style="width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
+                                                        '<div class="treearrow_h">' .
+                                                        '</div>' .
+                                                        '</div>';
+                                            } else {
+                                       
+                                                    $addt .= '<div style="width:50px;left:-' . (($ii-1) * 50+25) . 'px;"  class="treearrow_v"></div>';
+                                              
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             $html = $html . '<div ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
