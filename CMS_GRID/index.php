@@ -15,6 +15,7 @@ echo
 <script src="source/lib/jquery-3.6.0.min.js"></script>
 <script src="source/lib/grid.js"></script>
 <script src="source/list/list.js"></script>
+<script src="source/tree/tree.js"></script>
 <script src="source/lib/file.js"></script>
 
 
@@ -33,7 +34,7 @@ $gr->info = [
         "type" => "options",
         "root" => "null",
         "keysyn" => "id2", 
-        "parentfield" => "t2.parentid"
+        "parentsyn" => "prnt"
     ],
     [
         "type" => "table",
@@ -84,7 +85,7 @@ $gr->info = [
                 "name" => "selectid",
                 "syn" => "sid",
                 "type" => "select",
-                "№" => 6,
+                "№" => 1,
                 "caption" => "Тип",
                 "options" => ["" => "пусто", "1" => "Тип 1", "2" => "Тип 2", "3" => "Тип 3", "4" => "Тип 4"]
             ],
@@ -133,7 +134,7 @@ $gr->info = [
                 "name" => "name",
                 "syn" => "name",
                 "type" => "string",
-                "№" => 1,
+                "№" => 6,
                 "caption" => "Название"
             ],
             [
@@ -150,6 +151,29 @@ $gr->info = [
                 "file" => "file.php", 
                 "№" => 8,
                 "caption" => "Файл"
+            ],
+            [
+                "name" => "parentid",
+                "syn" => "prnt",
+                "type" => "list",
+                "№" => 9,
+                "caption" => "Родитель",
+                "list" => "source/tree/tree.php",
+                "namecaption" => "treeidname"
+            ]
+        ]
+    ],
+    [
+        "type" => "table",
+        "name" => "table2",
+        "syn" => "t2p",
+        "join" => "left join",
+        "on" => "t2.parentid = t2p.id",
+        "fields" => [
+            [
+                "name" => "name",
+                "syn" => "treeidname",
+                "visible" => "no",
             ]
         ]
     ],

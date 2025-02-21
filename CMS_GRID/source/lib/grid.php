@@ -567,14 +567,26 @@ class grid {
         return $data;
     }
 
-    public function loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $parent) {
+    public function loadrecord($result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
+            $root, $key, $parent) {
         $lv = $lv + 1;
-                
-        $sqlt = str_replace('<parent>', $parent, $sql);
-        
-        if ($result = $mysqli->query($sqlt)) {
 
-            while ($row = $result->fetch_assoc()) {
+        //$sqlt = str_replace('<parent>', $parent, $sql);
+        // if ($result = $mysqli->query($sqlt)) {
+        
+        $nrec = 0;
+        
+        $result->data_seek($nrec);
+        
+        while ($row = $result->fetch_assoc()) {
+            $nrec = $nrec + 1;
+            $fnd = false;
+            if($this->tree == 1){
+                $fnd = ($root == $row[$parent]);
+            } else {
+                $fnd = true;
+            }
+            if ($fnd) {
                 $lst_fld = [];
                 if ($show_id == 'yes') {
                     $id = '';
@@ -640,16 +652,25 @@ class grid {
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
                 $i = $i + 1;
-
-                $inparent = '';
+            
+               // $inparent = '';
                 if ($this->tree == 1) {
-                    $inparent = ' and ' . $this->parent . ' = "' . $row[$this->key] . '"';
-                    list($data, $levels, $i) = $this->loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $inparent);
-                }
-            }
-        }
+                   // $inparent = ' and ' . $this->parent . ' = "' . $row[$this->key] . '"';
 
-        return [$data, $levels, $i];
+                    $inroot = $row[$key];
+
+                    list($result, $data, $levels, $i, $row_no) = $this->loadrecord(
+                            $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
+                            $inroot, $key, $parent);
+                }
+                  /* */
+            }
+            $result->data_seek($nrec);
+        }
+       //  $result->data_seek(0);
+        // }
+
+        return [$result, $data, $levels, $i, $row_no];
     }
 
     public function SQL_Data($sql, $pagesql, $field_visi, $field_list, $ids, $show_id, $selected_val, $cnt) { // get data from select SQL
@@ -678,7 +699,7 @@ class grid {
           $key;
           $parent;
          */
-
+        /*
         $parent = '';
 
         if ($this->tree == 1) {
@@ -689,8 +710,22 @@ class grid {
             }
             $parent = ' and ' . $this->parent . $root;
         }
+        */
 
-        list($data, $levels, $i) = $this->loadrecord($data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $levels, $lv, $i, $mysqli, $sql, $parent);
+        //$sqlt = str_replace('<parent>', $parent, $sql);
+
+        if ($result = $mysqli->query($sql)) {
+
+            if ($this->root == 'null') {
+                $root = '';
+            } else {
+                $root = $this->root;
+            }
+
+            list($result, $data, $levels, $i, $row_no) = $this->loadrecord(
+                    $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
+                    $root, $this->key, $this->parent);
+        }
 
         $this->levels = $levels;
 
@@ -809,7 +844,7 @@ class grid {
         //$all_flds = [];
         $_SESSION['info_' . $this->id] = $info;
         $this->info = $info;
-        $sql = 'select <fields> from <tab> <where> <parent> <order> <limit>';
+        $sql = 'select <fields> from <tab> <where> <order> <limit>';
         $pagesql = 'select count(*) cnt from <tab> <where>';
         $sqlf = 'select <fields> from <tab> <where>';
 
@@ -824,7 +859,7 @@ class grid {
                     $tree = 1;
                     $root = $v['root'];
                     $key = $v['keysyn'];
-                    $parent = $v['parentfield'];
+                    $parent = $v['parentsyn'];
                 }
                 break;
             }
@@ -995,12 +1030,14 @@ class grid {
         $sql = str_replace('<tab>', $tab, $sql);
         $sql = str_replace('<where>', $whe, $sql);
         $sql = str_replace('<order>', $order, $sql);
-        $sql = str_replace('<limit>', $limit, $sql);        
-        
-        if ($this->tree == 0) {            
+        $sql = str_replace('<limit>', $limit, $sql);
+
+        /*
+        if ($this->tree == 0) {
             $sql = str_replace('<parent>', '', $sql);
         }
-        
+        */
+
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
 
@@ -1237,7 +1274,7 @@ class grid {
                                 if ($this->tree == 1) {
                                     $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px" '; //border:none;  border-left:solid 1px black;  
                                     //if ($this->levels[$i] != 0) {
-                                      //  $addt = '<div style="width:50px;left:-50px;"  class="treearrow"></div>';
+                                    //  $addt = '<div style="width:50px;left:-50px;"  class="treearrow"></div>';
                                     //}
                                 }
                             }
