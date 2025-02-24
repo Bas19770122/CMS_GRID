@@ -144,6 +144,7 @@ class grid {
     public $key;
     public $parent;
     public $levels;
+    public $pnum; 
 
     // actions 
 
@@ -568,9 +569,9 @@ class grid {
     }
 
     public function loadrecord($result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
-            $root, $key, $parent) {
+            $root, $key, $parent, $pnum, $p) {
         $lv = $lv + 1;
-
+        
         //$sqlt = str_replace('<parent>', $parent, $sql);
         // if ($result = $mysqli->query($sqlt)) {
 
@@ -649,6 +650,8 @@ class grid {
 
                 $data[] = $lst_fld;
                 $levels[] = $lv;
+                $pnum[] = $p;
+                $pi = $i; 
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
                 $i = $i + 1;
@@ -659,9 +662,9 @@ class grid {
 
                     $inroot = $row[$key];
 
-                    list($result, $data, $levels, $i, $row_no) = $this->loadrecord(
+                    list($result, $data, $levels, $i, $row_no, $pnum) = $this->loadrecord(
                             $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
-                            $inroot, $key, $parent);
+                            $inroot, $key, $parent, $pnum, $pi);
                 }
                 /* */
             }
@@ -670,7 +673,7 @@ class grid {
         //  $result->data_seek(0);
         // }
 
-        return [$result, $data, $levels, $i, $row_no];
+        return [$result, $data, $levels, $i, $row_no, $pnum];
     }
 
     public function SQL_Data($sql, $pagesql, $field_visi, $field_list, $ids, $show_id, $selected_val, $cnt) { // get data from select SQL
@@ -691,6 +694,8 @@ class grid {
         $i = 0;
         $levels = [];
         $lv = -1;
+        $pnum = []; 
+        $p = -1;
 
         /*
 
@@ -720,14 +725,16 @@ class grid {
                 $root = '';
             } else {
                 $root = $this->root;
-            }
+            }            
 
-            list($result, $data, $levels, $i, $row_no) = $this->loadrecord(
+            list($result, $data, $levels, $i, $row_no, $pnum) = $this->loadrecord(
                     $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
-                    $root, $this->key, $this->parent);
+                    $root, $this->key, $this->parent, $pnum, $p);
         }
 
         $this->levels = $levels;
+        
+        $this->pnum = $pnum; 
 
         $page = [];
         $cntall = 0;
@@ -1096,6 +1103,17 @@ class grid {
         return [$v1, $v2];
     }
 
+    public function getplus($pnum, $i){
+        $res = '';/*
+        foreach ($pnum as $k => $v) {
+            if($v == $i){
+                $res = '<button class=plus i="'.$i.'">+</button>';
+                break;
+            }
+        }*/
+        return $res; 
+    }
+    
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
@@ -1323,21 +1341,22 @@ class grid {
                                                 $v1 = '';
                                                 $v2 = '';
                                                 list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
-                                                $addt .= '<div style="' . $v1 . 'width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
-                                                        '<div class="treearrow_h" style="' . $v2 . '" >' .
+                                                $addt .= '<div p="'.$this->pnum[$i].'" i="'.$i.'" style="' . $v1 . 'width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
+                                                        '<div p="'.$this->pnum[$i].'"i="'.$i.'" class="treearrow_h" style="' . $v2 . '" >' .
+                                                        $this->getplus($this->pnum, $i).
                                                         '</div>' .
                                                         '</div>';
                                             } else {
                                                 $v1 = '';
                                                 $v2 = '';
                                                 list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
-                                                $addt .= '<div style="' . $v1 . 'width:50px;left:-' . (($ii - 1) * 50 + 25) . 'px;"  class="treearrow_v"></div>';
+                                                $addt .= '<div p="'.$this->pnum[$i].'" i="'.$i.'" style="' . $v1 . 'width:50px;left:-' . (($ii - 1) * 50 + 25) . 'px;"  class="treearrow_v"></div>';
                                             }
                                         }
                                     }
                                 }
                             }
-                            $html = $html . '<div ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
+                            $html = $html . '<div p="'.$this->pnum[$i].'" i="'.$i.'" ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }

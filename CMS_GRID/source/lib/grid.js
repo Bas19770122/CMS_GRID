@@ -1,5 +1,36 @@
 $(document).ready(function () {
 
+    function setvistree(id, i, tp) {
+        //grid.find('*[p=' + i + ']').each(function () {
+        $($('#'+id+' *[p=' + i + ']').get()).each(function() { 
+            $(this).css('visibility', tp);
+            if (tp == 'visible') {
+                $(this).removeClass('invis');                
+            } else {
+                $(this).addClass('invis');
+            }
+            let i = $(this).attr('i');
+            setvistree(id, i);
+        });
+    }
+
+    $('body').delegate('.plus', 'click', function (e) {
+
+        let i = $(this).attr('i');
+        let grid = $(this).parent().parent().parent().parent().parent().find('.grid_class').eq(0);
+        let id = grid.attr('id');
+
+        if ($(this).text() == '+') {
+            setvistree(id, i, 'hidden');
+            $(this).text('-');
+        } else {
+            setvistree(id, i, 'visible');
+            $(this).text('+');
+        }
+
+        return false;
+
+    });
 
     function getsrt(elem) {
 
@@ -321,7 +352,7 @@ $(document).ready(function () {
             nrcd = jsn['adddata'];
             //nrcds = JSON.stringify(nrcd);
             if ($('#' + id).find('.cell_footer').length > 0) {
-               $(nrcd).insertBefore('#' + id+' .cell_footer:first');
+                $(nrcd).insertBefore('#' + id + ' .cell_footer:first');
             } else {
                 $('#' + id).append(nrcd);
             }
