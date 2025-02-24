@@ -349,7 +349,7 @@ class grid {
 
         $info = $this->getinfo($info, $number, $search, $searchfld, $sort, $sorttp);
 
-        $this->refresh($info);
+        $this->refresh($info, $search);
 
         $res = [];
 
@@ -370,7 +370,7 @@ class grid {
 
         $info = $this->getinfo($info, $number, $search, $searchfld, $sort, $sorttp);
 
-        $this->refresh($info);
+        $this->refresh($info, $search);
 
         $res = [];
 
@@ -813,7 +813,7 @@ class grid {
         return [$data, $row_no, $page];
     }
 
-    public function Fields_SQL($info) { // get select SQL
+    public function Fields_SQL($info, $searchin) { // get select SQL
         $sql = '';
         $pagesql = '';
         //$field_list = [];
@@ -862,6 +862,14 @@ class grid {
                     $parent = $v['parentsyn'];
                 }
                 break;
+            }
+        }
+        if(is_array($searchin)){
+            foreach ($searchin as $i => $v) {
+                if ($v != '') {
+                    $tree = 0;
+                    break;
+                }
             }
         }
         $this->tree = $tree;
@@ -1075,10 +1083,15 @@ class grid {
         $v2 = '';
         for ($k = ($i + 1); $k <= count($levels) - 1; $k++) {
             if ($levels[$k] == $lev) {
-                $v1 = 'border-left: solid 1px black;'; 
-                $v2 = '';// 'border-left: solid 1px black;';
+                $v1 = 'border-left: solid 1px black;';
+                $v2 = ''; // 'border-left: solid 1px black;';
                 break;
             }
+            if ($levels[$k] < $lev) {
+                $v1 = '';
+                $v2 = ''; // 'border-left: solid 1px black;';
+                break;
+            }            
         }/**/
         return [$v1, $v2];
     }
@@ -1307,16 +1320,16 @@ class grid {
                                     if ($this->levels[$i] != 0) {
                                         for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
                                             if ($ii == 1) {
-                                                $v1='';
-                                                $v2='';
+                                                $v1 = '';
+                                                $v2 = '';
                                                 list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
                                                 $addt .= '<div style="' . $v1 . 'width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
                                                         '<div class="treearrow_h" style="' . $v2 . '" >' .
                                                         '</div>' .
                                                         '</div>';
                                             } else {
-                                                $v1='';
-                                                $v2='';
+                                                $v1 = '';
+                                                $v2 = '';
                                                 list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
                                                 $addt .= '<div style="' . $v1 . 'width:50px;left:-' . (($ii - 1) * 50 + 25) . 'px;"  class="treearrow_v"></div>';
                                             }
@@ -1389,7 +1402,7 @@ class grid {
         return [$inhtml, $html];
     }
 
-    public function refresh($info) {
+    public function refresh($info, $search) {
 
         list(
                 $this->sql,
@@ -1405,7 +1418,7 @@ class grid {
                 $this->selected_val,
                 $this->cnt,
                 $this->search
-                ) = $this->Fields_SQL($info);
+                ) = $this->Fields_SQL($info, $search);
 
         list(
                 $this->data,
@@ -1443,7 +1456,7 @@ class grid {
 
     public function show() {
 
-        $this->refresh($this->info);
+        $this->refresh($this->info, '');
 
         return $this->html;
     }
