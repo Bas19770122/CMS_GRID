@@ -1052,6 +1052,37 @@ class grid {
         return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
 
+    public function getvertfirst($levels, $i) { // border-left: solid 1px black;
+        $v1 = '';
+        $v2 = 'border-left: solid 1px black;';
+        for ($k = ($i + 1); $k <= count($levels) - 1; $k++) {
+            if ($levels[$k] < $levels[$i]) {
+                $v1 = '';
+                $v2 = 'border-left: solid 1px black;';
+                break;
+            }
+            if ($levels[$k] == $levels[$i]) {
+                $v1 = 'border-left: solid 1px black;';
+                $v2 = '';
+                break;
+            }
+        }/**/
+        return [$v1, $v2];
+    }
+
+    public function getvertnext($levels, $i, $lev) { // border-left: solid 1px black;
+        $v1 = '';
+        $v2 = '';
+        for ($k = ($i + 1); $k <= count($levels) - 1; $k++) {
+            if ($levels[$k] == $lev) {
+                $v1 = 'border-left: solid 1px black;'; 
+                $v2 = '';// 'border-left: solid 1px black;';
+                break;
+            }
+        }/**/
+        return [$v1, $v2];
+    }
+
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
@@ -1272,18 +1303,22 @@ class grid {
                             $addt = '';
                             if ($k == 0) {
                                 if ($this->tree == 1) {
-                                    $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px" '; //border:none;  border-left:solid 1px black;  
+                                    $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px;border:none; " '; //border:none;  border-left:solid 1px black;  
                                     if ($this->levels[$i] != 0) {
                                         for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
                                             if ($ii == 1) {
-                                                $addt .= '<div style="width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
-                                                        '<div class="treearrow_h">' .
+                                                $v1='';
+                                                $v2='';
+                                                list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
+                                                $addt .= '<div style="' . $v1 . 'width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
+                                                        '<div class="treearrow_h" style="' . $v2 . '" >' .
                                                         '</div>' .
                                                         '</div>';
                                             } else {
-                                       
-                                                    $addt .= '<div style="width:50px;left:-' . (($ii-1) * 50+25) . 'px;"  class="treearrow_v"></div>';
-                                              
+                                                $v1='';
+                                                $v2='';
+                                                list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
+                                                $addt .= '<div style="' . $v1 . 'width:50px;left:-' . (($ii - 1) * 50 + 25) . 'px;"  class="treearrow_v"></div>';
                                             }
                                         }
                                     }
