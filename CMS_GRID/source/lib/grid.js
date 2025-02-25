@@ -440,9 +440,14 @@ $(document).ready(function () {
         elem = $(this);
         elem2 = $(this).parent().eq(0);
         
+        txt = elem2.prop('outerHTML');
+        
+        elms = $(txt).find('#cell_editor').remove().end();
+        
+        txt = elms.prop('outerHTML');
         
         var vtree = '';
-        elem2.find('.treearrow_v').each(function (index) {
+        $(txt).find('.treearrow_v').each(function (index) {
           vtree = vtree + $(this).prop('outerHTML');
         
         });                 
