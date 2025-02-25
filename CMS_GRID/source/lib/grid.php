@@ -144,7 +144,7 @@ class grid {
     public $key;
     public $parent;
     public $levels;
-    public $pnum; 
+    public $pnum;
 
     // actions 
 
@@ -571,7 +571,7 @@ class grid {
     public function loadrecord($result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
             $root, $key, $parent, $pnum, $p) {
         $lv = $lv + 1;
-        
+
         //$sqlt = str_replace('<parent>', $parent, $sql);
         // if ($result = $mysqli->query($sqlt)) {
 
@@ -651,7 +651,7 @@ class grid {
                 $data[] = $lst_fld;
                 $levels[] = $lv;
                 $pnum[] = $p;
-                $pi = $i; 
+                $pi = $i;
 
                 $_SESSION['data_' . $this->id][] = $row; // all field data not only visible 
                 $i = $i + 1;
@@ -693,8 +693,8 @@ class grid {
         $row_no = -1;
         $i = 0;
         $levels = [];
-        $lv = -1;
-        $pnum = []; 
+        $lv = 0;
+        $pnum = [];
         $p = -1;
 
         /*
@@ -725,7 +725,7 @@ class grid {
                 $root = '';
             } else {
                 $root = $this->root;
-            }            
+            }
 
             list($result, $data, $levels, $i, $row_no, $pnum) = $this->loadrecord(
                     $result, $data, $field_visi, $field_list, $row_id, $row_no, $show_id, $selected_val, $ids, $levels, $lv, $i, $mysqli, $sql,
@@ -733,8 +733,8 @@ class grid {
         }
 
         $this->levels = $levels;
-        
-        $this->pnum = $pnum; 
+
+        $this->pnum = $pnum;
 
         $page = [];
         $cntall = 0;
@@ -871,7 +871,7 @@ class grid {
                 break;
             }
         }
-        if(is_array($searchin)){
+        if (is_array($searchin)) {
             foreach ($searchin as $i => $v) {
                 if ($v != '') {
                     $tree = 0;
@@ -1098,22 +1098,22 @@ class grid {
                 $v1 = '';
                 $v2 = ''; // 'border-left: solid 1px black;';
                 break;
-            }            
+            }
         }/**/
         return [$v1, $v2];
     }
 
-    public function getplus($pnum, $i){
-        $res = '';/*
+    public function getplus($pnum, $i, $p) {
+        $res = '';
         foreach ($pnum as $k => $v) {
-            if($v == $i){
-                $res = '<button class=plus i="'.$i.'">+</button>';
+            if ($v == $i) {
+                $res = '<button class=plus p="' . $p . '" i="' . $i . '">-</button>';
                 break;
             }
-        }*/
-        return $res; 
+        }
+        return $res;
     }
-    
+
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
@@ -1332,31 +1332,48 @@ class grid {
                             }
                             $stl = '';
                             $addt = '';
+                            $wdt = 30;
                             if ($k == 0) {
                                 if ($this->tree == 1) {
-                                    $stl = ' style="margin-left:' . ($this->levels[$i] * 50) . 'px;border:none; " '; //border:none;  border-left:solid 1px black;  
-                                    if ($this->levels[$i] != 0) {
-                                        for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
-                                            if ($ii == 1) {
-                                                $v1 = '';
-                                                $v2 = '';
-                                                list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
-                                                $addt .= '<div p="'.$this->pnum[$i].'" i="'.$i.'" style="' . $v1 . 'width:25px;left:-' . ($ii * 25) . 'px;"  class="treearrow_v">' .
-                                                        '<div p="'.$this->pnum[$i].'"i="'.$i.'" class="treearrow_h" style="' . $v2 . '" >' .
-                                                        $this->getplus($this->pnum, $i).
+                                    //border:none;  border-left:solid 1px black;  
+                                    //  if ($this->levels[$i] != 0) {
+                                    $btn = '';
+                                    $mrgn = 15;
+                                    for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
+                                        if ($ii == 1) {
+                                            $btn = $this->getplus($this->pnum, $i, $this->pnum[$i]);
+                                            if ($btn == '') {
+                                                $mrgn = 0;
+                                            }
+                                            $v1 = '';
+                                            $v2 = '';
+                                            if ($this->levels[$i] == 1) {
+                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="border:none;width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
+                                                        '<div p="' . $this->pnum[$i] . '"i="' . $i . '"   >' .
+                                                        $btn .
                                                         '</div>' .
                                                         '</div>';
                                             } else {
-                                                $v1 = '';
-                                                $v2 = '';
-                                                list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
-                                                $addt .= '<div p="'.$this->pnum[$i].'" i="'.$i.'" style="' . $v1 . 'width:50px;left:-' . (($ii - 1) * 50 + 25) . 'px;"  class="treearrow_v"></div>';
+                                                list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
+                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
+                                                        '<div p="' . $this->pnum[$i] . '"i="' . $i . '" class="treearrow_h" style="' . $v2 . '" >' .
+                                                        $btn .
+                                                        '</div>' .
+                                                        '</div>';
                                             }
+                                        } else {
+                                            $v1 = '';
+                                            $v2 = '';
+                                            list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
+                                            $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:50px;left:-' . ($ii  * $wdt  + $mrgn) . 'px;"  class="treearrow_v"></div>';
                                         }
                                     }
+
+                                    $stl = ' style="margin-left:' . (($this->levels[$i]-1) * $wdt + $mrgn + 10) . 'px;border:none; " ';
+                                    // }
                                 }
                             }
-                            $html = $html . '<div p="'.$this->pnum[$i].'" i="'.$i.'" ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
+                            $html = $html . '<div p="' . $this->pnum[$i] . '" i="' . $i . '" ' . $stl . ' class="cell_class' . $class . '" col=' . $k . ' row=' . $i . '>' . $addt . $v . '</div>';
                             //$k = $k + 1;
                             break;
                         }

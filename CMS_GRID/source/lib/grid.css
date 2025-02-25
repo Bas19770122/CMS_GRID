@@ -141,7 +141,7 @@ button.save{
 }
 .treearrow_v{
     height: 100%;
-    box-sizing: content-box;
+   /* box-sizing: content-box;*/
     margin-top:-1px;
     padding-top:-1px;
     border-bottom: solid 0px white;
@@ -161,7 +161,8 @@ button.save{
 }
 
 .plus{
-    left: 10px;
+    top: 3px;
+    left: 20px;
     position: absolute;
     width: 20px;
     height: 20px;
@@ -172,4 +173,5 @@ button.save{
     border: none;
     min-height: 0px;
     height: 0px;
+    visibility: hidden;
 }

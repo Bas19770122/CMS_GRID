@@ -1,17 +1,24 @@
 $(document).ready(function () {
 
     function setvistree(id, i, tp) {
-        //grid.find('*[p=' + i + ']').each(function () {
-        $($('#'+id+' *[p=' + i + ']').get()).each(function() { 
-            $(this).css('visibility', tp);
-            if (tp == 'visible') {
-                $(this).removeClass('invis');                
-            } else {
+        if (tp == 'visible') {
+            $($('#' + id + ' *[p=' + i + ']').get().reverse()).each(function () {
+                $(this).removeClass('invis');
+                if ($(this).hasClass('plus')) {
+                    $(this).text('+');
+                    let i = $(this).attr('i');
+                    setvistree(id, i);
+                }
+            });
+        } else {
+            $($('#' + id + ' *[p=' + i + ']').get()).each(function () {
+                if ($(this).hasClass('plus')) {
+                    let i = $(this).attr('i');
+                    setvistree(id, i);
+                }
                 $(this).addClass('invis');
-            }
-            let i = $(this).attr('i');
-            setvistree(id, i);
-        });
+            });
+        }
     }
 
     $('body').delegate('.plus', 'click', function (e) {
@@ -20,12 +27,12 @@ $(document).ready(function () {
         let grid = $(this).parent().parent().parent().parent().parent().find('.grid_class').eq(0);
         let id = grid.attr('id');
 
-        if ($(this).text() == '+') {
+        if ($(this).text() == '-') {
             setvistree(id, i, 'hidden');
-            $(this).text('-');
+            $(this).text('+');
         } else {
             setvistree(id, i, 'visible');
-            $(this).text('+');
+            $(this).text('-');
         }
 
         return false;
