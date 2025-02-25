@@ -439,6 +439,16 @@ $(document).ready(function () {
 
         elem = $(this);
         elem2 = $(this).parent().eq(0);
+        
+        
+        var vtree = '';
+        elem2.find('.treearrow_v').each(function (index) {
+          vtree = vtree + $(this).prop('outerHTML');
+        
+        });                 
+         
+       // var vtree = elem2.html();
+        
         id = elem2.parent().attr('id');
         grid_id = $('#cell_editor').attr('grid_id');
 
@@ -510,7 +520,7 @@ $(document).ready(function () {
         }
 
         // save cell into json
-        data = save_cell(elem2, cont, txt, act, id);
+        data = save_cell(elem2, cont, txt, act, id, vtree);
 
     });
 
@@ -552,7 +562,7 @@ $(document).ready(function () {
     }
 
 
-    function save_cell(elem2, cont, txt, act, id) {
+    function save_cell(elem2, cont, txt, act, id, tree) {
         var fld = JSON.parse($('#json_f_' + id).text());
         var data = JSON.parse($('#json_' + id).text());
         var ii = 0;
@@ -580,7 +590,7 @@ $(document).ready(function () {
                                     data[key][0]['type'] = 2; // edited 
                                 }
                                 elem2.empty();
-                                elem2.append(txt);
+                                elem2.append(tree+txt);
                                 // save json to form
                                 $('#json_' + id).empty();
                                 js = JSON.stringify(data);
@@ -600,9 +610,9 @@ $(document).ready(function () {
                                     }
                                 }
                                 if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {
-                                    elem2.append('<img src=' + cont + ' width=40 height=40 >');
+                                    elem2.append(tree+'<img src=' + cont + ' width=40 height=40 >');
                                 } else {
-                                    elem2.append(cont);
+                                    elem2.append(tree+cont);
                                 }
                                 // save json to form
                                 $('#json_' + id).empty();
