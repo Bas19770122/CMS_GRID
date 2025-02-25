@@ -1339,7 +1339,13 @@ class grid {
                                     //  if ($this->levels[$i] != 0) {
                                     $btn = '';
                                     $mrgn = 15;
-                                    for ($ii = 1; $ii <= $this->levels[$i]; $ii++) {
+                                    $srt = 1;
+                                    if($this->levels[$i] == 1){
+                                        $srt = 0;
+                                    } else {
+                                        $srt = 1;
+                                    }
+                                    for ($ii = 1; $ii <= $this->levels[$i]-$srt; $ii++) {
                                         if ($ii == 1) {
                                             $btn = $this->getplus($this->pnum, $i, $this->pnum[$i]);
                                             if ($btn == '') {
@@ -1362,14 +1368,16 @@ class grid {
                                                         '</div>';
                                             }
                                         } else {
-                                            $v1 = '';
-                                            $v2 = '';
-                                            list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
-                                            $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:50px;left:-' . ($ii  * $wdt  + $mrgn) . 'px;"  class="treearrow_v"></div>';
+                                            if ($this->levels[$i] != 1) {
+                                                $v1 = '';
+                                                $v2 = '';
+                                                list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
+                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:50px;left:-' . ($ii * $wdt + $mrgn) . 'px;"  class="treearrow_v"></div>';
+                                            }
                                         }
                                     }
 
-                                    $stl = ' style="margin-left:' . (($this->levels[$i]-1) * $wdt + $mrgn + 10) . 'px;border:none; " ';
+                                    $stl = ' style="margin-left:' . (($this->levels[$i] - 1) * $wdt + $mrgn + 10) . 'px;border:none; " ';
                                     // }
                                 }
                             }

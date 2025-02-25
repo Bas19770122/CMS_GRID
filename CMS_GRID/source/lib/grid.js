@@ -35,7 +35,7 @@ $(document).ready(function () {
             $(this).text('-');
         }
 
-        return false;
+            return true;
 
     });
 
