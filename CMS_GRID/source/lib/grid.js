@@ -284,6 +284,18 @@ $(document).ready(function () {
 
         //  return false;
     });
+    
+    function set_next_focus(id, rowno, colno){         
+        var rw = JSON.parse($('#json_' + id).text());
+        for (var key in rw)
+        {
+            if(key == rowno){
+                $('#'+id+' .cell_class').removeClass('Selected');
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + '].cell_class[col='+colno+']').addClass('Selected');
+                break;
+            }
+        }            
+    }
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
 
@@ -294,13 +306,14 @@ $(document).ready(function () {
             {
                 if (rw[key][0]['type'] == 3)
                     $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
-            }
+            }                        
         }
 
         elem = $(this);
         id = elem.parent().find('.grid_class').eq(0).attr('id');
 
         rowno = elem.parent().find('.Selected').attr('row');
+        colno = elem.parent().find('.Selected').attr('col');
 
         jsn = JSON.parse($('#json_' + id).text());
 
@@ -311,7 +324,8 @@ $(document).ready(function () {
         $('#json_' + id).append(rcds);
 
         set_deleted(id);
-
+        
+        set_next_focus(id, parseInt(rowno)+1, colno);
 
     });
 
