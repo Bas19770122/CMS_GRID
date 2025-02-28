@@ -21,7 +21,7 @@ $(document).ready(function () {
         }
     }
 
-    $('body').delegate('.plus', 'click', function (e) {
+    $('body').delegate('.plus', 'dblclick', function (e) {
 
         let i = $(this).attr('i');
         let grid = $(this).parent().parent().parent().parent().parent().find('.grid_class').eq(0);
@@ -35,7 +35,7 @@ $(document).ready(function () {
             $(this).text('-');
         }
 
-            return true;
+            return false;
 
     });
 
