@@ -1,8 +1,8 @@
 CREATE TABLE `table_1` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET cp1251 COLLATE cp1251_bin DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=cp1251 COLLATE=cp1251_bin
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3
 
 INSERT INTO `table_1` (`id`,`name`) VALUES (1,'name 1');
 INSERT INTO `table_1` (`id`,`name`) VALUES (2,'name 2');
