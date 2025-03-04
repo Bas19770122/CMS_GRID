@@ -23,6 +23,12 @@ $(document).ready(function () {
 
     $('body').delegate('.plus', 'dblclick', function (e) {
 
+       return false;
+
+    });
+
+    $('body').delegate('.plus', 'click', function (e) {
+
         let i = $(this).attr('i');
         let grid = $(this).parent().parent().parent().parent().parent().find('.grid_class').eq(0);
         let id = grid.attr('id');
@@ -30,12 +36,14 @@ $(document).ready(function () {
         if ($(this).text() == '-') {
             setvistree(id, i, 'hidden');
             $(this).text('+');
+            $(this).parent().parent().find('.treearrow_h2').css('visibility', 'hidden');
         } else {
             setvistree(id, i, 'visible');
             $(this).text('-');
+            $(this).parent().parent().find('.treearrow_h2').css('visibility', 'visible');
         }
 
-            return false;
+       return false;
 
     });
 

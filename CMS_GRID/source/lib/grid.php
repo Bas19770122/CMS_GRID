@@ -1067,9 +1067,11 @@ class grid {
         return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
 
-    public function getvertfirst($levels, $i) { // border-left: solid 1px black;
+    public function getvertfirst($levels, $i, $p) { // border-left: solid 1px black;
         $v1 = '';
         $v2 = 'border-left: solid 1px black;';
+        $v3 = '';
+        $v4 = '';
         for ($k = ($i + 1); $k <= count($levels) - 1; $k++) {
             if ($levels[$k] < $levels[$i]) {
                 $v1 = '';
@@ -1081,8 +1083,12 @@ class grid {
                 $v2 = '';
                 break;
             }
+            if ($levels[$k] > $levels[$i]) {
+                $v3 = '<div p="' . $p . '"i="' . $i . '" class="treearrow_h2" >';
+                $v4 = '</div>';
+            }
         }/**/
-        return [$v1, $v2];
+        return [$v1, $v2, $v3, $v4];
     }
 
     public function getvertnext($levels, $i, $lev) { // border-left: solid 1px black;
@@ -1338,14 +1344,14 @@ class grid {
                                     //border:none;  border-left:solid 1px black;  
                                     //  if ($this->levels[$i] != 0) {
                                     $btn = '';
-                                    $mrgn = 15;
+                                    $mrgn = 10;
                                     $srt = 1;
-                                    if($this->levels[$i] == 1){
+                                    if ($this->levels[$i] == 1) {
                                         $srt = 0;
                                     } else {
                                         $srt = 1;
                                     }
-                                    for ($ii = 1; $ii <= $this->levels[$i]-$srt; $ii++) {
+                                    for ($ii = 1; $ii <= $this->levels[$i] - $srt; $ii++) {
                                         if ($ii == 1) {
                                             $btn = $this->getplus($this->pnum, $i, $this->pnum[$i]);
                                             if ($btn == '') {
@@ -1353,18 +1359,24 @@ class grid {
                                             }
                                             $v1 = '';
                                             $v2 = '';
+                                            $v3 = '';
+                                            $v4 = '';
+                                            list($v1, $v2, $v3, $v4) = $this->getvertfirst($this->levels, $i, $this->pnum[$i]); // border-left: solid 1px black;
                                             if ($this->levels[$i] == 1) {
                                                 $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="border:none;width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
-                                                        '<div p="' . $this->pnum[$i] . '"i="' . $i . '"   >' .
+                                                        $v3 .                                                        
+                                                        $v4 .
+                                                        '<div p="' . $this->pnum[$i] . '"i="' . $i . '"  class="treearrow_h3" >' .
                                                         $btn .
                                                         '</div>' .
                                                         '</div>';
-                                            } else {
-                                                list($v1, $v2) = $this->getvertfirst($this->levels, $i); // border-left: solid 1px black;
-                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
+                                            } else {                                                
+                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:30px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
+                                                        $v3 .                                                        
+                                                        $v4 .                                                        
                                                         '<div p="' . $this->pnum[$i] . '"i="' . $i . '" class="treearrow_h" style="' . $v2 . '" >' .
                                                         $btn .
-                                                        '</div>' .
+                                                        '</div>' .                                                        
                                                         '</div>';
                                             }
                                         } else {
@@ -1372,7 +1384,7 @@ class grid {
                                                 $v1 = '';
                                                 $v2 = '';
                                                 list($v1, $v2) = $this->getvertnext($this->levels, $i, ($this->levels[$i] - $ii + 1)); // border-left: solid 1px black;
-                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:50px;left:-' . ($ii * $wdt + $mrgn) . 'px;"  class="treearrow_v"></div>';
+                                                $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:50px;left:-' . ($ii * $wdt + $mrgn ) . 'px;"  class="treearrow_v"></div>';
                                             }
                                         }
                                     }

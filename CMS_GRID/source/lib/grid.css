@@ -169,11 +169,27 @@ button.refresh{
     display: inline;
     top: 0px;
     position: absolute;
-    width: 25px;
+    width: 30px;
+   /* left: 1px;*/
 }
-
+.treearrow_h2{
+    height:50%;
+    border-right: solid 1px black;
+    display: inline;
+    top: 50%;
+    position: absolute;
+    width: 30px;
+}
+.treearrow_h3{
+    height:50%;
+    display: inline;
+    top: 0px;
+    position: absolute;
+    width: 30px;
+   /* left: 1px;*/
+}
 .plus{
-    top: 3px;
+    bottom: -10px;
     left: 20px;
     position: absolute;
     width: 20px;
