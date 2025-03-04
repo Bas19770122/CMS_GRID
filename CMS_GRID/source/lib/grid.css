@@ -140,8 +140,11 @@ button.refresh{
 }
 
 .search_cont{
-    border: solid 1px grey;
+   /* border: solid 1px grey;*/
     overflow-x: hidden;
+    border-left: solid 1px grey;
+    border-right: solid 1px grey;
+    border-botton: solid 1px grey;
 }
 .search_sig{
     position: absolute;
