@@ -296,6 +296,73 @@ $(document).ready(function () {
             }
         }            
     }
+    
+    
+    //-------------------------------------
+    
+    $('body').delegate('.grid_cont .refresh', 'click', function (e) {
+
+        var elem = $(this);
+        var id = elem.parent().find('.grid_class').eq(0).attr('id');
+        if (elem.parent().find('#pager_' + id).length > 0) {
+            var pager = elem.parent().find('#pager_' + id).eq(0);
+            if (pager.find('.curpage').length > 0) {
+                var num = pager.find('.curpage').eq(0).attr('val');
+            }
+        }
+
+        let cont = $('#' + id).find('.search_cont').parent().eq(0);
+
+        let [searchlst, searchfldlst] = getsearchlist(cont);
+
+        var searchlst_s = JSON.stringify(searchlst);
+        var searchfldlst_s = JSON.stringify(searchfldlst);
+
+        let srt = '';
+        let fld = '';
+        elem.parent().parent().find('.header_class').each(function () {
+            if ($(this).attr('srt') != '' && $(this).attr('srt') != undefined) {
+                srt = $(this).attr('srt');
+                fld = $(this).attr('fld');
+            }
+        });
+
+        elem.prop('disabled', true);
+        jsons = {
+            id: id,
+            action: 'refresh',
+            data: $('#json_' + id).text(),
+            number: num,
+            search: searchlst_s, //elem.val(),
+            searchfld: searchfldlst_s, //elem.attr('fld')       
+            sortfld: fld,
+            sorttp: srt
+        };
+        $.ajax({
+            url: 'source/lib/grid.php',
+            method: 'POST',
+            dataType: 'html',
+            data: jsons
+        }).done(function (data) {
+            elem.prop('disabled', false);
+            jsn = JSON.parse(data);
+            rcd = jsn['js'];
+            rcds = JSON.stringify(rcd);
+            $('#json_' + id).empty();
+            $('#json_' + id).append(rcds);
+            html = jsn['html'];
+            $('#' + id).empty();
+            $('#' + id).append(html);
+            pgr = jsn['pager'];
+            $('#pager_' + id).empty();
+            $('#pager_' + id).append(pgr);
+        });
+
+
+    });    
+    
+    //-------------------------------------
+    
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
 

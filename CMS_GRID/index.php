@@ -197,6 +197,11 @@ $gr->info = [
         "class" => "delete"
     ],
     [
+        "type" => "button",
+        "text" => "Обновить",
+        "class" => "refresh"
+    ],    
+    [
         "type"=>"page",
         "count"=>"10",
         "number"=>"1"

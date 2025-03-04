@@ -87,7 +87,19 @@ button.insert{
     margin-right: 5px;
 }
 
+button.delete{
+    width:100px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
 button.save{
+    width:100px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+button.refresh{
     width:100px;
     margin-top: 5px;
     margin-right: 5px;
