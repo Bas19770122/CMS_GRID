@@ -36,11 +36,11 @@ $(document).ready(function () {
         if ($(this).text() == '-') {
             setvistree(id, i, 'hidden');
             $(this).text('+');
-            $(this).parent().parent().find('.treearrow_h2').css('visibility', 'hidden');
+           /*$(this).parent().parent().find('.treearrow_h2').css('visibility', 'hidden');*/
         } else {
             setvistree(id, i, 'visible');
             $(this).text('-');
-            $(this).parent().parent().find('.treearrow_h2').css('visibility', 'visible');
+            /*$(this).parent().parent().find('.treearrow_h2').css('visibility', 'visible');*/
         }
 
        return false;

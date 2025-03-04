@@ -1067,7 +1067,7 @@ class grid {
         return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
 
-    public function getvertfirst($levels, $i, $p) { // border-left: solid 1px black;
+    public function getvertfirst($levels, $i, $p, $p2) { // border-left: solid 1px black;
         $v1 = '';
         $v2 = 'border-left: solid 1px black;';
         $v3 = '';
@@ -1084,7 +1084,7 @@ class grid {
                 break;
             }
             if ($levels[$k] > $levels[$i]) {
-                $v3 = '<div p="' . $p . '"i="' . $i . '" class="treearrow_h2" >';
+                $v3 = '<div p="' . $p2 . '" i="' . $i . '" class="treearrow_h2" >';
                 $v4 = '</div>';
             }
         }/**/
@@ -1361,7 +1361,11 @@ class grid {
                                             $v2 = '';
                                             $v3 = '';
                                             $v4 = '';
-                                            list($v1, $v2, $v3, $v4) = $this->getvertfirst($this->levels, $i, $this->pnum[$i]); // border-left: solid 1px black;
+                                            $p2 = -1;
+                                            if(count($arr) > ($i+1)){
+                                              $p2 = $this->pnum[$i+1]; 
+                                            }
+                                            list($v1, $v2, $v3, $v4) = $this->getvertfirst($this->levels, $i, $this->pnum[$i], $p2); // border-left: solid 1px black;
                                             if ($this->levels[$i] == 1) {
                                                 $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="border:none;width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
                                                         $v3 .                                                        
