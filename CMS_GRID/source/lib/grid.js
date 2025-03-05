@@ -305,9 +305,6 @@ $(document).ready(function () {
         }            
     }
     
-    
-    //-------------------------------------
-    
     $('body').delegate('.grid_cont .refresh', 'click', function (e) {
 
         var elem = $(this);
@@ -369,11 +366,6 @@ $(document).ready(function () {
 
     });    
     
-    //-------------------------------------
-    
-
-    $('body').delegate('.grid_cont .delete', 'click', function (e) {
-
 
         function set_deleted(id) {
             var rw = JSON.parse($('#json_' + id).text());
@@ -383,6 +375,9 @@ $(document).ready(function () {
                     $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
             }                        
         }
+    
+
+    $('body').delegate('.grid_cont .delete', 'click', function (e) {
 
         elem = $(this);
         id = elem.parent().find('.grid_class').eq(0).attr('id');
@@ -401,6 +396,8 @@ $(document).ready(function () {
         set_deleted(id);
         
         set_next_focus(id, parseInt(rowno)+1, colno);
+        
+        return false;
 
     });
 
@@ -455,7 +452,7 @@ $(document).ready(function () {
             set_inserted(id);
         });
 
-
+        return false;
     });
 
     $('body').delegate('.grid_cont .save', 'click', function (e) {
@@ -520,7 +517,7 @@ $(document).ready(function () {
             //set_edited(id);
         });
 
-
+        return false;
     });
 
 
@@ -615,6 +612,8 @@ $(document).ready(function () {
 
         // save cell into json
         data = save_cell(elem2, cont, txt, act, id, vtree);
+        
+        return false;
 
     });
 

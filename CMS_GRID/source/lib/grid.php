@@ -1149,7 +1149,9 @@ class grid {
                             foreach ($this->searchfld as $sj => $sf) {
                                 if ($sf == $ff) {
                                     $v = $this->searchval[$sj];
-                                    $stl = ' style="color:red;" ';
+                                    if ($v != '') {
+                                        $stl = ' style="color:red;" ';
+                                    }
                                     break;
                                 }
                             }
@@ -1165,7 +1167,7 @@ class grid {
                                         }
                                         $options .= '<option ' . $selected . ' value="' . $oj . '">' . $ov . '</option>';
                                     }
-                                    $html = $html . '<div class=search_cont col=' . $jf . '><select '.$stl.' class=search_class value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><select ' . $stl . ' class=search_class value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
                                 } else {
                                     $type = 'text';
                                     $checked = '';
@@ -1175,7 +1177,7 @@ class grid {
                                             $checked = 'checked';
                                         };
                                     }
-                                    $html = $html . '<div class=search_cont col=' . $jf . '><input '.$stl.' placeholder="&#128269;" ' . $checked . ' type=' . $type . ' class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><input ' . $stl . ' placeholder="&#128269;" ' . $checked . ' type=' . $type . ' class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
                                 }
                             }
                             $isfld = 1;
@@ -1364,25 +1366,25 @@ class grid {
                                             $v3 = '';
                                             $v4 = '';
                                             $p2 = -1;
-                                            if(count($arr) > ($i+1)){
-                                              $p2 = $this->pnum[$i+1]; 
+                                            if (count($arr) > ($i + 1)) {
+                                                $p2 = $this->pnum[$i + 1];
                                             }
                                             list($v1, $v2, $v3, $v4) = $this->getvertfirst($this->levels, $i, $this->pnum[$i], $p2); // border-left: solid 1px black;
                                             if ($this->levels[$i] == 1) {
                                                 $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="border:none;width:25px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
-                                                        $v3 .                                                        
+                                                        $v3 .
                                                         $v4 .
                                                         '<div p="' . $this->pnum[$i] . '"i="' . $i . '"  class="treearrow_h3" >' .
                                                         $btn .
                                                         '</div>' .
                                                         '</div>';
-                                            } else {                                                
+                                            } else {
                                                 $addt .= '<div p="' . $this->pnum[$i] . '" i="' . $i . '" style="' . $v1 . 'width:30px;left:-' . (($ii) * $wdt + $mrgn) . 'px;"  class="treearrow_v">' .
-                                                        $v3 .                                                        
-                                                        $v4 .                                                        
+                                                        $v3 .
+                                                        $v4 .
                                                         '<div p="' . $this->pnum[$i] . '"i="' . $i . '" class="treearrow_h" style="' . $v2 . '" >' .
                                                         $btn .
-                                                        '</div>' .                                                        
+                                                        '</div>' .
                                                         '</div>';
                                             }
                                         } else {

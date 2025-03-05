@@ -1,3 +1,7 @@
+.grid_cont{
+    margin: 5px;
+}
+
 .grid_class{
     /* display: grid;
     grid-auto-rows: auto 20px; *//*header and rows height*/
@@ -77,8 +81,15 @@
 }
 
 .Selected{
-    /*  border: 1px solid black;*/
     background-color: gainsboro;
+}
+
+.Selected.deleted{
+    background-color: rgba(180, 50, 50, 0.5);#red_grey
+}
+
+.Selected.edited{
+    background-color: rgba(180, 180, 50, 0.5);#yelloe_grey
 }
 
 button.insert{

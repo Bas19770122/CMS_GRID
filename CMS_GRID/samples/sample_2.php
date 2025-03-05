@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+/*
 
 echo
 '
@@ -21,9 +21,11 @@ echo
 
 include_once 'source/lib/grid.php';
 
+*/
+
 $gr = new grid;
 
-$gr->id = 'id_1';
+$gr->id = 'tree_2';
 
 $gr->info = [
     [
@@ -81,7 +83,12 @@ $gr->info = [
         "type"=>"button",
         "text"=>"Удалить",
         "class"=>"delete"
-    ]
+    ],
+    [
+        "type" => "button",
+        "text" => "Обновить",
+        "class" => "refresh"
+    ]   
 ];
 
 echo $gr->show();
