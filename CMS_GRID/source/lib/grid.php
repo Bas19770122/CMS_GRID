@@ -1144,10 +1144,12 @@ class grid {
                     }
                     foreach ($this->search as $jj => $ff) {
                         $v = '';
+                        $stl = '';
                         if (isset($this->searchfld)) {
                             foreach ($this->searchfld as $sj => $sf) {
                                 if ($sf == $ff) {
                                     $v = $this->searchval[$sj];
+                                    $stl = ' style="color:red;" ';
                                     break;
                                 }
                             }
@@ -1163,7 +1165,7 @@ class grid {
                                         }
                                         $options .= '<option ' . $selected . ' value="' . $oj . '">' . $ov . '</option>';
                                     }
-                                    $html = $html . '<div class=search_cont col=' . $jf . '><select class=search_class value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><select '.$stl.' class=search_class value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
                                 } else {
                                     $type = 'text';
                                     $checked = '';
@@ -1173,7 +1175,7 @@ class grid {
                                             $checked = 'checked';
                                         };
                                     }
-                                    $html = $html . '<div class=search_cont col=' . $jf . '><input ' . $checked . ' type=' . $type . ' class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
+                                    $html = $html . '<div class=search_cont col=' . $jf . '><input '.$stl.' placeholder="&#128269;" ' . $checked . ' type=' . $type . ' class=search_class value="' . $v . '" fld="' . $ff . '"></div>';
                                 }
                             }
                             $isfld = 1;
