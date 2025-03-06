@@ -23,11 +23,16 @@ include_once 'source/lib/grid.php';
 
 */
 
+
 $gr = new grid;
 
 $gr->id = 'tab_1';
 
 $gr->info = [
+    [      
+        "type" => "options",	
+        "caption" => "Simple data list"
+    ],
     [
         "type" => "table",
         "name" => "table_1",

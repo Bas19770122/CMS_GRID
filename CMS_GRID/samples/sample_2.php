@@ -21,7 +21,9 @@ echo
 
 include_once 'source/lib/grid.php';
 
+
 */
+
 
 $gr = new grid;
 
@@ -32,7 +34,8 @@ $gr->info = [
         "type" => "options",
         "root" => "null",
         "keysyn" => "id1", 
-        "parentsyn" => "pid1"
+        "parentsyn" => "pid1",
+        "caption" => "Simple data tree"		
     ], 
     [
         "type" => "table",

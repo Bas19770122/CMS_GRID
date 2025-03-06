@@ -145,6 +145,7 @@ class grid {
     public $parent;
     public $levels;
     public $pnum;
+    public $caption; 
 
     // actions 
 
@@ -860,6 +861,7 @@ class grid {
         $root = '';
         $key = '';
         $parent = '';
+        $this->caption = '';
         foreach ($info as $i => $v) {
             if ($v['type'] == 'options') {
                 if (isset($v['root'])) {
@@ -868,6 +870,9 @@ class grid {
                     $key = $v['keysyn'];
                     $parent = $v['parentsyn'];
                 }
+                if (isset($v['caption'])) {
+                    $this->caption = $v['caption'];
+                }                
                 break;
             }
         }
@@ -1123,7 +1128,7 @@ class grid {
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
-        $temp_html = '<div class=grid_cont><div id=' . $this->id . ' class=grid_class><<html>></div>';
+        $temp_html = '<div class=grid_cont><<cap>><div id=' . $this->id . ' class=grid_class><<html>></div>';
         $html = '';
         $info = $this->info;
         foreach ($field_visi as $j => $f) {
@@ -1435,9 +1440,12 @@ class grid {
             $inhtml .= '<div class="cell_footer' . $class . '">' . $v . '</div>';
         }
 
+        if($this->caption != ''){            
+            $temp_html = str_replace('<<cap>>', '<div class=tabcaption>'.$this->caption.'</div>', $temp_html);
+        }   
         $html = str_replace('<<html>>', $inhtml, $temp_html);
-
-        $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';
+                
+        $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';     
         $this->inpager = '';
         $oldv = '';
         foreach ($page as $i => $v) {

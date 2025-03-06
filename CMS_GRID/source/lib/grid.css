@@ -1,7 +1,16 @@
 .grid_cont{
     margin: 5px;
 }
-
+.tabcaption{
+    background-color: Gainsboro;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    text-shadow: 2px 2px 5px white;
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+}
 .grid_class{
     /* display: grid;
     grid-auto-rows: auto 20px; *//*header and rows height*/

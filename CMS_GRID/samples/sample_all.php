@@ -26,5 +26,7 @@ include 'sample_1.php';
 
 include 'sample_2.php';
 
+include 'sample_3.php';
+
 
 ?>
