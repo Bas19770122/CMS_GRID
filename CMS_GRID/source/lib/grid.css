@@ -1,5 +1,6 @@
 .grid_cont{
-    margin: 5px;
+    margin: 10px;
+    border: 1px solid grey;
 }
 .tabcaption{
     background-color: Gainsboro;
@@ -7,14 +8,13 @@
     text-align: center;
     position: relative;
     text-shadow: 2px 2px 5px white;
-    border-top: 1px solid grey;
-    border-left: 1px solid grey;
-    border-right: 1px solid grey;
+    background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
 }
 .grid_class{
     /* display: grid;
     grid-auto-rows: auto 20px; *//*header and rows height*/
-    border: 1px solid grey;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
 }
 
 .cell_class{
@@ -30,6 +30,9 @@
     text-align: center;
     position: relative;
     text-shadow: 2px 2px 5px white;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
 }
 
 .hidden{
@@ -105,32 +108,27 @@
 
 button.insert{
     width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 
 button.delete{
     width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 
 button.save{
     width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 
 button.refresh{
     width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 
 .file_class button{
     width:100px;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 
 .grid_file{
@@ -180,6 +178,9 @@ button.refresh{
 .cell_footer{
     background: Gainsboro;
     text-shadow: 2px 2px 5px white;
+    border-top: solid 1px grey;
+    border-botton: solid 1px grey;
+    background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
 }
 .treearrow_v{
     height: 100%;

@@ -1439,10 +1439,11 @@ class grid {
 
             $inhtml .= '<div class="cell_footer' . $class . '">' . $v . '</div>';
         }
-
+        $cap = ''; 
         if($this->caption != ''){            
-            $temp_html = str_replace('<<cap>>', '<div class=tabcaption>'.$this->caption.'</div>', $temp_html);
+            $cap = '<div class=tabcaption>'.$this->caption.'</div>';            
         }   
+        $temp_html = str_replace('<<cap>>', $cap, $temp_html);
         $html = str_replace('<<html>>', $inhtml, $temp_html);
                 
         $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';     
