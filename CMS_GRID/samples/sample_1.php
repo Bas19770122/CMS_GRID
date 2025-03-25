@@ -31,7 +31,7 @@ $gr->id = 'tab_1';
 $gr->info = [
     [      
         "type" => "options",	
-        "caption" => "Simple data list"
+        "caption" => "A simple data list"
     ],
     [
         "type" => "table",

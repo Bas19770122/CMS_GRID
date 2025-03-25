@@ -31,16 +31,16 @@ include_once 'source/lib/grid.php';
 
 $gr = new grid;
 
-$gr->id = 'tab_3';
+$gr->id = 'tab_4';
 
 $gr->info = [
     [       
         "type" => "options",	
-        "caption" => "A simple two data tables in one grid"
+        "caption" => "A simple data table with a link to another table"
     ],
     [
         "type" => "table",
-        "name" => "table_3_1",
+        "name" => "table_4_2",
         "syn" => "t1",
         "id_field_syn" => "id1",
         "after_insert" => "set @id := LAST_INSERT_ID();",
@@ -53,36 +53,34 @@ $gr->info = [
                 "visible" => "no"
             ],           
             [
-                "name" => "name",
+                "name" => "caption",
                 "syn" => "nm",
                 "type" => "string",
                 "№" => 1,
                 "caption" => "Название"                
-            ]
+            ],
+            [
+                "name" => "table_4_1_id",
+                "syn" => "p1",
+                "type" => "list",
+                "№" => 2,
+                "caption" => "Родитель",
+                "list" => "sample_4_tree.php",
+                "namecaption" => "treeidname"
+            ]			
         ]
     ],
     [
         "type" => "table",
-        "name" => "table_3_2",
+        "name" => "table_4_1",
         "syn" => "t2",
-        "id_field_syn" => "id2",
         "join" => "left join",
-        "on" => "t1.id = t2.id",
-        "editable" => "yes",
+        "on" => "t1.table_4_1_id = t2.id",
         "fields" => [
             [
-                "name" => "id",
-                "syn" => "id2",
-                "type" => "int",
+                "name" => "name",
+                "syn" => "treeidname",
                 "visible" => "no",
-                "default" => "@id"
-            ],
-            [
-                "name" => "caption",
-                "syn" => "cp",
-                "type" => "text",
-                "№" => 2,
-                "caption" => "Описание"
             ]
         ]
     ],

@@ -35,7 +35,7 @@ $gr->info = [
         "root" => "null",
         "keysyn" => "id1", 
         "parentsyn" => "pid1",
-        "caption" => "Simple data tree"		
+        "caption" => "A simple data tree"		
     ], 
     [
         "type" => "table",

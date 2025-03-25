@@ -14,6 +14,7 @@ echo
 
 <script src="source/lib/jquery-3.6.0.min.js"></script>
 <script src="source/lib/grid.js"></script>
+<script src="sample_4_tree.js"></script>
 
 </head>
 <body>
@@ -23,10 +24,16 @@ include_once 'source/lib/grid.php';
 
 
 include 'sample_1.php';
+echo '<br>';
 
 include 'sample_2.php';
+echo '<br>';
 
 include 'sample_3.php';
+echo '<br>';
+
+include 'sample_4.php';
+echo '<br>';
 
 
 ?>
