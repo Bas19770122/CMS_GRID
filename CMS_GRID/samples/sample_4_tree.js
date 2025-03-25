@@ -3,7 +3,7 @@ $(document).ready(function () {
     $('body').delegate('#tree_4 .cell_class', 'click', function (e) {
 
 
-        var data = JSON.parse($('#json_tree_4').text());
+        var data = JSON.parse($('#json_tree_4').text()); 
         for (var key in data)
         {
             if ($(this).attr('row') == key) {

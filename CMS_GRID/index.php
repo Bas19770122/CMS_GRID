@@ -173,7 +173,7 @@ $gr->info = [
         "fields" => [
             [
                 "name" => "name",
-                "syn" => "treeidname",
+                "syn" => "treeidname", 
                 "visible" => "no",
             ]
         ]
