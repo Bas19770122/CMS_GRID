@@ -14,7 +14,8 @@ echo
 
 <script src="source/lib/jquery-3.6.0.min.js"></script>
 <script src="source/lib/grid.js"></script>
-<script src="sample_4_tree.js"></script>
+<script src="sample_4_list.js"></script>
+<script src="sample_5_tree.js"></script>
 
 </head>
 <body>
@@ -34,6 +35,10 @@ echo '<br>';
 
 include 'sample_4.php';
 echo '<br>';
+
+include 'sample_5.php';
+echo '<br>';
+
 
 
 ?>

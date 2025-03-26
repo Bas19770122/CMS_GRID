@@ -31,16 +31,16 @@ include_once 'source/lib/grid.php';
 
 $gr = new grid;
 
-$gr->id = 'tab_4';
+$gr->id = 'tab_5';
 
 $gr->info = [
     [       
         "type" => "options",	
-        "caption" => "A simple data table with a link to another list table"
+        "caption" => "A simple data table with a link to another tree table"
     ],
     [
         "type" => "table",
-        "name" => "table_4_2",
+        "name" => "table_5_2",
         "syn" => "t1",
         "id_field_syn" => "id1",
         "after_insert" => "set @id := LAST_INSERT_ID();",
@@ -60,22 +60,22 @@ $gr->info = [
                 "caption" => "Название"                
             ],
             [
-                "name" => "table_4_1_id",
+                "name" => "table_5_1_id",
                 "syn" => "p1",
                 "type" => "list",
                 "№" => 2,
                 "caption" => "Родитель",
-                "list" => "sample_4_list.php",
+                "list" => "sample_5_tree.php",
                 "namecaption" => "treeidname"
             ]			
         ]
     ],
     [
         "type" => "table",
-        "name" => "table_4_1",
+        "name" => "table_5_1",
         "syn" => "t2",
         "join" => "left join",
-        "on" => "t1.table_4_1_id = t2.id",
+        "on" => "t1.table_5_1_id = t2.id",
         "fields" => [
             [
                 "name" => "name",

@@ -14,6 +14,11 @@ sample_3.php - the simple two data tables in one grid
 sample_3.sql - sql script for two data tables
 
 sample_4.php - the simple data table with a link to another table
-sample_4_tree.php - the simple data tree 
-sample_4_tree.js - JS file for a simple data tree 
+sample_4_list.php - the simple data list
+sample_4_list.js - JS file for a simple data list
 sample_4.sql - sql script for two data tables
+
+sample_5.php - the simple data table with a link to another table
+sample_5_tree.php - the simple data tree 
+sample_5_tree.js - JS file for a simple data tree 
+sample_5.sql - sql script for two data tables

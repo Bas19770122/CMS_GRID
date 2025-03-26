@@ -1,7 +1,6 @@
 CREATE TABLE `table_4_1` (
   `id` int NOT NULL,
   `name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `parentid` INT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 

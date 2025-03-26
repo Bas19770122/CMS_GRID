@@ -8,15 +8,9 @@ include_once 'source/lib/grid.php';
 
 $gr = new grid;
 
-$gr->id = 'tree_4';
+$gr->id = 'list_4';
 
-$gr->info = [
-    [
-        "type" => "options",
-        "root" => "null",
-        "keysyn" => "id1", 
-        "parentsyn" => "p1"
-    ],    
+$gr->info = [ 
     [
         "type" => "table",
         "name" => "table_4_1",
@@ -37,12 +31,6 @@ $gr->info = [
                 "type" => "string",
                 "№" => 1,                  
                 "caption" => "Название"
-            ],            
-            [
-                "name" => "parentid",
-                "syn" => "p1",
-                "type" => "int",
-                "visible" => "no"               
             ]
         ]
     ],
