@@ -35,7 +35,8 @@ $gr->info = [
         "root" => "null",
         "keysyn" => "id2",
         "parentsyn" => "prnt",
-        "caption" => "Таблица"
+        "caption" => "Таблица",
+        "maxheight" => "400px"
     ],
     [
         "type" => "table",
@@ -205,7 +206,8 @@ $gr->info = [
     [
         "type" => "page",
         "count" => "10",
-        "number" => "1"
+        "number" => "1",
+        "limit" => "10"
     ],
     [
         "type" => "search",

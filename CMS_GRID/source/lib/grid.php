@@ -134,6 +134,7 @@ class grid {
     public $cnt;
     public $page;
     public $pnumber;
+    public $plimit;
     public $search;
     public $searchval;
     public $searchfld;
@@ -146,6 +147,7 @@ class grid {
     public $levels;
     public $pnum;
     public $caption; 
+    public $maxheight;
 
     // actions 
 
@@ -738,7 +740,7 @@ class grid {
         $this->pnum = $pnum;
 
         $page = [];
-        $cntall = 0;
+        $cntall = 0;        
         if ($this->tree == 0) {
 
             if ($result = $mysqli->query($pagesql)) {
@@ -760,28 +762,33 @@ class grid {
             if (isset($this->pnumber)) {
                 $pnumber = $this->pnumber; // current page number
             }
+            
+            $plimit = 0;
+            if (isset($this->plimit)) {
+                $plimit = $this->plimit; // current page limit 
+            }
 
             $k = 0;
             if ($cnt != 0) {
-                for ($i = 1; $i <= 3; $i++) {
+                for ($i = 1; $i <= $plimit; $i++) {
                     if ($i <= $cntrec) {
                         $page[] = $i;
                         $k = $i;
                     }
                 }
-                for ($i = $pnumber - 2; $i <= $pnumber; $i++) {
+                for ($i = $pnumber - ($plimit-1); $i <= $pnumber; $i++) {
                     if ($i > $k) {
                         $page[] = $i;
                         $k = $i;
                     }
                 }
-                for ($i = $pnumber + 1; $i <= $pnumber + 2; $i++) {
+                for ($i = $pnumber + 1; $i <= $pnumber + ($plimit-1); $i++) {
                     if ($i > $k && $i <= $cntrec) {
                         $page[] = $i;
                         $k = $i;
                     }
                 }
-                for ($i = $cntrec - 2; $i <= $cntrec; $i++) {
+                for ($i = $cntrec - ($plimit-1); $i <= $cntrec; $i++) {
                     if ($i > $k) {
                         $page[] = $i;
                         $k = $i;
@@ -873,6 +880,9 @@ class grid {
                 if (isset($v['caption'])) {
                     $this->caption = $v['caption'];
                 }                
+                if (isset($v['maxheight'])) {
+                    $this->maxheight = $v['maxheight'];
+                }                   
                 break;
             }
         }
@@ -901,8 +911,12 @@ class grid {
                         $cnt = $v['count'];
                     if (isset($v['number']))
                         $number = $v['number'];
+                    $lim = 3; 
+                    if (isset($v['limit']))
+                        $lim = $v['limit'];
                     $limit = ' limit ' . ($number - 1) * $cnt . ', ' . $cnt;
                     $this->pnumber = $number;
+                    $this->plimit = $lim;
                 }
             }
             if ($v['type'] == 'table') {
@@ -1128,7 +1142,7 @@ class grid {
     public function JS_Html($js, $field_list, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $row_no, $page) { // get html code
         $arr = json_decode($js, true);
         $style = '';
-        $temp_html = '<div class=grid_cont><<cap>><div id=' . $this->id . ' class=grid_class><<html>></div>';
+        $temp_html = '<div class=grid_cont><<cap>><div id=' . $this->id . ' class=grid_class <<attr>> ><<html>></div>';
         $html = '';
         $info = $this->info;
         foreach ($field_visi as $j => $f) {
@@ -1193,7 +1207,7 @@ class grid {
                 }
             }
             if ($isfld == 0) {
-                $html = $html . '<div></div>';
+                $html = $html . '<div class="search_cont" ></div>';
             }
         }
 
@@ -1443,7 +1457,12 @@ class grid {
         if($this->caption != ''){            
             $cap = '<div class=tabcaption>'.$this->caption.'</div>';            
         }   
-        $temp_html = str_replace('<<cap>>', $cap, $temp_html);
+        $temp_html = str_replace('<<cap>>', $cap, $temp_html);        
+        $attr = '';
+        if($this->caption != ''){            
+            $attr = ' style="max-height:'.$this->maxheight.'" ';            
+        }           
+        $temp_html = str_replace('<<attr>>', $attr, $temp_html);        
         $html = str_replace('<<html>>', $inhtml, $temp_html);
                 
         $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';     
