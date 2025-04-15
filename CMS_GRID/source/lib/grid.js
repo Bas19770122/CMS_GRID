@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     $('body').delegate('.plus', 'dblclick', function (e) {
 
-       return false;
+        return false;
 
     });
 
@@ -36,14 +36,14 @@ $(document).ready(function () {
         if ($(this).text() == '-') {
             setvistree(id, i, 'hidden');
             $(this).text('+');
-           /*$(this).parent().parent().find('.treearrow_h2').css('visibility', 'hidden');*/
+            /*$(this).parent().parent().find('.treearrow_h2').css('visibility', 'hidden');*/
         } else {
             setvistree(id, i, 'visible');
             $(this).text('-');
             /*$(this).parent().parent().find('.treearrow_h2').css('visibility', 'visible');*/
         }
 
-       return false;
+        return false;
 
     });
 
@@ -292,19 +292,19 @@ $(document).ready(function () {
 
         //  return false;
     });
-    
-    function set_next_focus(id, rowno, colno){         
+
+    function set_next_focus(id, rowno, colno) {
         var rw = JSON.parse($('#json_' + id).text());
         for (var key in rw)
         {
-            if(key == rowno){
-                $('#'+id+' .cell_class').removeClass('Selected');
-                $('#' + id + ' .cell_class[row=' + parseInt(key) + '].cell_class[col='+colno+']').addClass('Selected');
+            if (key == rowno) {
+                $('#' + id + ' .cell_class').removeClass('Selected');
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + '].cell_class[col=' + colno + ']').addClass('Selected');
                 break;
             }
-        }            
+        }
     }
-    
+
     $('body').delegate('.grid_cont .refresh', 'click', function (e) {
 
         var elem = $(this);
@@ -364,18 +364,18 @@ $(document).ready(function () {
         });
 
 
-    });    
-    
+    });
 
-        function set_deleted(id) {
-            var rw = JSON.parse($('#json_' + id).text());
-            for (var key in rw)
-            {
-                if (rw[key][0]['type'] == 3)
-                    $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
-            }                        
+
+    function set_deleted(id) {
+        var rw = JSON.parse($('#json_' + id).text());
+        for (var key in rw)
+        {
+            if (rw[key][0]['type'] == 3)
+                $('#' + id + ' .cell_class[row=' + parseInt(key) + ']').addClass('deleted');
         }
-    
+    }
+
 
     $('body').delegate('.grid_cont .delete', 'click', function (e) {
 
@@ -394,9 +394,9 @@ $(document).ready(function () {
         $('#json_' + id).append(rcds);
 
         set_deleted(id);
-        
-        set_next_focus(id, parseInt(rowno)+1, colno);
-        
+
+        set_next_focus(id, parseInt(rowno) + 1, colno);
+
         return false;
 
     });
@@ -525,21 +525,21 @@ $(document).ready(function () {
 
         elem = $(this);
         elem2 = $(this).parent().eq(0);
-        
+
         txt = elem2.prop('outerHTML');
-        
+
         elms = $(txt).find('#cell_editor').remove().end();
-        
+
         txt = elms.prop('outerHTML');
-        
+
         var vtree = '';
         $(txt).find('.treearrow_v').each(function (index) {
-          vtree = vtree + $(this).prop('outerHTML');
-        
-        });                 
-         
-       // var vtree = elem2.html();
-        
+            vtree = vtree + $(this).prop('outerHTML');
+
+        });
+
+        // var vtree = elem2.html();
+
         id = elem2.parent().attr('id');
         grid_id = $('#cell_editor').attr('grid_id');
 
@@ -612,7 +612,7 @@ $(document).ready(function () {
 
         // save cell into json
         data = save_cell(elem2, cont, txt, act, id, vtree);
-        
+
         return false;
 
     });
@@ -632,11 +632,12 @@ $(document).ready(function () {
             var editor = get_editor_code(elem, cont, id);
             elem.append(editor);
             $('#cell_editor').focus();
-            var offset = elem.offset();
-            $('#cell_editor').css({'top' : offset.top + 'px'});
-            $('#cell_editor').css({'left' : offset.left + 'px'});
-        
-           //element = element.offsetParent;
+            //element = element.offsetParent;
+           /* var offset = elem.offset();
+            if (!elem.hasClass('rel_pos')) {
+              $('#cell_editor').css({'left': offset.left + 'px'});
+              $('#cell_editor').css({'top': offset.top + 'px'});
+            }*/            
         }
 
         return false;
@@ -688,7 +689,7 @@ $(document).ready(function () {
                                     data[key][0]['type'] = 2; // edited 
                                 }
                                 elem2.empty();
-                                elem2.append(tree+txt);
+                                elem2.append(tree + txt);
                                 // save json to form
                                 $('#json_' + id).empty();
                                 js = JSON.stringify(data);
@@ -708,9 +709,9 @@ $(document).ready(function () {
                                     }
                                 }
                                 if (fld[key2 - 1]['attr']['type'] == 'file' && cont != '') {
-                                    elem2.append(tree+'<img src=' + cont + ' width=40 height=40 >');
+                                    elem2.append(tree + '<img src=' + cont + ' width=40 height=40 >');
                                 } else {
-                                    elem2.append(tree+cont);
+                                    elem2.append(tree + cont);
                                 }
                                 // save json to form
                                 $('#json_' + id).empty();
@@ -807,6 +808,10 @@ $(document).ready(function () {
                             cell_editor.append(data);
                             grid_id = cell_editor.find('.grid_class').eq(0).attr('id');
                             cell_editor.attr('grid_id', grid_id);
+                            var offset = elem2.offset();
+                            cell_editor.css({'left': offset.left + 'px'});
+                            cell_editor.css({'top': offset.top + 'px'});    
+                            elem2.removeClass('rel_pos');
                             //$('#cell_editor').empty();
                             //$('#cell_editor').append(data);
                         });
@@ -830,10 +835,15 @@ $(document).ready(function () {
                             cell_editor.append(data);
                             file_id = cell_editor.find('.file_class').eq(0).attr('id');
                             cell_editor.attr('file_id', file_id);
+                            var offset = elem2.offset();
+                            cell_editor.css({'left': offset.left + 'px'});
+                            cell_editor.css({'top': offset.top + 'px'});
+                            elem2.removeClass('rel_pos');
                         });
 
                     }
                 }
+
                 if (is_list == 0) {
                 }
                 return '<' + elem_name + ' ' + attr_name + '>' + cont + '</' + elem_name + '>';

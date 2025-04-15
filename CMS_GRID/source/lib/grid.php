@@ -1369,6 +1369,7 @@ class grid {
                             if ($k == 0 && $row_no == $i) {
                                 $class = $class . ' Selected';
                             }
+                            $class = $class . ' rel_pos ';
                             $stl = '';
                             $addt = '';
                             $wdt = 30;
@@ -1376,9 +1377,6 @@ class grid {
                                 if ($this->tree == 1) {
                                     //border:none;  border-left:solid 1px black;  
                                     //  if ($this->levels[$i] != 0) {
-                                    
-                                    $class = $class . ' rel_pos ';
-                                    
                                     $btn = '';
                                     $mrgn = 10;
                                     $srt = 1;
