@@ -15,7 +15,8 @@ $gr->info = [
         "type" => "options",
         "root" => "null",
         "keysyn" => "id1", 
-        "parentsyn" => "p1"
+        "parentsyn" => "p1",
+        "maxheight" => "200px"
     ],    
     [
         "type" => "table",

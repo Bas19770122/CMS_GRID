@@ -31,7 +31,8 @@ $gr->id = 'tab_1';
 $gr->info = [
     [      
         "type" => "options",	
-        "caption" => "A simple data list"
+        "caption" => "A simple data list",
+        "maxheight" => "200px"
     ],
     [
         "type" => "table",

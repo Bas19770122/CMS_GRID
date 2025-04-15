@@ -36,7 +36,8 @@ $gr->id = 'tab_4';
 $gr->info = [
     [       
         "type" => "options",	
-        "caption" => "A simple data table with a link to another list table"
+        "caption" => "A simple data table with a link to another list table",        
+        "maxheight" => "600px"
     ],
     [
         "type" => "table",

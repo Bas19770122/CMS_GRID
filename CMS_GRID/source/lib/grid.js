@@ -632,6 +632,11 @@ $(document).ready(function () {
             var editor = get_editor_code(elem, cont, id);
             elem.append(editor);
             $('#cell_editor').focus();
+            var offset = elem.offset();
+            $('#cell_editor').css({'top' : offset.top + 'px'});
+            $('#cell_editor').css({'left' : offset.left + 'px'});
+        
+           //element = element.offsetParent;
         }
 
         return false;

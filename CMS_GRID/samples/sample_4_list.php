@@ -12,6 +12,10 @@ $gr->id = 'list_4';
 
 $gr->info = [ 
     [
+        "type" => "options",
+        "maxheight" => "200px"
+    ],
+    [
         "type" => "table",
         "name" => "table_4_1",
         "syn" => "t1",

@@ -36,7 +36,7 @@ $gr->info = [
         "keysyn" => "id2",
         "parentsyn" => "prnt",
         "caption" => "Таблица",
-        "maxheight" => "400px"
+        "maxheight" => "500px"
     ],
     [
         "type" => "table",

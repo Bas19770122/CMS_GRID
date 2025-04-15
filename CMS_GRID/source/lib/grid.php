@@ -146,7 +146,8 @@ class grid {
     public $parent;
     public $levels;
     public $pnum;
-    public $caption; 
+    public $caption;
+    public $minheight;
     public $maxheight;
 
     // actions 
@@ -740,7 +741,7 @@ class grid {
         $this->pnum = $pnum;
 
         $page = [];
-        $cntall = 0;        
+        $cntall = 0;
         if ($this->tree == 0) {
 
             if ($result = $mysqli->query($pagesql)) {
@@ -762,7 +763,7 @@ class grid {
             if (isset($this->pnumber)) {
                 $pnumber = $this->pnumber; // current page number
             }
-            
+
             $plimit = 0;
             if (isset($this->plimit)) {
                 $plimit = $this->plimit; // current page limit 
@@ -776,19 +777,19 @@ class grid {
                         $k = $i;
                     }
                 }
-                for ($i = $pnumber - ($plimit-1); $i <= $pnumber; $i++) {
+                for ($i = $pnumber - ($plimit - 1); $i <= $pnumber; $i++) {
                     if ($i > $k) {
                         $page[] = $i;
                         $k = $i;
                     }
                 }
-                for ($i = $pnumber + 1; $i <= $pnumber + ($plimit-1); $i++) {
+                for ($i = $pnumber + 1; $i <= $pnumber + ($plimit - 1); $i++) {
                     if ($i > $k && $i <= $cntrec) {
                         $page[] = $i;
                         $k = $i;
                     }
                 }
-                for ($i = $cntrec - ($plimit-1); $i <= $cntrec; $i++) {
+                for ($i = $cntrec - ($plimit - 1); $i <= $cntrec; $i++) {
                     if ($i > $k) {
                         $page[] = $i;
                         $k = $i;
@@ -879,10 +880,13 @@ class grid {
                 }
                 if (isset($v['caption'])) {
                     $this->caption = $v['caption'];
-                }                
+                }
+                if (isset($v['minheight'])) {
+                    $this->minheight = $v['minheight'];
+                }
                 if (isset($v['maxheight'])) {
                     $this->maxheight = $v['maxheight'];
-                }                   
+                }
                 break;
             }
         }
@@ -911,7 +915,7 @@ class grid {
                         $cnt = $v['count'];
                     if (isset($v['number']))
                         $number = $v['number'];
-                    $lim = 3; 
+                    $lim = 3;
                     if (isset($v['limit']))
                         $lim = $v['limit'];
                     $limit = ' limit ' . ($number - 1) * $cnt . ', ' . $cnt;
@@ -1145,6 +1149,7 @@ class grid {
         $temp_html = '<div class=grid_cont><<cap>><div id=' . $this->id . ' class=grid_class <<attr>> ><<html>></div>';
         $html = '';
         $info = $this->info;
+        $all_isfld = 0;
         foreach ($field_visi as $j => $f) {
             $isfld = 0;
             foreach ($field_list as $jf => $fli) {
@@ -1186,7 +1191,7 @@ class grid {
                                         }
                                         $options .= '<option ' . $selected . ' value="' . $oj . '">' . $ov . '</option>';
                                     }
-                                    $html = $html . '<div class="search_cont '.$cls.'" col=' . $jf . '><select class="search_class '.$cls.'" value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
+                                    $html = $html . '<div class="search_cont ' . $cls . '" col=' . $jf . '><select class="search_class ' . $cls . '" value="' . $v . '" fld="' . $ff . '">' . $options . '</select></div>';
                                 } else {
                                     $type = 'text';
                                     $checked = '';
@@ -1196,10 +1201,11 @@ class grid {
                                             $checked = 'checked';
                                         };
                                     }
-                                    $html = $html . '<div class="search_cont '.$cls.'" col=' . $jf . '><input  placeholder="&#128269;" ' . $checked . ' type=' . $type . ' class="search_class '.$cls.'" value="' . $v . '" fld="' . $ff . '"></div>';
+                                    $html = $html . '<div class="search_cont ' . $cls . '" col=' . $jf . '><input  placeholder="&#128269;" ' . $checked . ' type=' . $type . ' class="search_class ' . $cls . '" value="' . $v . '" fld="' . $ff . '"></div>';
                                 }
                             }
                             $isfld = 1;
+                            $all_isfld = 1;
                             break;
                         }
                     }
@@ -1239,7 +1245,11 @@ class grid {
                     break;
                 }
             }
-            $html = $html . '<div class=header_class fld="' . $name . '" ' . $ord . '>' . $sig . $f . '</div>';
+            $stls = '';
+            if ($all_isfld == 0) {
+                $stls = ' style=" top:0;" ';
+            }
+            $html = $html . '<div class=header_class fld="' . $name . '" ' . $ord . $stls . '>' . $sig . $f . '</div>';
             $style = $style . ' auto';
         }
         $html = $html . '<div id="json_' . $this->id . '" class="hidden">' . $js . '</div>';
@@ -1366,6 +1376,9 @@ class grid {
                                 if ($this->tree == 1) {
                                     //border:none;  border-left:solid 1px black;  
                                     //  if ($this->levels[$i] != 0) {
+                                    
+                                    $class = $class . ' rel_pos ';
+                                    
                                     $btn = '';
                                     $mrgn = 10;
                                     $srt = 1;
@@ -1453,19 +1466,23 @@ class grid {
 
             $inhtml .= '<div class="cell_footer' . $class . '">' . $v . '</div>';
         }
-        $cap = ''; 
-        if($this->caption != ''){            
-            $cap = '<div class=tabcaption>'.$this->caption.'</div>';            
-        }   
-        $temp_html = str_replace('<<cap>>', $cap, $temp_html);        
-        $attr = '';
-        if($this->caption != ''){            
-            $attr = ' style="max-height:'.$this->maxheight.'" ';            
-        }           
-        $temp_html = str_replace('<<attr>>', $attr, $temp_html);        
+        $cap = '';
+        if ($this->caption != '') {
+            $cap = '<div class=tabcaption>' . $this->caption . '</div>';
+        }
+        $temp_html = str_replace('<<cap>>', $cap, $temp_html);
+        $attr = ' style=" ';
+        if ($this->maxheight != '') {
+            $attr = $attr . ' max-height:' . $this->maxheight . '; ';
+        }
+        if ($this->minheight != '') {
+            $attr = $attr . ' min-height:' . $this->minheight . '; ';
+        }
+        $attr = $attr . ' " ';
+        $temp_html = str_replace('<<attr>>', $attr, $temp_html);
         $html = str_replace('<<html>>', $inhtml, $temp_html);
-                
-        $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';     
+
+        $html = $html . '<div class=pager_cont id="pager_' . $this->id . '">';
         $this->inpager = '';
         $oldv = '';
         foreach ($page as $i => $v) {

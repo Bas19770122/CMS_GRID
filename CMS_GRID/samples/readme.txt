@@ -1,4 +1,4 @@
-copy samples/sample*.php files to the project root and run sample_all.php
+copy samples/sample*.php, samples/sample*.js files into the project root and run sample_all.php
 
 Samples:
 

@@ -21,10 +21,15 @@
 }
 
 .cell_class{
-    position: relative;
+   /* position: relative;*/
     min-height: 20px;
-    border: 1px solid gainsboro;
+    border: 1px solid gainsboro; 
     padding: 0 2px 0 2px;
+    max-height: 30px;
+}
+
+.rel_pos{
+    position: relative;
 }
 
 .header_class{
@@ -36,6 +41,10 @@
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
     background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
+    position: sticky;
+    top: 22px;    
+    z-index: 2;    
+    max-height: 30px;
 }
 
 .hidden{
@@ -172,7 +181,7 @@ button.refresh{
     position: sticky;
     top: 0;
     background-color: white;    
-    background-clip: padding-box; 
+    /*background-clip: padding-box; */
     z-index: 2;
 }
 .search_sig{
@@ -192,6 +201,7 @@ button.refresh{
     background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
     position: sticky;
     bottom: 0;  
+    max-height: 30px;
 }
 .treearrow_v{
     height: 100%;
