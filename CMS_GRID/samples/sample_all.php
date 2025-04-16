@@ -20,7 +20,7 @@ echo
 
 <style>
 body { 
- background-image: url("pic/textur.jpg");
+ background-image: url("pic/textur.png");
  padding: 50px;
  color: brown;
 }
