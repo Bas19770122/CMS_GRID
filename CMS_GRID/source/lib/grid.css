@@ -27,7 +27,7 @@
     min-height: 20px;
     border: 1px solid gainsboro; 
     padding: 0 2px 0 2px;
-    max-height: 30px;
+    max-height: auto;
 }
 
 .rel_pos{
