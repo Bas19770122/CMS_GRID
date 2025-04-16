@@ -1,34 +1,4 @@
 <?php
-
-/*
-session_start();
-
-echo
-'
-<!DOCTYPE HTML> 
-<html>
-<head>
-
-<title></title>
-
-<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
-
-<script src="source/lib/jquery-3.6.0.min.js"></script>
-<script src="source/lib/grid.js"></script>
-<script src="source/list/list.js"></script>
-<script src="source/tree/tree.js"></script>
-<script src="source/lib/file.js"></script>
-
-
-</head>
-<body>
-';
-
-include_once 'source/lib/grid.php';
-*/
-
-
-
 $gr = new grid;
 
 $gr->id = 'tab_5';
@@ -106,16 +76,9 @@ $gr->info = [
         "class" => "refresh"
     ]
 ];
-/*
-  [
-        "type" => "order",
-        "text" => "order by t2.id"
-    ],    
- * 
- *  */
 
+echo $gr->show();   
 
-echo $gr->show();
 ?>
 
 

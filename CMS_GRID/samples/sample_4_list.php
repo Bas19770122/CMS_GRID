@@ -1,6 +1,18 @@
-<?php
+<!DOCTYPE HTML> 
+<html>
+<head>
 
- session_start();
+<title></title>
+
+<link rel='stylesheet' type='text/css' href='source/lib/grid.css' />
+
+<script src='source/lib/jquery-3.6.0.min.js'></script>
+<script src='source/lib/grid.js'></script>
+<script src='sample_4_list.js'></script>
+
+</head>
+<body>
+<?php
 
 if (isset($_POST['id'])) {
 

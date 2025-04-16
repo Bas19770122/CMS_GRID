@@ -1,9 +1,8 @@
 <?php
 
-$server = "localhost";
-$user = "root";
-$password = "root";
-$schema = "new_schema";
+$path = dirname(__FILE__).'/../db/conn.php';
+include_once $path; 
+
 
 if (isset($_POST['action'])) {
     if ($_POST['action'] == 'save') {
