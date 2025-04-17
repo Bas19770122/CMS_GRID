@@ -1,8 +1,7 @@
 <?php
 
-$path = dirname(__FILE__).'/../db/conn.php';
-include_once $path; 
-
+$path = dirname(__FILE__) . '/../db/conn.php';
+include_once $path;
 
 if (isset($_POST['action'])) {
     if ($_POST['action'] == 'save') {
@@ -203,7 +202,7 @@ class grid {
                             $class = $class . ' halign_right';
                         }
                     }
-
+                    $class = $class . ' rel_pos ';
 
                     $adddata = $adddata . '<div class="cell_class ' . $class . '" col=' . ($jv) . ' row=' . count($data) . '>' . $v . '</div>';
                     break;
