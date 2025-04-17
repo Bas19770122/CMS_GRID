@@ -10,17 +10,17 @@ echo
 
 <title>Sample_1 - simple data list </title>
 
-<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
+<link rel="stylesheet" type="text/css" href="../source/lib/grid.css" />
 
-<script src="source/lib/jquery-3.6.0.min.js"></script>
-<script src="source/lib/grid.js"></script>
+<script src="../source/lib/jquery-3.6.0.min.js"></script>
+<script src="../source/lib/grid.js"></script>
 <script src="sample_4_list.js"></script>
 <script src="sample_5_tree.js"></script>
 
 
 <style>
 body { 
- background-image: url("pic/textur.png");
+ background-image: url("../pic/textur.png");
  padding: 50px;
  color: brown;
 }
@@ -39,8 +39,11 @@ body {
 ';
 
 
-include_once 'source/db/conn.php';
-include_once 'source/lib/grid.php';
+$path = dirname(__FILE__).'/../source/db/conn.php';
+include_once $path; 
+
+$path = dirname(__FILE__).'/../source/lib/grid.php';
+include_once $path; 
  
  
 $txt = 

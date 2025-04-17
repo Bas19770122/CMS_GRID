@@ -1,5 +1,4 @@
-1. Copy "samples/sample*.php", "samples/sample*.js" files from "samples" folder into the project root and run "sample_all.php"
-2. Rewrite connection params in the file "source/db/conn.php"
+Rewrite connection params in the file "source/db/conn.php"
 
 Sample files (in folder "samples"):
 
