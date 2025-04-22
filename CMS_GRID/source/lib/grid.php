@@ -1077,13 +1077,15 @@ class grid {
         $pagesql = str_replace('<tab>', $tab, $pagesql);
         $pagesql = str_replace('<where>', $whe, $pagesql);
 
+        
         if ($isfooter == 1) {
             $sqlf = str_replace('<fields>', $fldf, $sqlf);
             $sqlf = str_replace('<tab>', $tab, $sqlf);
             $sqlf = str_replace('<where>', $whe, $sqlf);
+            $this->sqlf = $sqlf;
+        } else {
+          $this->sqlf = '';    
         }
-
-        $this->sqlf = $sqlf;
 
         return [$sql, $pagesql, $flds /* $field_list */, $field_visi, $field_cap, $field_type, $buttons, $hiddens, $ids, $show_id, $selected_val, $cnt, $search];
     }
