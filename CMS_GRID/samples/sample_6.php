@@ -7,7 +7,7 @@ $gr->id = 'tab_6';
 $gr->info = [
     [
         "type" => "options",
-        "caption" => "Таблица",
+        "caption" => "The example of a table with different data types: checkbox, string, text, date, decimal, select, reference list, reference tree, file",
         "maxheight" => "500px"
     ],
     [

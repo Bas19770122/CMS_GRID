@@ -9,7 +9,7 @@ $gr->info = [
         "root" => "null",
         "keysyn" => "id1", 
         "parentsyn" => "pid1",
-        "caption" => "The sample data tree",
+        "caption" => "The simple data tree",
         "maxheight" => "200px"		
     ], 
     [

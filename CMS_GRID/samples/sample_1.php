@@ -6,7 +6,7 @@ $gr->id = 'tab_1';
 $gr->info = [
     [      
         "type" => "options",	
-        "caption" => "The sample data list",
+        "caption" => "The simple data list",
         "maxheight" => "200px"
     ],
     [

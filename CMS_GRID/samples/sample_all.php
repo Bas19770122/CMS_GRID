@@ -47,8 +47,11 @@ include_once $path;
 
 $path = dirname(__FILE__).'/../source/lib/grid.php';
 include_once $path; 
- 
- /*
+
+
+
+echo '<h1>Examples of data tables</h1>';
+
 $txt = 
 '<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
 <script src="source/lib/jquery-3.6.0.min.js"></script>
@@ -103,7 +106,6 @@ echo 'Code:';
 echo '<textarea class=code-editor readonly>' . $txt . '</textarea>';
 echo '<br><br><br>';
 
-*/
 
 echo 'Sample 6:';
 include 'sample_6.php';

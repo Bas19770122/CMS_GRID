@@ -6,7 +6,7 @@ $gr->id = 'tab_3';
 $gr->info = [
     [       
         "type" => "options",	
-        "caption" => "The sample two data tables in one grid",
+        "caption" => "The simple two data tables in one grid",
         "maxheight" => "200px"
     ],
     [
