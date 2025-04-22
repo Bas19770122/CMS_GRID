@@ -151,7 +151,7 @@ $gr->info = [
                 "name" => "fname",
                 "syn" => "fn",
                 "type" => "file",
-                "file" => "file.php",
+                "file" => "source/lib/file.php",
                 "№" => 8,
                 "caption" => "Файл"
             ],

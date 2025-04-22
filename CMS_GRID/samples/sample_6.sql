@@ -8,7 +8,7 @@ CREATE TABLE `table_6_1` (
   `selectid` int DEFAULT NULL COMMENT 'Ссылка на список',
   `listid` int DEFAULT NULL COMMENT 'Ссылка на справочник',  
   `treeid` int DEFAULT NULL COMMENT 'Ссылка на справочник дерева',  
-  `fname` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Признак',
+  `fname` char(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Признак',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARACTER SET = utf8 COLLATE = utf8_unicode_ci
 

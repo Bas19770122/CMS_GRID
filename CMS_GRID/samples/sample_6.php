@@ -165,7 +165,7 @@ $gr->info = [
     ],
     [
         "type" => "search",
-        "fields" => ["t1.chk", "t1.name", "t1.discr", "t1.date", "t1.sum", "t1.selectid", "t1.treeid", "t1.fname"]
+        "fields" => ["t1.chk", "t1.name", "t1.discr", "t1.date", "t1.sum", "t1.selectid", "t2.caption", "t3.caption"]
     ]
 ];
 

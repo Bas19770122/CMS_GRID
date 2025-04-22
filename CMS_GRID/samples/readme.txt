@@ -24,3 +24,11 @@ sample_5_tree.js - the JS file for a simple data tree
 sample_5.sql - the sql script for two data tables
 
 sample_6.php - the sample of a table with different data types: checkbox, string, text, date, decimal, select, reference list, reference tree, file
+sample_6.sql - the sql script for two data tables
+
+sample_6_list.php - the simple data tree 
+sample_6_list.js - the JS file for a simple data tree 
+
+sample_6_tree.php - the simple data tree 
+sample_6_tree.js - the JS file for a simple data tree 
+

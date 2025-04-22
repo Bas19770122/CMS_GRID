@@ -825,7 +825,7 @@ $(document).ready(function () {
                             grid_id: id,
                             element: 'cell_editor'};
                         $.ajax({
-                            url: 'source/lib/' + fil,
+                            url: fil,
                             method: 'POST',
                             dataType: 'html',
                             data: jsons
