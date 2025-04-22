@@ -6,7 +6,7 @@ $gr->id = 'tab_5';
 $gr->info = [
     [       
         "type" => "options",	
-        "caption" => "A simple data table with a link to another tree table",        
+        "caption" => "The sample data table with a link to another tree table",        
         "maxheight" => "600px"
     ],
     [

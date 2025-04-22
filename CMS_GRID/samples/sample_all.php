@@ -8,7 +8,7 @@ echo
 <html>
 <head>
 
-<title>Sample_1 - simple data list </title>
+<title>samples of data grid </title>
 
 <link rel="stylesheet" type="text/css" href="../source/lib/grid.css" />
 
@@ -16,6 +16,9 @@ echo
 <script src="../source/lib/grid.js"></script>
 <script src="sample_4_list.js"></script>
 <script src="sample_5_tree.js"></script>
+<script src="sample_6_list.js"></script>
+<script src="sample_6_tree.js"></script>
+<script src="../source/lib/file.js"></script>
 
 
 <style>
@@ -45,7 +48,7 @@ include_once $path;
 $path = dirname(__FILE__).'/../source/lib/grid.php';
 include_once $path; 
  
- 
+ /*
 $txt = 
 '<link rel="stylesheet" type="text/css" href="source/lib/grid.css" />
 <script src="source/lib/jquery-3.6.0.min.js"></script>
@@ -96,6 +99,15 @@ echo '<br><br><br>';
 echo 'Sample 5:';
 include 'sample_5.php';
 $txt = file_get_contents('sample_5.php');
+echo 'Code:';
+echo '<textarea class=code-editor readonly>' . $txt . '</textarea>';
+echo '<br><br><br>';
+
+*/
+
+echo 'Sample 6:';
+include 'sample_6.php';
+$txt = file_get_contents('sample_6.php');
 echo 'Code:';
 echo '<textarea class=code-editor readonly>' . $txt . '</textarea>';
 echo '<br><br><br>';

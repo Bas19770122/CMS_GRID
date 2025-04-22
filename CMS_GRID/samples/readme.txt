@@ -1,4 +1,4 @@
-Rewrite connection params in the file "source/db/conn.php"
+Rewrite data base connection params in the file "source/db/conn.php"
 
 Sample files (in folder "samples"):
 
@@ -22,3 +22,5 @@ sample_5.php - the simple data table with a link to another table
 sample_5_tree.php - the simple data tree 
 sample_5_tree.js - the JS file for a simple data tree 
 sample_5.sql - the sql script for two data tables
+
+sample_6.php - the sample of a table with different data types: checkbox, string, text, date, decimal, select, reference list, reference tree, file
