@@ -627,7 +627,15 @@ $(document).ready(function () {
         // load editor
         if (iseditor == 0) {
             elem = $(this);
-            cont = elem.text();
+            //cont = elem.text();
+			
+			cont = elem.prop('outerHTML');
+
+            elms = $(cont).find('.plus').remove().end();
+
+            cont = elms.text();
+
+			
             id = elem.parent().attr('id');
             var editor = get_editor_code(elem, cont, id);
             elem.append(editor);
