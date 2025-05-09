@@ -170,6 +170,7 @@ button.refresh{
 
 .search_class{
     width: 100%;
+    margin-bottom: -1px;
   /*  border: solid 1px grey;*/
 }
 
@@ -178,8 +179,8 @@ button.refresh{
     overflow-x: hidden;*/
     border-left: solid 1px grey;
     border-right: solid 1px grey;
-    border-bottom: none;
-    border-top: none;
+    border-bottom: solid 1px grey;;
+    border-top: solid 1px grey;;
     position: sticky;
     top: 0;
     background-color: white;    
