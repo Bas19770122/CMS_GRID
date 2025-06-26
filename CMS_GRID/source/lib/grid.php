@@ -631,7 +631,11 @@ class grid {
                                       $lst_fld[] = '';
                                       }
                                       } else { */
-                                    $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    if(!empty($row[$fv])){
+                                      $lst_fld[] = htmlspecialchars_decode($row[$fv]);
+                                    } else {
+                                      $lst_fld[] = '';  
+                                    }
                                     //}
                                     //$lst_fld[] = $row[$fv];
                                 }
