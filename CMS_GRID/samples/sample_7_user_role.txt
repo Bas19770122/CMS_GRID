@@ -1,0 +1,55 @@
+CREATE TABLE `table_user` (
+  `id` int NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+INSERT INTO `new_schema`.`table_user` (`id`, `name`) VALUES ('1', 'user 1');
+INSERT INTO `new_schema`.`table_user` (`id`, `name`) VALUES ('2', 'user 2');
+INSERT INTO `new_schema`.`table_user` (`id`, `name`) VALUES ('3', 'user 3');
+
+
+
+CREATE TABLE `new_schema`.`table_user_role` (
+  `id` INT NOT NULL,
+  `userid` INT NULL,
+  `roleid` INT NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `new_schema`.`table_role` (`id`, `name`) VALUES ('1', 'role 1');
+INSERT INTO `new_schema`.`table_role` (`id`, `name`) VALUES ('2', 'role 2');
+INSERT INTO `new_schema`.`table_role` (`id`, `name`) VALUES ('3', 'role 3');
+
+
+-------------------------
+
+ select 
+  u.id userid, 
+  r.id roleid,
+  ur.id ur_id,
+  ur.roleid ur_roleid,
+  ur.userid ur_userid 
+  from table_user u 
+  join table_role r 
+  left join table_user_role ur on ur.roleid = r.id and ur.userid = u.id 
+
+---------------------
+
+
+
+  select 
+  t1.userid, 
+  t1.roleid,
+  ur.id ur_id,
+  ur.roleid ur_roleid,
+  ur.userid ur_userid 
+  from 
+  (
+  select u.id userid, r.id roleid
+  from table_user u 
+  join table_role r 
+  ) t1
+  left join table_user_role ur on ur.roleid = t1.roleid and ur.userid = t1.userid 
+
