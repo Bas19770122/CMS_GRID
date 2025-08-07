@@ -1,3 +1,5 @@
+сделать flex редактируемый запрос для left join 
+
 дедупликация 
 
 сохранять список сообщений об ошибках и предупр
@@ -19,3 +21,123 @@
 
 словарная система - система справочников
   - при заведении нового поля проверять его уникальность в системе по названию, по описанию
+
+
+
+
+
+
+Система прав
+
+Есть только одна идеальная схема система прав
+
+Рассмотрим ее на простых примерах без конкретизации на конкретный язык, но с использованием SQL.
+
+Для начала, рассмотрим самый простой пример.
+Допустим, есть пользователи и нам надо определит для каждого какую либо роль.
+Таким образом, имеет таблицу пользователей с названием user и таблицу прав rule.
+Признак выставления прав будет третей таблице user_rule.
+
+Структура таблиц следующая:
+
+user(id int, name varchar(255))
+rule(id int, name varchar(255))
+user_rule(id int, usertid int, ruleid int, checked char(1))
+
+Краеугольным моментом рассматриваемой схемы является SQL запрос, отображающий выставленные права.
+
+Запрос выглядит следующим образом:
+
+ select 
+  u.id as uid, u.name as uname,
+  r.id as rid, r.name as rname,
+  IFNULL(ur.checked, 'N') ch 
+ from 
+    user u 
+    join role r 
+    left join user_role ur on ur.roleid = r.id and ur.userid = u.id 
+
+При заполнении данных в user и rule по две строки:
+
+INSERT INTO user (id, name) VALUES ('1', 'user 1');
+INSERT INTO user (id, name) VALUES ('2', 'user 2');
+
+INSERT INTO role (id, name) VALUES ('1', 'role 1');
+INSERT INTO role (id, name) VALUES ('2', 'role 2');
+
+получаем результат выполнения запроса:
+
+uid	uname	rid	rname	ch
+1	user 1	1	role 1	N
+1	user 1	2	role 2	N
+2	user 2	1	role 1	N
+2	user 2	2	role 2	N
+
+Запрос сделан на декартовом произведении user и role и присоединении к нему через left join таблицы значений выставленных прав.
+
+Такой запрос позволяет избежать лишних действий при заведении нового пользователя и новой роли. Так как при заведении не надо добавлять строки в user_role. Там хранятся только выставленные права, либо права которые ранее были выставлены, а потом были сняты.
+Либо права которые ранее были выставлены, а потом были сняты. 
+
+При выставлении/снятии роли, нам надо смотреть есть ли запись в user_role. 
+Если нет то добавляем строку со ссылками, если есть тоделаем update записи.
+
+Подобную систему удобвно использовать, если нам на каждый элемент в системе надо назначить свои права.
+Например, в интерфейсе на каждую кнопку, редактор, таблицу надо выставлять права: show, click, edit, insert, update, delete.
+Таким образом, у нас будут таблицы user, element, role, user_element_role.
+Запрос для отображения и редактирования прав будет выглядеть следующим образом:
+ select 
+  u.id as uid, u.name as uname,
+  e.id as eid, e.name as ename,
+  r.id as rid, r.name as rname
+  IFNULL(ure.checked, 'N') ch 
+ from 
+    user u 
+    join role r 
+    join element e, 
+    left join user_role_element ure on ure.roleid = r.id and ure.userid = u.id and ure.elementid = e.id  
+
+Структура таблиц следующая:
+
+user(id int, name varchar(255))
+rule(id int, name varchar(255))
+element(id int, name varchar(255))
+user_role_element(id int, usertid int, ruleid int, elementid int, checked char(1))
+
+При заполнении данных в user, rule и element по несколько строк:
+
+INSERT INTO user (id, name) VALUES ('1', 'user 1');
+INSERT INTO user (id, name) VALUES ('2', 'user 2');
+
+INSERT INTO role (id, name) VALUES ('1', 'show');
+INSERT INTO role (id, name) VALUES ('2', 'click');
+INSERT INTO role (id, name) VALUES ('3', 'edit');
+INSERT INTO role (id, name) VALUES ('4', 'insert');
+INSERT INTO role (id, name) VALUES ('5', 'update');
+INSERT INTO role (id, name) VALUES ('6', 'delete');
+
+INSERT INTO element (id, name) VALUES ('1', 'btn_1');
+INSERT INTO element (id, name) VALUES ('2', 'edt_1');
+INSERT INTO element (id, name) VALUES ('3', 'grd_1');
+
+имеем такой результат запроса:
+
+uid	uname	eid	ename	rid	rname	ch
+1	user 1	1	btn_1	1	show	N
+1	user 1	1	btn_1	2	click	N
+1	user 1	1	btn_1	3	edit	N
+1	user 1	1	btn_1	4	insert	N
+1	user 1	1	btn_1	5	update	N
+1	user 1	1	btn_1	6	delete	N
+1	user 1	2	edt_1	1	show	N
+1	user 1	2	edt_1	2	click	N
+1	user 1	2	edt_1	3	edit	N
+1	user 1	2	edt_1	4	insert	N
+1	user 1	2	edt_1	5	update	N
+1	user 1	2	edt_1	6	delete	N
+...
+
+В интерфейсе при программировании логики по константе, состоящей из названия элемента и роли (например btn_1_show), 
+ получаем значение из этого запроса и совершаем соответствующие действия.
+
+
+
